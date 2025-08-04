@@ -1,0 +1,9 @@
+[package]
+name = "accordeur"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cpal = "0.15.2"
+fundsp = "0.16.0"
+crossterm = "0.28"
