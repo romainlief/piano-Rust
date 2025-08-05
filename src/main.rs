@@ -100,19 +100,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
-
-    // Désactiver le mode raw avant de sortir
     disable_raw_mode()?;
     Ok(())
 }
 
-/// Ajoute une fréquence avec un timestamp pour le timeout automatique
+/// Add a frequency with a timestamp for automatic timeout
 fn add_frequency_with_timeout(frequencies: &Arc<Mutex<HashMap<u64, (f64, Instant)>>>, freq: f64) {
     let mut freqs = frequencies.lock().unwrap();
     let freq_key = freq.to_bits();
     let is_new = !freqs.contains_key(&freq_key);
 
-    // Toujours mettre à jour le timestamp, même si la note existe déjà
+    // Always update the timestamp, even if the note already exists
     freqs.insert(freq_key, (freq, Instant::now()));
 
     if is_new {
@@ -122,17 +120,24 @@ fn add_frequency_with_timeout(frequencies: &Arc<Mutex<HashMap<u64, (f64, Instant
             freqs.len()
         );
     }
-    // Si la note existait déjà, on ne fait que rafraîchir silencieusement
+    // if the note already existed, we just refresh silently
+    else {
+        println!(
+            "\rNote déjà active: {:.2} Hz. Notes actives: {}",
+            freq,
+            freqs.len()
+        );
+    }
 }
 
-/// Arrête toutes les fréquences avec timeout
+/// Stop all frequencies with timeout
 fn stop_all_frequencies_with_timeout(frequencies: &Arc<Mutex<HashMap<u64, (f64, Instant)>>>) {
     let mut freqs = frequencies.lock().unwrap();
     freqs.clear();
     println!("\rToutes les notes arrêtées.");
 }
 
-/// Version polyphonique avec timeout automatique
+/// This function creates a thread that generates audio samples for multiple oscillators
 fn run_output_polyphonic_with_timeout(frequencies: Arc<Mutex<HashMap<u64, (f64, Instant)>>>) {
     let host = cpal::default_host();
     let device = host
@@ -154,7 +159,7 @@ fn run_output_polyphonic_with_timeout(frequencies: Arc<Mutex<HashMap<u64, (f64, 
     }
 }
 
-/// Version polyphonique avec timeout qui génère plusieurs oscillateurs
+/// Function that runs the polyphonic synth with timeout
 fn run_synth_polyphonic_with_timeout<T: SizedSample + FromSample<f64>>(
     frequencies: Arc<Mutex<HashMap<u64, (f64, Instant)>>>,
     device: Device,
@@ -194,7 +199,7 @@ fn run_synth_polyphonic_with_timeout<T: SizedSample + FromSample<f64>>(
     });
 }
 
-/// Génère les échantillons audio polyphoniques avec timeout automatique
+/// This function generates audio samples for multiple oscillators with automatic timeout
 fn write_data_polyphonic_with_timeout<T: SizedSample + FromSample<f64>>(
     output: &mut [T],
     channels: usize,
@@ -202,13 +207,13 @@ fn write_data_polyphonic_with_timeout<T: SizedSample + FromSample<f64>>(
     phases: &mut HashMap<u64, f64>,
     sample_rate: f64,
 ) {
-    // Nettoyer les fréquences expirées et obtenir les actives
+    // Clean up expired frequencies and get the active ones
     let active_freqs = {
         let mut freqs = frequencies.lock().unwrap();
         let now = Instant::now();
         let timeout = std::time::Duration::from_millis(500); // 0.5 seconde de timeout
 
-        // Retirer les fréquences expirées
+        // Retain only frequencies that are still active and remove expired ones
         freqs.retain(|_freq_key, (_freq, timestamp)| now.duration_since(*timestamp) < timeout);
 
         freqs
@@ -221,13 +226,13 @@ fn write_data_polyphonic_with_timeout<T: SizedSample + FromSample<f64>>(
         let mut sample_left = 0.0;
         let mut sample_right = 0.0;
 
-        // Générer et sommer tous les oscillateurs actifs
+        // Generate and sum all active oscillators
         for &(freq_key, freq) in &active_freqs {
             let phase = phases.entry(freq_key).or_insert(0.0);
             let phase_increment = 2.0 * std::f64::consts::PI * freq / sample_rate;
             let sine_value = phase.sin();
 
-            // Réduire l'amplitude quand il y a plusieurs notes (éviter la saturation)
+            // Reduce amplitude when multiple notes are playing (avoid saturation)
             let amplitude = if active_freqs.len() > 1 {
                 0.3 / active_freqs.len() as f64
             } else {
@@ -243,7 +248,7 @@ fn write_data_polyphonic_with_timeout<T: SizedSample + FromSample<f64>>(
             }
         }
 
-        // Nettoyer les phases des fréquences qui ne sont plus actives
+        // Clean up the phases of frequencies that are no longer active
         let active_keys: std::collections::HashSet<u64> =
             active_freqs.iter().map(|(k, _)| *k).collect();
         phases.retain(|k, _| active_keys.contains(k));
@@ -256,7 +261,6 @@ fn write_data_polyphonic_with_timeout<T: SizedSample + FromSample<f64>>(
         }
     }
 }
-
 
 // ------------------------------------------------------------------
 // You can use any of the functions in this section to make the audio
