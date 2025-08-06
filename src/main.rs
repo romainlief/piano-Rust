@@ -1,6 +1,7 @@
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{Device, FromSample, SampleFormat, SizedSample, StreamConfig};
 use device_query::{DeviceQuery, DeviceState, Keycode};
+use fundsp::Num;
 use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -9,7 +10,9 @@ mod consts;
 #[derive(Clone, Copy, Debug)]
 pub enum WaveType {
     Sine,
-    Square,
+    Square1,
+    SineSquare,
+    Ex1,
     Sawtooth,
     Triangle,
     Hammond,
@@ -18,8 +21,10 @@ pub enum WaveType {
 impl WaveType {
     fn generate_sample(&self, phase: f64) -> f64 {
         match self {
-            WaveType::Sine => phase.sin(),
-            WaveType::Square => if phase.sin() >= 0.0 { 1.0 } else { -1.0 },
+            WaveType::Sine => phase.sin(), // Basique sine wave
+            WaveType::Square1 => if phase.sin() >= 0.0 { 1.0 } else { -1.0 }, 
+            WaveType::SineSquare => phase.sin().powf(3.0),
+            WaveType::Ex1 => (phase + (phase * 0.1).sin()).sin(),
             WaveType::Sawtooth => 2.0 * (phase / (2.0 * std::f64::consts::PI) - (phase / (2.0 * std::f64::consts::PI) + 0.5).floor()) - 1.0,
             WaveType::Triangle => {
                 let normalized = phase / (2.0 * std::f64::consts::PI);
@@ -31,7 +36,7 @@ impl WaveType {
                 }
             },
             WaveType::Hammond => {
-                // Simulation d'un orgue Hammond avec harmoniques
+                // Simulation of a Hammond organ with harmonics
                 let fundamental = phase.sin();
                 let harmonic2 = (phase * 2.0).sin() * 0.5;
                 let harmonic3 = (phase * 3.0).sin() * 0.3;
@@ -63,8 +68,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("g - G 783.99Hz");
     println!();
     println!("Types d'ondes :");
-    println!("Z - Sine (défaut)    X - Square    S - Sawtooth");
-    println!("V - Triangle         N - Hammond");
+    println!("Z - Sine (défaut)    X - Square1    S - Sawtooth");
+    println!("V - Triangle         N - Hammond   Q - SineSquare");
+    println!("W - Ex1");
     println!();
     println!("ESPACE - Arrêter toutes les notes");
     println!("ESC - Quitter");
@@ -136,8 +142,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     println!("Type d'onde changé: Sine");
                 }
                 Keycode::X => {
-                    *current_wave_type.lock().unwrap() = WaveType::Square;
+                    *current_wave_type.lock().unwrap() = WaveType::Square1;
                     println!("Type d'onde changé: Square");
+                }
+                Keycode::A => {
+                    *current_wave_type.lock().unwrap() = WaveType::SineSquare;
+                    println!("Type d'onde changé: Square2");
+                }
+                Keycode::W => {
+                    *current_wave_type.lock().unwrap() = WaveType::Ex1;
+                    println!("Type d'onde changé: Ex1");
                 }
                 Keycode::S => {
                     *current_wave_type.lock().unwrap() = WaveType::Sawtooth;
