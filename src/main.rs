@@ -128,11 +128,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     println!("Touche G relâchée - fréquence: {}", consts::G5);
                     remove_frequency_realtime(&active_frequencies, consts::G5);
                 }
-                Keycode::Key1 => remove_frequency_realtime(&active_frequencies, consts::ASharp4),
-                Keycode::Key2 => remove_frequency_realtime(&active_frequencies, consts::CSharp5),
-                Keycode::Key3 => remove_frequency_realtime(&active_frequencies, consts::DSharp5),
-                Keycode::Key4 => remove_frequency_realtime(&active_frequencies, consts::FSharp5),
-                Keycode::Key5 => remove_frequency_realtime(&active_frequencies, consts::GSharp5),
+                Keycode::Key1 => {
+                    println!("Touche 1 relâchée - fréquence: {}", consts::ASharp4);
+                    remove_frequency_realtime(&active_frequencies, consts::ASharp4);
+                }
+                Keycode::Key2 => {
+                    println!("Touche 2 relâchée - fréquence: {}", consts::CSharp5);
+                    remove_frequency_realtime(&active_frequencies, consts::CSharp5);
+                }
+                Keycode::Key3 => {
+                    println!("Touche 3 relâchée - fréquence: {}", consts::DSharp5);
+                    remove_frequency_realtime(&active_frequencies, consts::DSharp5);
+                }
+                Keycode::Key4 => {
+                    println!("Touche 4 relâchée - fréquence: {}", consts::FSharp5);
+                    remove_frequency_realtime(&active_frequencies, consts::FSharp5);
+                }
+                Keycode::Key5 => {
+                    println!("Touche 5 relâchée - fréquence: {}", consts::GSharp5);
+                    remove_frequency_realtime(&active_frequencies, consts::GSharp5);
+                }
                 _ => {}
             }
         }
