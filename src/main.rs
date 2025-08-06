@@ -6,14 +6,52 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 mod consts;
 
+#[derive(Clone, Copy, Debug)]
+pub enum WaveType {
+    Sine,
+    Square,
+    Sawtooth,
+    Triangle,
+    Hammond,
+}
+
+impl WaveType {
+    fn generate_sample(&self, phase: f64) -> f64 {
+        match self {
+            WaveType::Sine => phase.sin(),
+            WaveType::Square => if phase.sin() >= 0.0 { 1.0 } else { -1.0 },
+            WaveType::Sawtooth => 2.0 * (phase / (2.0 * std::f64::consts::PI) - (phase / (2.0 * std::f64::consts::PI) + 0.5).floor()) - 1.0,
+            WaveType::Triangle => {
+                let normalized = phase / (2.0 * std::f64::consts::PI);
+                let fractional = normalized - normalized.floor();
+                if fractional < 0.5 {
+                    4.0 * fractional - 1.0
+                } else {
+                    3.0 - 4.0 * fractional
+                }
+            },
+            WaveType::Hammond => {
+                // Simulation d'un orgue Hammond avec harmoniques
+                let fundamental = phase.sin();
+                let harmonic2 = (phase * 2.0).sin() * 0.5;
+                let harmonic3 = (phase * 3.0).sin() * 0.3;
+                let harmonic4 = (phase * 4.0).sin() * 0.2;
+                fundamental + harmonic2 + harmonic3 + harmonic4
+            }
+        }
+    }
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let active_frequencies = Arc::new(Mutex::new(HashSet::<u64>::new()));
+    let current_wave_type = Arc::new(Mutex::new(WaveType::Sine));
 
     // Clone for the audio thread
     let frequencies_clone = Arc::clone(&active_frequencies);
+    let wave_type_clone = Arc::clone(&current_wave_type);
 
     // Run the audio output in a separate thread
-    run_output_polyphonic_realtime(frequencies_clone);
+    run_output_polyphonic_realtime(frequencies_clone, wave_type_clone);
 
     println!("Piano en temps réel ! Maintenez les touches pour jouer :");
     println!("a - A 440Hz         1 - A#/Bb 466.16Hz");
@@ -23,6 +61,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("e - E 659.26Hz      5 - G#/Ab 830.61Hz");
     println!("f - F 698.46Hz");
     println!("g - G 783.99Hz");
+    println!();
+    println!("Types d'ondes :");
+    println!("Z - Sine (défaut)    X - Square    S - Sawtooth");
+    println!("V - Triangle         N - Hammond");
     println!();
     println!("ESPACE - Arrêter toutes les notes");
     println!("ESC - Quitter");
@@ -88,6 +130,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Keycode::Space => {
                     println!("Espace pressé - arrêt de toutes les notes");
                     stop_all_frequencies_realtime(&active_frequencies);
+                }
+                Keycode::Z => {
+                    *current_wave_type.lock().unwrap() = WaveType::Sine;
+                    println!("Type d'onde changé: Sine");
+                }
+                Keycode::X => {
+                    *current_wave_type.lock().unwrap() = WaveType::Square;
+                    println!("Type d'onde changé: Square");
+                }
+                Keycode::S => {
+                    *current_wave_type.lock().unwrap() = WaveType::Sawtooth;
+                    println!("Type d'onde changé: Sawtooth");
+                }
+                Keycode::V => {
+                    *current_wave_type.lock().unwrap() = WaveType::Triangle;
+                    println!("Type d'onde changé: Triangle");
+                }
+                Keycode::N => {
+                    *current_wave_type.lock().unwrap() = WaveType::Hammond;
+                    println!("Type d'onde changé: Hammond");
                 }
                 Keycode::Escape => {
                     println!("\rAu revoir !");
@@ -182,7 +244,7 @@ fn stop_all_frequencies_realtime(frequencies: &Arc<Mutex<HashSet<u64>>>) {
 }
 
 /// Polyphonic real-time version
-fn run_output_polyphonic_realtime(frequencies: Arc<Mutex<HashSet<u64>>>) {
+fn run_output_polyphonic_realtime(frequencies: Arc<Mutex<HashSet<u64>>>, wave_type: Arc<Mutex<WaveType>>) {
     let host = cpal::default_host();
     let device = host
         .default_output_device()
@@ -190,13 +252,13 @@ fn run_output_polyphonic_realtime(frequencies: Arc<Mutex<HashSet<u64>>>) {
     let config = device.default_output_config().unwrap();
     match config.sample_format() {
         SampleFormat::F32 => {
-            run_synth_polyphonic_realtime::<f32>(frequencies, device, config.into())
+            run_synth_polyphonic_realtime::<f32>(frequencies, wave_type, device, config.into())
         }
         SampleFormat::I16 => {
-            run_synth_polyphonic_realtime::<i16>(frequencies, device, config.into())
+            run_synth_polyphonic_realtime::<i16>(frequencies, wave_type, device, config.into())
         }
         SampleFormat::U16 => {
-            run_synth_polyphonic_realtime::<u16>(frequencies, device, config.into())
+            run_synth_polyphonic_realtime::<u16>(frequencies, wave_type, device, config.into())
         }
 
         _ => panic!("Unsupported format"),
@@ -206,6 +268,7 @@ fn run_output_polyphonic_realtime(frequencies: Arc<Mutex<HashSet<u64>>>) {
 /// Real-time polyphonic synthesizer
 fn run_synth_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     frequencies: Arc<Mutex<HashSet<u64>>>,
+    wave_type: Arc<Mutex<WaveType>>,
     device: Device,
     config: StreamConfig,
 ) {
@@ -218,6 +281,7 @@ fn run_synth_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
         let mut phases: HashMap<u64, f64> = HashMap::new();
 
         let frequencies_clone = Arc::clone(&frequencies);
+        let wave_type_clone = Arc::clone(&wave_type);
 
         let stream = device
             .build_output_stream(
@@ -227,6 +291,7 @@ fn run_synth_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
                         data,
                         channels,
                         &frequencies_clone,
+                        &wave_type_clone,
                         &mut phases,
                         sample_rate,
                     )
@@ -248,6 +313,7 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     output: &mut [T],
     channels: usize,
     frequencies: &Arc<Mutex<HashSet<u64>>>,
+    wave_type: &Arc<Mutex<WaveType>>,
     phases: &mut HashMap<u64, f64>,
     sample_rate: f64,
 ) {
@@ -255,6 +321,12 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     let active_freq_keys = {
         let freqs = frequencies.lock().unwrap();
         freqs.clone()
+    };
+
+    // Get the current wave type
+    let current_wave_type = {
+        let wave = wave_type.lock().unwrap();
+        *wave
     };
 
     // Convert the active frequency keys to f64
@@ -269,7 +341,7 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
         if DEBUG_COUNTER % 44100 == 0 {
             // Once per second approximately
             if !active_freqs.is_empty() {
-                println!("Debug: {} fréquences actives", active_freqs.len());
+                println!("Debug: {} fréquences actives - Wave: {:?}", active_freqs.len(), current_wave_type);
                 for &(_, freq) in &active_freqs {
                     println!("  - {:.2} Hz", freq);
                 }
@@ -285,17 +357,19 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
         for &(freq_key, freq) in &active_freqs {
             let phase = phases.entry(freq_key).or_insert(0.0);
             let phase_increment = 2.0 * std::f64::consts::PI * freq / sample_rate;
-            let sine_value = phase.sin();
+            
+            // Use the selected wave type to generate the sample
+            let wave_value = current_wave_type.generate_sample(*phase);
 
             // Reduce the amplitude when there are multiple notes (avoid saturation)
             let amplitude = if active_freqs.len() > 1 {
-                0.3 / active_freqs.len() as f64
+                0.2 / active_freqs.len() as f64
             } else {
-                0.3
+                0.2
             };
 
-            sample_left += sine_value * amplitude;
-            sample_right += sine_value * amplitude;
+            sample_left += wave_value * amplitude;
+            sample_right += wave_value * amplitude;
 
             *phase += phase_increment;
             if *phase > 2.0 * std::f64::consts::PI {
