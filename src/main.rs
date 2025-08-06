@@ -222,9 +222,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!();
     println!("Synthétiseurs :");
     println!("W - Sine basique        X - Square (50%)");
-    println!("S - Sawtooth           V - Square (25%)");
+    println!("S - Sawtooth            V - Square (25%)");
     println!("N - Hammond classique   H - Hammond moderne");
-    println!(", - FM léger           K - FM intense");
+    println!(", - FM léger            K - FM intense");
     println!();
     println!("ESPACE - Arrêter toutes les notes");
     println!("ESC - Quitter");
