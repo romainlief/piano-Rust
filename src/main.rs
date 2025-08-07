@@ -30,9 +30,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!();
     println!("Synthétiseurs :");
     println!("W - Sine basique        X - Square (50%)");
-    println!("S - Sawtooth");
-    println!("N - Hammond");
-    println!("K - FM léger");
+    println!("S - Sawtooth            N - Hammond");
+    println!("K - FM");
     println!();
     println!("ESPACE - Arrêter toutes les notes");
     println!("ESC - Quitter");
