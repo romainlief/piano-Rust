@@ -14,24 +14,22 @@ This project is a synthesizer in Rust made with cpal and device_query.
 
 | Type                | Touche  | Description                                             |
 |---------------------|---------|---------------------------------------------------------|
-| **Sine**            |   `Z`   | Pure and clear sine wave                                |
+| **Sine**            |   `W`   | Pure and clear sine wave                                |
 | **Square 50%**      |   `X`   | Classic square wave                                     |
-| **Square 25%**      |   `V`   | Square wave with 25% duty cycle                         |
 | **Sawtooth**        |   `S`   | Sawtooth wave, rich in harmonics                        |
 | **Hammond**         |   `N`   | Hammond organ simulation with controlled harmonics      |
-| **Hammond Classic** |   `H`   | Classic version of the Hammond organ                    |
-| **FM Léger**        |   `M`   | Soft Frequency Modulation Synthesis                     |
-| **FM Intense**      |   `K`   | FM synthesis with intense modulation                    |
+| **FM**              |   `K`   | Soft Frequency Modulation Synthesis                     |
 
-
-## 🛠️ Installation and launch of the program 
+## 🛠️ Installation and launch of the program
 
 ### Requirements
+
 - Rust 1.70+ (recommended)
 - Cargo
 - Supported audio system (ALSA on Linux, CoreAudio on macOS, WASAPI on Windows)
 
 ### Launch the application
+
 ```bash
 cargo run --release
 ```
