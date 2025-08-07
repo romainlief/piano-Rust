@@ -1,3 +1,4 @@
+use accordeur::synth;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{Device, FromSample, SampleFormat, SizedSample, StreamConfig};
 use device_query::{DeviceQuery, DeviceState, Keycode};
@@ -5,208 +6,13 @@ use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 mod consts;
-
-// Trait for synthesizers
-pub trait Synthesizer {
-    fn generate_sample(&self, phase: f64, frequency: f64) -> f64;
-    fn name(&self) -> &'static str;
-}
-
-// Basic sine wave synthesizer
-#[derive(Clone, Copy, Debug)]
-pub struct SineSynth {
-    pub amplitude: f64,
-}
-
-impl SineSynth {
-    pub fn new() -> Self {
-        Self { amplitude: 1.0 }
-    }
-}
-
-impl Synthesizer for SineSynth {
-    fn generate_sample(&self, phase: f64, _frequency: f64) -> f64 {
-        phase.sin() * self.amplitude
-    }
-
-    fn name(&self) -> &'static str {
-        "Sine"
-    }
-}
-
-// Square wave synthesizer
-#[derive(Clone, Copy, Debug)]
-pub struct SquareSynth {
-    pub amplitude: f64,
-    pub duty_cycle: f64, // Duty cycle (0.5 = 50%)
-}
-
-impl SquareSynth {
-    pub fn new(duty_cycle: f64) -> Self {
-        Self {
-            amplitude: 1.0,
-            duty_cycle: duty_cycle.clamp(0.1, 0.9),
-        }
-    }
-}
-
-impl Synthesizer for SquareSynth {
-    fn generate_sample(&self, phase: f64, _frequency: f64) -> f64 {
-        let normalized = (phase / (2.0 * std::f64::consts::PI)) % 1.0;
-        if normalized < self.duty_cycle {
-            self.amplitude
-        } else {
-            -self.amplitude
-        }
-    }
-
-    fn name(&self) -> &'static str {
-        "Square"
-    }
-}
-
-// Sawtooth wave synthesizer
-#[derive(Clone, Copy, Debug)]
-pub struct SawtoothSynth {
-    pub amplitude: f64,
-    pub smoothness: f64, // Smoothness factor
-}
-
-impl SawtoothSynth {
-    pub fn new() -> Self {
-        Self {
-            amplitude: 1.0,
-            smoothness: 1.0,
-        }
-    }
-}
-
-impl Synthesizer for SawtoothSynth {
-    fn generate_sample(&self, phase: f64, _frequency: f64) -> f64 {
-        let normalized = phase / (2.0 * std::f64::consts::PI);
-        let sawtooth = 2.0 * (normalized - (normalized + 0.5).floor()) - 1.0;
-        sawtooth * self.amplitude * self.smoothness
-    }
-
-    fn name(&self) -> &'static str {
-        "Sawtooth"
-    }
-}
-
-// Hammond synthesizer with harmonic control
-#[derive(Clone, Copy, Debug)]
-pub struct HammondSynth {
-    pub fundamental: f64,
-    pub harmonic2: f64,
-    pub harmonic3: f64,
-    pub harmonic4: f64,
-    pub harmonic5: f64,
-}
-
-impl HammondSynth {
-    pub fn new() -> Self {
-        Self {
-            fundamental: 1.0,
-            harmonic2: 0.5,
-            harmonic3: 0.3,
-            harmonic4: 0.2,
-            harmonic5: 0.1,
-        }
-    }
-
-    pub fn classic() -> Self {
-        Self {
-            fundamental: 1.0,
-            harmonic2: 0.8,
-            harmonic3: 0.6,
-            harmonic4: 0.4,
-            harmonic5: 0.2,
-        }
-    }
-}
-
-impl Synthesizer for HammondSynth {
-    fn generate_sample(&self, phase: f64, _frequency: f64) -> f64 {
-        let fund = phase.sin() * self.fundamental;
-        let harm2 = (phase * 2.0).sin() * self.harmonic2;
-        let harm3 = (phase * 3.0).sin() * self.harmonic3;
-        let harm4 = (phase * 4.0).sin() * self.harmonic4;
-        let harm5 = (phase * 5.0).sin() * self.harmonic5;
-
-        fund + harm2 + harm3 + harm4 + harm5
-    }
-
-    fn name(&self) -> &'static str {
-        "Hammond"
-    }
-}
-
-// FM synthesizer (Frequency Modulation)
-#[derive(Clone, Copy, Debug)]
-pub struct FMSynth {
-    pub carrier_amplitude: f64,
-    pub modulator_frequency_ratio: f64,
-    pub modulation_index: f64,
-}
-
-impl FMSynth {
-    pub fn new(mod_freq_ratio: f64, mod_index: f64) -> Self {
-        Self {
-            carrier_amplitude: 1.0,
-            modulator_frequency_ratio: mod_freq_ratio,
-            modulation_index: mod_index,
-        }
-    }
-}
-
-impl Synthesizer for FMSynth {
-    fn generate_sample(&self, phase: f64, frequency: f64) -> f64 {
-        let modulator_phase = phase * self.modulator_frequency_ratio;
-        let modulator = modulator_phase.sin() * self.modulation_index;
-
-        (phase + modulator).sin() * self.carrier_amplitude
-    }
-
-    fn name(&self) -> &'static str {
-        "FM"
-    }
-}
-
-#[derive(Clone, Copy, Debug)]
-// Enum to manage different synthesizer types
-pub enum SynthType {
-    Sine(SineSynth),
-    Square(SquareSynth),
-    Sawtooth(SawtoothSynth),
-    Hammond(HammondSynth),
-    FM(FMSynth),
-}
-
-impl SynthType {
-    pub fn generate_sample(&self, phase: f64, frequency: f64) -> f64 {
-        match self {
-            SynthType::Sine(synth) => synth.generate_sample(phase, frequency),
-            SynthType::Square(synth) => synth.generate_sample(phase, frequency),
-            SynthType::Sawtooth(synth) => synth.generate_sample(phase, frequency),
-            SynthType::Hammond(synth) => synth.generate_sample(phase, frequency),
-            SynthType::FM(synth) => synth.generate_sample(phase, frequency),
-        }
-    }
-
-    pub fn name(&self) -> &'static str {
-        match self {
-            SynthType::Sine(synth) => synth.name(),
-            SynthType::Square(synth) => synth.name(),
-            SynthType::Sawtooth(synth) => synth.name(),
-            SynthType::Hammond(synth) => synth.name(),
-            SynthType::FM(synth) => synth.name(),
-        }
-    }
-}
+use accordeur::synth::types::{FMSynth, HammondSynth, SawtoothSynth, SineSynth, SquareSynth};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let active_frequencies = Arc::new(Mutex::new(HashSet::<u64>::new()));
-    let current_synth_type = Arc::new(Mutex::new(SynthType::Sine(SineSynth::new())));
+    let current_synth_type = Arc::new(Mutex::new(
+        synth::manager::SynthType::Sine(SineSynth::new()),
+    ));
 
     // Clone for the audio thread
     let frequencies_clone = Arc::clone(&active_frequencies);
@@ -291,36 +97,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     stop_all_frequencies_realtime(&active_frequencies);
                 }
                 Keycode::Z => {
-                    *current_synth_type.lock().unwrap() = SynthType::Sine(SineSynth::new());
+                    *current_synth_type.lock().unwrap() =
+                        synth::manager::SynthType::Sine(SineSynth::new());
                     println!("Synthétiseur changé: Sine");
                 }
                 Keycode::X => {
-                    *current_synth_type.lock().unwrap() = SynthType::Square(SquareSynth::new(0.5));
+                    *current_synth_type.lock().unwrap() =
+                        synth::manager::SynthType::Square(SquareSynth::new(0.5));
                     println!("Synthétiseur changé: Square 50%");
                 }
                 Keycode::V => {
-                    *current_synth_type.lock().unwrap() = SynthType::Square(SquareSynth::new(0.25));
+                    *current_synth_type.lock().unwrap() =
+                        synth::manager::SynthType::Square(SquareSynth::new(0.25));
                     println!("Synthétiseur changé: Square 25%");
                 }
                 Keycode::S => {
-                    *current_synth_type.lock().unwrap() = SynthType::Sawtooth(SawtoothSynth::new());
+                    *current_synth_type.lock().unwrap() =
+                        synth::manager::SynthType::Sawtooth(SawtoothSynth::new());
                     println!("Synthétiseur changé: Sawtooth");
                 }
                 Keycode::N => {
-                    *current_synth_type.lock().unwrap() = SynthType::Hammond(HammondSynth::new());
+                    *current_synth_type.lock().unwrap() =
+                        synth::manager::SynthType::Hammond(HammondSynth::new());
                     println!("Synthétiseur changé: Hammond");
                 }
                 Keycode::H => {
                     *current_synth_type.lock().unwrap() =
-                        SynthType::Hammond(HammondSynth::classic());
+                        synth::manager::SynthType::Hammond(HammondSynth::classic());
                     println!("Synthétiseur changé: Hammond Classic");
                 }
                 Keycode::M => {
-                    *current_synth_type.lock().unwrap() = SynthType::FM(FMSynth::new(1.5, 2.0));
+                    *current_synth_type.lock().unwrap() =
+                        synth::manager::SynthType::FM(FMSynth::new(1.5, 2.0));
                     println!("Synthétiseur changé: FM léger");
                 }
                 Keycode::K => {
-                    *current_synth_type.lock().unwrap() = SynthType::FM(FMSynth::new(2.0, 5.0));
+                    *current_synth_type.lock().unwrap() =
+                        synth::manager::SynthType::FM(FMSynth::new(2.0, 5.0));
                     println!("Synthétiseur changé: FM intense");
                 }
                 Keycode::Escape => {
@@ -418,7 +231,7 @@ fn stop_all_frequencies_realtime(frequencies: &Arc<Mutex<HashSet<u64>>>) {
 /// Polyphonic real-time version
 fn run_output_polyphonic_realtime(
     frequencies: Arc<Mutex<HashSet<u64>>>,
-    synth_type: Arc<Mutex<SynthType>>,
+    synth_type: Arc<Mutex<synth::manager::SynthType>>,
 ) {
     let host = cpal::default_host();
     let device = host
@@ -443,7 +256,7 @@ fn run_output_polyphonic_realtime(
 /// Real-time polyphonic synthesizer
 fn run_synth_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     frequencies: Arc<Mutex<HashSet<u64>>>,
-    synth_type: Arc<Mutex<SynthType>>,
+    synth_type: Arc<Mutex<synth::manager::SynthType>>,
     device: Device,
     config: StreamConfig,
 ) {
@@ -488,7 +301,7 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     output: &mut [T],
     channels: usize,
     frequencies: &Arc<Mutex<HashSet<u64>>>,
-    synth_type: &Arc<Mutex<SynthType>>,
+    synth_type: &Arc<Mutex<synth::manager::SynthType>>,
     phases: &mut HashMap<u64, f64>,
     sample_rate: f64,
 ) {
