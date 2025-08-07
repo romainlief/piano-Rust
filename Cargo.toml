@@ -1,5 +1,5 @@
 [package]
-name = "accordeur"
+name = "synthesizer_emulation"
 version = "0.1.0"
 edition = "2024"
 

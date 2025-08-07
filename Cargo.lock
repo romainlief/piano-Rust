@@ -3,14 +3,6 @@
 version = 4
 
 [[package]]
-name = "accordeur"
-version = "0.1.0"
-dependencies = [
- "cpal",
- "device_query",
-]
-
-[[package]]
 name = "alsa"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -479,6 +471,14 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "synthesizer_emulation"
+version = "0.1.0"
+dependencies = [
+ "cpal",
+ "device_query",
 ]
 
 [[package]]
