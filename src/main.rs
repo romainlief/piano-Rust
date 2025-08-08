@@ -5,15 +5,15 @@ use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use synthesizer_emulation::consts;
+use synthesizer_emulation::prints;
 use synthesizer_emulation::synths;
 use synthesizer_emulation::synths::types::{
     FMSynth, HammondSynth, SawtoothSynth, SineSynth, SquareSynth,
 };
-use synthesizer_emulation::prints;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let active_frequencies = Arc::new(Mutex::new(HashSet::<u64>::new()));
-    let current_synth_type = Arc::new(Mutex::new(
+    let active_frequencies: Arc<Mutex<HashSet<u64>>> = Arc::new(Mutex::new(HashSet::<u64>::new()));
+    let current_synth_type: Arc<Mutex<synths::manager::SynthType>> = Arc::new(Mutex::new(
         synths::manager::SynthType::Sine(SineSynth::new()),
     ));
 
@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     run_output_polyphonic_realtime(frequencies_clone, synth_type_clone);
 
     prints::printfn::print_intro();
-    
+
     let device_state = DeviceState::new();
     let mut previous_keys = HashSet::new();
 
@@ -34,175 +34,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // Check for pressed keys
         for key in keys.difference(&previous_keys) {
-            match key {
-                Keycode::Q => {
-                    println!("Touche Q pressée - fréquence: {}", consts::constants::A4);
-                    add_frequency_realtime(&active_frequencies, consts::constants::A4);
-                }
-                Keycode::B => {
-                    println!("Touche B pressée - fréquence: {}", consts::constants::B4);
-                    add_frequency_realtime(&active_frequencies, consts::constants::B4);
-                }
-                Keycode::C => {
-                    println!("Touche C pressée - fréquence: {}", consts::constants::C5);
-                    add_frequency_realtime(&active_frequencies, consts::constants::C5);
-                }
-                Keycode::D => {
-                    println!("Touche D pressée - fréquence: {}", consts::constants::D5);
-                    add_frequency_realtime(&active_frequencies, consts::constants::D5);
-                }
-                Keycode::E => {
-                    println!("Touche E pressée - fréquence: {}", consts::constants::E5);
-                    add_frequency_realtime(&active_frequencies, consts::constants::E5);
-                }
-                Keycode::F => {
-                    println!("Touche F pressée - fréquence: {}", consts::constants::F5);
-                    add_frequency_realtime(&active_frequencies, consts::constants::F5);
-                }
-                Keycode::G => {
-                    println!("Touche G pressée - fréquence: {}", consts::constants::G5);
-                    add_frequency_realtime(&active_frequencies, consts::constants::G5);
-                }
-                Keycode::Key1 => {
-                    println!(
-                        "Touche 1 pressée - fréquence: {}",
-                        consts::constants::ASharp4
-                    );
-                    add_frequency_realtime(&active_frequencies, consts::constants::ASharp4);
-                }
-                Keycode::Key2 => {
-                    println!(
-                        "Touche 2 pressée - fréquence: {}",
-                        consts::constants::CSharp5
-                    );
-                    add_frequency_realtime(&active_frequencies, consts::constants::CSharp5);
-                }
-                Keycode::Key3 => {
-                    println!(
-                        "Touche 3 pressée - fréquence: {}",
-                        consts::constants::DSharp5
-                    );
-                    add_frequency_realtime(&active_frequencies, consts::constants::DSharp5);
-                }
-                Keycode::Key4 => {
-                    println!(
-                        "Touche 4 pressée - fréquence: {}",
-                        consts::constants::FSharp5
-                    );
-                    add_frequency_realtime(&active_frequencies, consts::constants::FSharp5);
-                }
-                Keycode::Key5 => {
-                    println!(
-                        "Touche 5 pressée - fréquence: {}",
-                        consts::constants::GSharp5
-                    );
-                    add_frequency_realtime(&active_frequencies, consts::constants::GSharp5);
-                }
-                Keycode::Space => {
-                    println!("Espace pressé - arrêt de toutes les notes");
-                    stop_all_frequencies_realtime(&active_frequencies);
-                }
-                Keycode::Z => {
-                    *current_synth_type.lock().unwrap() =
-                        synths::manager::SynthType::Sine(SineSynth::new());
-                    println!("Synthétiseur changé: Sine");
-                }
-                Keycode::X => {
-                    *current_synth_type.lock().unwrap() =
-                        synths::manager::SynthType::Square(SquareSynth::new(0.5));
-                    println!("Synthétiseur changé: Square 50%");
-                }
-                Keycode::S => {
-                    *current_synth_type.lock().unwrap() =
-                        synths::manager::SynthType::Sawtooth(SawtoothSynth::new());
-                    println!("Synthétiseur changé: Sawtooth");
-                }
-                Keycode::N => {
-                    *current_synth_type.lock().unwrap() =
-                        synths::manager::SynthType::Hammond(HammondSynth::new());
-                    println!("Synthétiseur changé: Hammond");
-                }
-                Keycode::K => {
-                    *current_synth_type.lock().unwrap() =
-                        synths::manager::SynthType::FM(FMSynth::new(1.5, 2.0));
-                    println!("Synthétiseur changé: FM léger");
-                }
-                Keycode::Escape => {
-                    println!("\rAu revoir !");
-                    return Ok(());
-                }
-                _ => {}
-            }
+            matching_key_pressed(key.clone(), &active_frequencies, &current_synth_type);
         }
 
         // Check for released keys
         for key in previous_keys.difference(&keys) {
-            match key {
-                Keycode::Q => {
-                    println!("Touche Q relâchée - fréquence: {}", consts::constants::A4);
-                    remove_frequency_realtime(&active_frequencies, consts::constants::A4);
-                }
-                Keycode::B => {
-                    println!("Touche B relâchée - fréquence: {}", consts::constants::B4);
-                    remove_frequency_realtime(&active_frequencies, consts::constants::B4);
-                }
-                Keycode::C => {
-                    println!("Touche C relâchée - fréquence: {}", consts::constants::C5);
-                    remove_frequency_realtime(&active_frequencies, consts::constants::C5);
-                }
-                Keycode::D => {
-                    println!("Touche D relâchée - fréquence: {}", consts::constants::D5);
-                    remove_frequency_realtime(&active_frequencies, consts::constants::D5);
-                }
-                Keycode::E => {
-                    println!("Touche E relâchée - fréquence: {}", consts::constants::E5);
-                    remove_frequency_realtime(&active_frequencies, consts::constants::E5);
-                }
-                Keycode::F => {
-                    println!("Touche F relâchée - fréquence: {}", consts::constants::F5);
-                    remove_frequency_realtime(&active_frequencies, consts::constants::F5);
-                }
-                Keycode::G => {
-                    println!("Touche G relâchée - fréquence: {}", consts::constants::G5);
-                    remove_frequency_realtime(&active_frequencies, consts::constants::G5);
-                }
-                Keycode::Key1 => {
-                    println!(
-                        "Touche 1 relâchée - fréquence: {}",
-                        consts::constants::ASharp4
-                    );
-                    remove_frequency_realtime(&active_frequencies, consts::constants::ASharp4);
-                }
-                Keycode::Key2 => {
-                    println!(
-                        "Touche 2 relâchée - fréquence: {}",
-                        consts::constants::CSharp5
-                    );
-                    remove_frequency_realtime(&active_frequencies, consts::constants::CSharp5);
-                }
-                Keycode::Key3 => {
-                    println!(
-                        "Touche 3 relâchée - fréquence: {}",
-                        consts::constants::DSharp5
-                    );
-                    remove_frequency_realtime(&active_frequencies, consts::constants::DSharp5);
-                }
-                Keycode::Key4 => {
-                    println!(
-                        "Touche 4 relâchée - fréquence: {}",
-                        consts::constants::FSharp5
-                    );
-                    remove_frequency_realtime(&active_frequencies, consts::constants::FSharp5);
-                }
-                Keycode::Key5 => {
-                    println!(
-                        "Touche 5 relâchée - fréquence: {}",
-                        consts::constants::GSharp5
-                    );
-                    remove_frequency_realtime(&active_frequencies, consts::constants::GSharp5);
-                }
-                _ => {}
-            }
+            matching_key_released(key.clone(), &active_frequencies);
         }
 
         previous_keys = keys;
@@ -387,3 +224,177 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     }
 }
 
+fn matching_key_pressed(
+    key: Keycode,
+    active_frequencies: &Arc<Mutex<HashSet<u64>>>,
+    current_synth_type: &Arc<Mutex<synths::manager::SynthType>>,
+) {
+    match key {
+        Keycode::Q => {
+            println!("Touche Q pressée - fréquence: {}", consts::constants::A4);
+            add_frequency_realtime(&active_frequencies, consts::constants::A4);
+        }
+        Keycode::B => {
+            println!("Touche B pressée - fréquence: {}", consts::constants::B4);
+            add_frequency_realtime(&active_frequencies, consts::constants::B4);
+        }
+        Keycode::C => {
+            println!("Touche C pressée - fréquence: {}", consts::constants::C5);
+            add_frequency_realtime(&active_frequencies, consts::constants::C5);
+        }
+        Keycode::D => {
+            println!("Touche D pressée - fréquence: {}", consts::constants::D5);
+            add_frequency_realtime(&active_frequencies, consts::constants::D5);
+        }
+        Keycode::E => {
+            println!("Touche E pressée - fréquence: {}", consts::constants::E5);
+            add_frequency_realtime(&active_frequencies, consts::constants::E5);
+        }
+        Keycode::F => {
+            println!("Touche F pressée - fréquence: {}", consts::constants::F5);
+            add_frequency_realtime(&active_frequencies, consts::constants::F5);
+        }
+        Keycode::G => {
+            println!("Touche G pressée - fréquence: {}", consts::constants::G5);
+            add_frequency_realtime(&active_frequencies, consts::constants::G5);
+        }
+        Keycode::Key1 => {
+            println!(
+                "Touche 1 pressée - fréquence: {}",
+                consts::constants::ASharp4
+            );
+            add_frequency_realtime(&active_frequencies, consts::constants::ASharp4);
+        }
+        Keycode::Key2 => {
+            println!(
+                "Touche 2 pressée - fréquence: {}",
+                consts::constants::CSharp5
+            );
+            add_frequency_realtime(&active_frequencies, consts::constants::CSharp5);
+        }
+        Keycode::Key3 => {
+            println!(
+                "Touche 3 pressée - fréquence: {}",
+                consts::constants::DSharp5
+            );
+            add_frequency_realtime(&active_frequencies, consts::constants::DSharp5);
+        }
+        Keycode::Key4 => {
+            println!(
+                "Touche 4 pressée - fréquence: {}",
+                consts::constants::FSharp5
+            );
+            add_frequency_realtime(&active_frequencies, consts::constants::FSharp5);
+        }
+        Keycode::Key5 => {
+            println!(
+                "Touche 5 pressée - fréquence: {}",
+                consts::constants::GSharp5
+            );
+            add_frequency_realtime(&active_frequencies, consts::constants::GSharp5);
+        }
+        Keycode::Space => {
+            println!("Espace pressé - arrêt de toutes les notes");
+            stop_all_frequencies_realtime(&active_frequencies);
+        }
+        Keycode::Z => {
+            *current_synth_type.lock().unwrap() =
+                synths::manager::SynthType::Sine(SineSynth::new());
+            println!("Synthétiseur changé: Sine");
+        }
+        Keycode::X => {
+            *current_synth_type.lock().unwrap() =
+                synths::manager::SynthType::Square(SquareSynth::new(0.5));
+            println!("Synthétiseur changé: Square 50%");
+        }
+        Keycode::S => {
+            *current_synth_type.lock().unwrap() =
+                synths::manager::SynthType::Sawtooth(SawtoothSynth::new());
+            println!("Synthétiseur changé: Sawtooth");
+        }
+        Keycode::N => {
+            *current_synth_type.lock().unwrap() =
+                synths::manager::SynthType::Hammond(HammondSynth::new());
+            println!("Synthétiseur changé: Hammond");
+        }
+        Keycode::K => {
+            *current_synth_type.lock().unwrap() =
+                synths::manager::SynthType::FM(FMSynth::new(1.5, 2.0));
+            println!("Synthétiseur changé: FM léger");
+        }
+        Keycode::Escape => {
+            println!("\rAu revoir !");
+            std::process::exit(0);
+        }
+        _ => {}
+    }
+}
+
+fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSet<u64>>>) {
+    match key {
+        Keycode::Q => {
+            println!("Touche Q relâchée - fréquence: {}", consts::constants::A4);
+            remove_frequency_realtime(&active_frequencies, consts::constants::A4);
+        }
+        Keycode::B => {
+            println!("Touche B relâchée - fréquence: {}", consts::constants::B4);
+            remove_frequency_realtime(&active_frequencies, consts::constants::B4);
+        }
+        Keycode::C => {
+            println!("Touche C relâchée - fréquence: {}", consts::constants::C5);
+            remove_frequency_realtime(&active_frequencies, consts::constants::C5);
+        }
+        Keycode::D => {
+            println!("Touche D relâchée - fréquence: {}", consts::constants::D5);
+            remove_frequency_realtime(&active_frequencies, consts::constants::D5);
+        }
+        Keycode::E => {
+            println!("Touche E relâchée - fréquence: {}", consts::constants::E5);
+            remove_frequency_realtime(&active_frequencies, consts::constants::E5);
+        }
+        Keycode::F => {
+            println!("Touche F relâchée - fréquence: {}", consts::constants::F5);
+            remove_frequency_realtime(&active_frequencies, consts::constants::F5);
+        }
+        Keycode::G => {
+            println!("Touche G relâchée - fréquence: {}", consts::constants::G5);
+            remove_frequency_realtime(&active_frequencies, consts::constants::G5);
+        }
+        Keycode::Key1 => {
+            println!(
+                "Touche 1 relâchée - fréquence: {}",
+                consts::constants::ASharp4
+            );
+            remove_frequency_realtime(&active_frequencies, consts::constants::ASharp4);
+        }
+        Keycode::Key2 => {
+            println!(
+                "Touche 2 relâchée - fréquence: {}",
+                consts::constants::CSharp5
+            );
+            remove_frequency_realtime(&active_frequencies, consts::constants::CSharp5);
+        }
+        Keycode::Key3 => {
+            println!(
+                "Touche 3 relâchée - fréquence: {}",
+                consts::constants::DSharp5
+            );
+            remove_frequency_realtime(&active_frequencies, consts::constants::DSharp5);
+        }
+        Keycode::Key4 => {
+            println!(
+                "Touche 4 relâchée - fréquence: {}",
+                consts::constants::FSharp5
+            );
+            remove_frequency_realtime(&active_frequencies, consts::constants::FSharp5);
+        }
+        Keycode::Key5 => {
+            println!(
+                "Touche 5 relâchée - fréquence: {}",
+                consts::constants::GSharp5
+            );
+            remove_frequency_realtime(&active_frequencies, consts::constants::GSharp5);
+        }
+        _ => {}
+    }
+}
