@@ -26,7 +26,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     loop {
         let keys: HashSet<Keycode> = device_state.get_keys().into_iter().collect();
-
         // Check for pressed keys
         for key in keys.difference(&previous_keys) {
             key_handlers::matching_key_pressed(
@@ -35,14 +34,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 &current_synth_type,
             );
         }
-
         // Check for released keys
         for key in previous_keys.difference(&keys) {
             key_handlers::matching_key_released(key.clone(), &active_frequencies);
         }
-
         previous_keys = keys;
-
         // Small sleep to avoid busy-waiting
         std::thread::sleep(Duration::from_millis(10));
     }
