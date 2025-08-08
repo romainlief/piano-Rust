@@ -3,8 +3,8 @@ use crate::synths::traits::Synthesizer;
 // Square wave synthesizer
 #[derive(Clone, Copy, Debug)]
 pub struct SquareSynth {
-    pub amplitude: f64,
-    pub duty_cycle: f64, // Duty cycle (0.5 = 50%)
+    amplitude: f64,
+    duty_cycle: f64, // Duty cycle (0.5 = 50%)
 }
 
 impl SquareSynth {
@@ -13,6 +13,22 @@ impl SquareSynth {
             amplitude: 1.0,
             duty_cycle: duty_cycle.clamp(0.1, 0.9),
         }
+    }
+
+    pub fn get_amplitude(&self) -> f64 {
+        self.amplitude
+    }
+
+    pub fn set_amplitude(&mut self, value: f64) {
+        self.amplitude = value;
+    }
+
+    pub fn get_duty_cycle(&self) -> f64 {
+        self.duty_cycle
+    }
+
+    pub fn set_duty_cycle(&mut self, value: f64) {
+        self.duty_cycle = value.clamp(0.1, 0.9);
     }
 }
 

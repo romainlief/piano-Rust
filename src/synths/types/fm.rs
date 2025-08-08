@@ -3,9 +3,9 @@ use crate::synths::traits::Synthesizer;
 // FM synthesizer (Frequency Modulation)
 #[derive(Clone, Copy, Debug)]
 pub struct FMSynth {
-    pub carrier_amplitude: f64,
-    pub modulator_frequency_ratio: f64,
-    pub modulation_index: f64,
+    carrier_amplitude: f64,
+    modulator_frequency_ratio: f64,
+    modulation_index: f64,
 }
 
 impl FMSynth {
@@ -15,6 +15,30 @@ impl FMSynth {
             modulator_frequency_ratio: mod_freq_ratio,
             modulation_index: mod_index,
         }
+    }
+
+    pub fn get_carrier_amplitude(&self) -> f64 {
+        self.carrier_amplitude
+    }
+
+    pub fn set_carrier_amplitude(&mut self, value: f64) {
+        self.carrier_amplitude = value;
+    }
+
+    pub fn get_modulator_frequency_ratio(&self) -> f64 {
+        self.modulator_frequency_ratio
+    }
+
+    pub fn set_modulator_frequency_ratio(&mut self, value: f64) {
+        self.modulator_frequency_ratio = value;
+    }
+
+    pub fn get_modulation_index(&self) -> f64 {
+        self.modulation_index
+    }
+
+    pub fn set_modulation_index(&mut self, value: f64) {
+        self.modulation_index = value;
     }
 }
 

@@ -3,12 +3,20 @@ use crate::synths::traits::Synthesizer;
 // Basic sine wave synthesizer
 #[derive(Clone, Copy, Debug)]
 pub struct SineSynth {
-    pub amplitude: f64,
+    amplitude: f64,
 }
 
 impl SineSynth {
     pub fn new() -> Self {
         Self { amplitude: 1.0 }
+    }
+
+    pub fn get_amplitude(&self) -> f64 {
+        self.amplitude
+    }
+
+    pub fn set_amplitude(&mut self, value: f64) {
+        self.amplitude = value;
     }
 }
 

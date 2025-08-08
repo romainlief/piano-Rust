@@ -3,8 +3,8 @@ use crate::synths::traits::Synthesizer;
 // Sawtooth wave synthesizer
 #[derive(Clone, Copy, Debug)]
 pub struct SawtoothSynth {
-    pub amplitude: f64,
-    pub smoothness: f64, // Smoothness factor
+    amplitude: f64,
+    smoothness: f64,
 }
 
 impl SawtoothSynth {
@@ -13,6 +13,22 @@ impl SawtoothSynth {
             amplitude: 1.0,
             smoothness: 1.0,
         }
+    }
+
+    pub fn get_amplitude(&self) -> f64 {
+        self.amplitude
+    }
+
+    pub fn set_amplitude(&mut self, value: f64) {
+        self.amplitude = value;
+    }
+
+    pub fn get_smoothness(&self) -> f64 {
+        self.smoothness
+    }
+
+    pub fn set_smoothness(&mut self, value: f64) {
+        self.smoothness = value;
     }
 }
 

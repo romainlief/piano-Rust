@@ -3,11 +3,11 @@ use crate::synths::traits::Synthesizer;
 // Hammond synthesizer with harmonic control
 #[derive(Clone, Copy, Debug)]
 pub struct HammondSynth {
-    pub fundamental: f64,
-    pub harmonic2: f64,
-    pub harmonic3: f64,
-    pub harmonic4: f64,
-    pub harmonic5: f64,
+    fundamental: f64,
+    harmonic2: f64,
+    harmonic3: f64,
+    harmonic4: f64,
+    harmonic5: f64,
 }
 
 impl HammondSynth {
@@ -20,15 +20,44 @@ impl HammondSynth {
             harmonic5: 0.1,
         }
     }
+    pub fn get_fundamental(&self) -> f64 {
+        self.fundamental
+    }
 
-    pub fn classic() -> Self {
-        Self {
-            fundamental: 1.0,
-            harmonic2: 0.8,
-            harmonic3: 0.6,
-            harmonic4: 0.4,
-            harmonic5: 0.2,
-        }
+    pub fn set_fundamental(&mut self, value: f64) {
+        self.fundamental = value;
+    }
+
+    pub fn get_harmonic2(&self) -> f64 {
+        self.harmonic2
+    }
+
+    pub fn set_harmonic2(&mut self, value: f64) {
+        self.harmonic2 = value;
+    }
+
+    pub fn get_harmonic3(&self) -> f64 {
+        self.harmonic3
+    }
+
+    pub fn set_harmonic3(&mut self, value: f64) {
+        self.harmonic3 = value;
+    }
+
+    pub fn get_harmonic4(&self) -> f64 {
+        self.harmonic4
+    }
+
+    pub fn set_harmonic4(&mut self, value: f64) {
+        self.harmonic4 = value;
+    }
+
+    pub fn get_harmonic5(&self) -> f64 {
+        self.harmonic5
+    }
+
+    pub fn set_harmonic5(&mut self, value: f64) {
+        self.harmonic5 = value;
     }
 }
 
