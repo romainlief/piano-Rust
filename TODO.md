@@ -1,0 +1,4 @@
+- Docstrings
+- GUI
+- Modultion synthé
+- Diff notes
