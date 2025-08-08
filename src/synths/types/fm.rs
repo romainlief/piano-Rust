@@ -19,7 +19,7 @@ impl FMSynth {
 }
 
 impl Synthesizer for FMSynth {
-    fn generate_sample(&self, phase: f64, frequency: f64) -> f64 {
+    fn generate_sample(&self, phase: f64, _frequency: f64) -> f64 {
         let modulator_phase = phase * self.modulator_frequency_ratio;
         let modulator = modulator_phase.sin() * self.modulation_index;
 
