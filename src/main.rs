@@ -23,19 +23,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Run the audio output in a separate thread
     run_output_polyphonic_realtime(frequencies_clone, synth_type_clone);
 
-    println!("Piano en temps réel avec synthétiseurs avancés !");
-    println!("Touches musicales :");
-    println!("Q-B-C-D-E-F-G - Notes naturelles");
-    println!("1-2-3-4-5 - Notes dièses");
-    println!();
-    println!("Synthétiseurs :");
-    println!("W - Sine basique        X - Square (50%)");
-    println!("S - Sawtooth            N - Hammond");
-    println!("K - FM");
-    println!();
-    println!("ESPACE - Arrêter toutes les notes");
-    println!("ESC - Quitter");
-
+    print_intro();
+    
     let device_state = DeviceState::new();
     let mut previous_keys = HashSet::new();
 
@@ -395,4 +384,19 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
             *sample = if channel & 1 == 0 { left } else { right };
         }
     }
+}
+
+fn print_intro() {
+    println!("Piano en temps réel avec synthétiseurs avancés !");
+    println!("Touches musicales :");
+    println!("Q-B-C-D-E-F-G - Notes naturelles");
+    println!("1-2-3-4-5 - Notes dièses");
+    println!();
+    println!("Synthétiseurs :");
+    println!("W - Sine basique        X - Square (50%)");
+    println!("S - Sawtooth            N - Hammond");
+    println!("K - FM");
+    println!();
+    println!("ESPACE - Arrêter toutes les notes");
+    println!("ESC - Quitter");
 }
