@@ -1,5 +1,5 @@
-use crate::synth::traits::Synthesizer;
-use crate::synth::types::{FMSynth, HammondSynth, SawtoothSynth, SineSynth, SquareSynth};
+use crate::synths::traits::Synthesizer;
+use crate::synths::types::{FMSynth, HammondSynth, SawtoothSynth, SineSynth, SquareSynth};
 
 #[derive(Clone, Copy, Debug)]
 // Enum to manage different synthesizer types

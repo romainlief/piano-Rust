@@ -1,4 +1,4 @@
-use crate::synth::traits::Synthesizer;
+use crate::synths::traits::Synthesizer;
 
 // Square wave synthesizer
 #[derive(Clone, Copy, Debug)]

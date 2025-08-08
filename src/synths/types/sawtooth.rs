@@ -1,4 +1,4 @@
-use crate::synth::traits::Synthesizer;
+use crate::synths::traits::Synthesizer;
 
 // Sawtooth wave synthesizer
 #[derive(Clone, Copy, Debug)]

@@ -1,4 +1,4 @@
-use crate::synth::traits::Synthesizer;
+use crate::synths::traits::Synthesizer;
 
 // FM synthesizer (Frequency Modulation)
 #[derive(Clone, Copy, Debug)]

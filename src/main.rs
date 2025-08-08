@@ -5,15 +5,16 @@ use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use synthesizer_emulation::consts;
-use synthesizer_emulation::synth;
-use synthesizer_emulation::synth::types::{
+use synthesizer_emulation::synths;
+use synthesizer_emulation::synths::types::{
     FMSynth, HammondSynth, SawtoothSynth, SineSynth, SquareSynth,
 };
+use synthesizer_emulation::prints;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let active_frequencies = Arc::new(Mutex::new(HashSet::<u64>::new()));
     let current_synth_type = Arc::new(Mutex::new(
-        synth::manager::SynthType::Sine(SineSynth::new()),
+        synths::manager::SynthType::Sine(SineSynth::new()),
     ));
 
     // Clone for the audio thread
@@ -23,7 +24,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Run the audio output in a separate thread
     run_output_polyphonic_realtime(frequencies_clone, synth_type_clone);
 
-    print_intro();
+    prints::printfn::print_intro();
     
     let device_state = DeviceState::new();
     let mut previous_keys = HashSet::new();
@@ -103,27 +104,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 Keycode::Z => {
                     *current_synth_type.lock().unwrap() =
-                        synth::manager::SynthType::Sine(SineSynth::new());
+                        synths::manager::SynthType::Sine(SineSynth::new());
                     println!("Synthétiseur changé: Sine");
                 }
                 Keycode::X => {
                     *current_synth_type.lock().unwrap() =
-                        synth::manager::SynthType::Square(SquareSynth::new(0.5));
+                        synths::manager::SynthType::Square(SquareSynth::new(0.5));
                     println!("Synthétiseur changé: Square 50%");
                 }
                 Keycode::S => {
                     *current_synth_type.lock().unwrap() =
-                        synth::manager::SynthType::Sawtooth(SawtoothSynth::new());
+                        synths::manager::SynthType::Sawtooth(SawtoothSynth::new());
                     println!("Synthétiseur changé: Sawtooth");
                 }
                 Keycode::N => {
                     *current_synth_type.lock().unwrap() =
-                        synth::manager::SynthType::Hammond(HammondSynth::new());
+                        synths::manager::SynthType::Hammond(HammondSynth::new());
                     println!("Synthétiseur changé: Hammond");
                 }
                 Keycode::K => {
                     *current_synth_type.lock().unwrap() =
-                        synth::manager::SynthType::FM(FMSynth::new(1.5, 2.0));
+                        synths::manager::SynthType::FM(FMSynth::new(1.5, 2.0));
                     println!("Synthétiseur changé: FM léger");
                 }
                 Keycode::Escape => {
@@ -236,7 +237,7 @@ fn stop_all_frequencies_realtime(frequencies: &Arc<Mutex<HashSet<u64>>>) {
 /// Polyphonic real-time version
 fn run_output_polyphonic_realtime(
     frequencies: Arc<Mutex<HashSet<u64>>>,
-    synth_type: Arc<Mutex<synth::manager::SynthType>>,
+    synth_type: Arc<Mutex<synths::manager::SynthType>>,
 ) {
     let host = cpal::default_host();
     let device = host
@@ -261,7 +262,7 @@ fn run_output_polyphonic_realtime(
 /// Real-time polyphonic synthesizer
 fn run_synth_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     frequencies: Arc<Mutex<HashSet<u64>>>,
-    synth_type: Arc<Mutex<synth::manager::SynthType>>,
+    synth_type: Arc<Mutex<synths::manager::SynthType>>,
     device: Device,
     config: StreamConfig,
 ) {
@@ -306,7 +307,7 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     output: &mut [T],
     channels: usize,
     frequencies: &Arc<Mutex<HashSet<u64>>>,
-    synth_type: &Arc<Mutex<synth::manager::SynthType>>,
+    synth_type: &Arc<Mutex<synths::manager::SynthType>>,
     phases: &mut HashMap<u64, f64>,
     sample_rate: f64,
 ) {
@@ -386,17 +387,3 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     }
 }
 
-fn print_intro() {
-    println!("Piano en temps réel avec synthétiseurs avancés !");
-    println!("Touches musicales :");
-    println!("Q-B-C-D-E-F-G - Notes naturelles");
-    println!("1-2-3-4-5 - Notes dièses");
-    println!();
-    println!("Synthétiseurs :");
-    println!("W - Sine basique        X - Square (50%)");
-    println!("S - Sawtooth            N - Hammond");
-    println!("K - FM");
-    println!();
-    println!("ESPACE - Arrêter toutes les notes");
-    println!("ESC - Quitter");
-}

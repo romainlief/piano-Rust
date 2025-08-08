@@ -1,4 +1,4 @@
-use crate::synth::traits::Synthesizer;
+use crate::synths::traits::Synthesizer;
 
 // Basic sine wave synthesizer
 #[derive(Clone, Copy, Debug)]

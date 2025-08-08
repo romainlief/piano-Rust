@@ -1,4 +1,4 @@
-use crate::synth::traits::Synthesizer;
+use crate::synths::traits::Synthesizer;
 
 // Hammond synthesizer with harmonic control
 #[derive(Clone, Copy, Debug)]
