@@ -9,7 +9,7 @@ use synthesizer_emulation::{prints, synths};
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let active_frequencies: Arc<Mutex<HashSet<u64>>> = Arc::new(Mutex::new(HashSet::<u64>::new()));
     let current_synth_type: Arc<Mutex<synths::manager::SynthType>> = Arc::new(Mutex::new(
-        synths::manager::SynthType::Sine(synths::types::SineSynth::new()),
+        synths::manager::SynthType::n_sine(),
     ));
 
     // Clone for the audio thread

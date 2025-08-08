@@ -89,9 +89,9 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
     };
 
     // Get the current synthesizer type
-    let current_synth_type = {
+    let mut current_synth_type = {
         let synth = synth_type.lock().unwrap();
-        *synth
+        synth.clone()
     };
 
     // Convert the active frequency keys to f64

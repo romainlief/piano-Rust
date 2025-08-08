@@ -6,8 +6,8 @@ pub fn print_intro() {
     println!();
     println!("Synthétiseurs :");
     println!("W - Sine basique        X - Square (50%)");
-    println!("S - Sawtooth            N - Hammond");
-    println!("K - FM");
+    println!("S - Sawtooth            N - LFO Sine");
+    println!("K - FM                  H - Hammond");
     println!();
     println!("ESPACE - Arrêter toutes les notes");
     println!("ESC - Quitter");
