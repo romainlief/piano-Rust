@@ -49,8 +49,8 @@ impl SynthType {
     /// Create a sine synthesizer with LFO
     pub fn lfo_sine() -> Self {
         let oscillator = SineOscillator;
-        let gain = Gain::new(0.5);
-        let lfo = LFO::new(5.0, 0.2, 44100.0); // 5Hz LFO with 20% depth
+        let gain = Gain::new(5.5);
+        let lfo = LFO::new(25.0, 0.8, 44100.0);
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);

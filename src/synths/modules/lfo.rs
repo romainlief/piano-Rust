@@ -2,8 +2,8 @@ use crate::synths::traits::Module;
 
 #[derive(Clone, Copy)]
 pub struct LFO {
-    pub freq: f64,
-    pub depth: f64,
+    pub freq: f64,  // Hz
+    pub depth: f64, // %
     pub sample_rate: f64,
     phase: f64,
 }
@@ -32,7 +32,7 @@ impl Module for LFO {
     fn name(&self) -> &'static str {
         "LFO"
     }
-    
+
     fn clone_box(&self) -> Box<dyn Module> {
         Box::new(*self)
     }

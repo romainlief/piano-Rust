@@ -2,7 +2,7 @@ use crate::synths::traits::Module;
 
 #[derive(Clone, Copy)]
 pub struct Gain {
-    pub gain: f64,
+    pub gain: f64, 
 }
 
 impl Gain {

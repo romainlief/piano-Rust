@@ -1,4 +1,7 @@
 - Docstrings
 - GUI
-- Modultion synthé
+- Modulation synthé a améliorer
+  - adsr
+  - filter
+    - améliorer le lfo avec plusieurs shape
 - Diff notes
