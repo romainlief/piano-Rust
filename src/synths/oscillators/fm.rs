@@ -2,20 +2,41 @@ use crate::synths::traits::Oscillator;
 
 #[derive(Clone, Copy)]
 pub struct FmOscillator {
-    pub mod_index: f64, // Intensité de modulation
-    pub mod_freq: f64,  // Fréquence du modulateur
+    pub mod_index: f64, // Intensité modulation
+    pub mod_ratio: f64, // Ratio fréquence modulateur/porteur
 }
 
 impl FmOscillator {
-    pub fn new(mod_index: f64, mod_freq: f64) -> Self {
-        Self { mod_index, mod_freq }
+    pub fn new(mod_index: f64, mod_ratio: f64) -> Self {
+        Self {
+            mod_index,
+            mod_ratio,
+        }
     }
 }
 
 impl Oscillator for FmOscillator {
     fn sample(&self, phase: f64) -> f64 {
-        let mod_signal = (phase * self.mod_freq).sin() * self.mod_index;
-        (phase + mod_signal).sin()
+        // Module phase du carrier (pas l'amplitude)
+        let modulator_phase = phase * self.mod_ratio;
+        let modulation = (modulator_phase).sin() * self.mod_index;
+
+        // La phase modulée du carrier
+        let modulated_phase = phase + modulation;
+
+        // Signal carrier avec modulation de phase
+        let carrier = modulated_phase.sin();
+
+        let harmonic = (modulated_phase * 2.0).sin() * 0.3;
+
+        // Mélange avec saturation douce
+        let output = carrier + harmonic;
+
+        if output.abs() > 0.7 {
+            output.signum() * (0.7 + (output.abs() - 0.7) * 0.3)
+        } else {
+            output
+        }
     }
 
     fn name(&self) -> &'static str {

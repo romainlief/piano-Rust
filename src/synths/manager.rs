@@ -35,7 +35,6 @@ impl SynthType {
         }
     }
 
-    /// Déclenche note_on sur tous les modules ADSR
     pub fn note_on(&mut self) {
         match self {
             SynthType::Sine(synth) => synth.note_on(),
@@ -46,7 +45,6 @@ impl SynthType {
         }
     }
 
-    /// Déclenche note_off sur tous les modules ADSR
     pub fn note_off(&mut self) {
         match self {
             SynthType::Sine(synth) => synth.note_off(),
@@ -59,10 +57,9 @@ impl SynthType {
 }
 
 impl SynthType {
-    /// Create a basic sine synthesizer
     pub fn n_sine() -> Self {
         let oscillator = SineOscillator;
-        let gain = Gain::new(0.8);
+        let gain = Gain::new(0.6);
         let lfo = LFO::new(LfoWaveform::Sine, 5.0, 44100.0);
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
@@ -70,7 +67,6 @@ impl SynthType {
         SynthType::Sine(synth)
     }
 
-    /// Create a basic square synthesizer
     pub fn n_square() -> Self {
         let oscillator = SquareOscillator;
         let gain = Gain::new(0.6);
@@ -81,7 +77,6 @@ impl SynthType {
         SynthType::Square(synth)
     }
 
-    /// Create a basic sawtooth synthesizer
     pub fn n_sawtooth() -> Self {
         let oscillator = SawtoothOscillator;
         let gain = Gain::new(0.6);
@@ -93,8 +88,8 @@ impl SynthType {
     }
 
     pub fn n_fm() -> Self {
-        let oscillator = FmOscillator::new(0.5, 2.0);
-        let gain = Gain::new(0.7);
+        let oscillator = FmOscillator::new(3.5, 1.414);
+        let gain = Gain::new(0.6); // Gain plus faible car FM peut être fort
         let lfo = LFO::new(LfoWaveform::SawDown, 5.0, 44100.0);
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
@@ -104,7 +99,7 @@ impl SynthType {
 
     pub fn n_hammond() -> Self {
         let oscillator = HammondOscillator;
-        let gain = Gain::new(0.5);
+        let gain = Gain::new(0.6);
         let lfo = LFO::new(LfoWaveform::Sine, 5.0, 44100.0);
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);

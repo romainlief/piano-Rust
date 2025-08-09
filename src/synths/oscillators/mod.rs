@@ -4,7 +4,6 @@ pub mod sawtooth;
 pub mod fm;
 pub mod hammond;
 
-// Pour un import global pratique
 pub use sine::SineOscillator;
 pub use square::SquareOscillator;
 pub use sawtooth::SawtoothOscillator;

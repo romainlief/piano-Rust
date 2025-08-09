@@ -104,7 +104,9 @@ fn write_data_polyphonic_realtime<T: SizedSample + FromSample<f64>>(
                 let phase = phases.entry(*frequency_key).or_insert(0.0);
 
                 // Generate the base oscillator sample
-                let oscillator_sample = current_synth_type.generate_sample(*phase, frequency);
+                // Convertir la phase [0,1] vers [0,2π] pour les oscillateurs
+                let phase_radians = *phase * 2.0 * std::f64::consts::PI;
+                let oscillator_sample = current_synth_type.generate_sample(phase_radians, frequency);
 
                 // Apply the individual ADSR envelope - THIS is the crucial fix!
                 let adsr_amplitude = active_note.get_amplitude();

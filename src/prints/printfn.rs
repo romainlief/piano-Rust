@@ -5,9 +5,9 @@ pub fn print_intro() {
     println!("1-2-3-4-5 - Notes dièses");
     println!();
     println!("Synthétiseurs :");
-    println!("W - Sine basique        X - Square (50%)");
-    println!("S - Sawtooth            N - LFO Sine");
-    println!("K - FM                  H - Hammond");
+    println!("W - Modular Sine        X - Modular Square");
+    println!("S - Modular Sawtooth    H - Modular Hammond");
+    println!("K - Modular FM");
     println!();
     println!("ESPACE - Arrêter toutes les notes");
     println!("ESC - Quitter");
