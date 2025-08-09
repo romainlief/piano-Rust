@@ -35,6 +35,28 @@ impl SynthType {
             SynthType::Hammond(_) => "Modular Hammond",
         }
     }
+
+    /// Déclenche note_on sur tous les modules ADSR
+    pub fn note_on(&mut self) {
+        match self {
+            SynthType::Sine(synth) => synth.note_on(),
+            SynthType::Square(synth) => synth.note_on(),
+            SynthType::Sawtooth(synth) => synth.note_on(),
+            SynthType::FM(synth) => synth.note_on(),
+            SynthType::Hammond(synth) => synth.note_on(),
+        }
+    }
+
+    /// Déclenche note_off sur tous les modules ADSR
+    pub fn note_off(&mut self) {
+        match self {
+            SynthType::Sine(synth) => synth.note_off(),
+            SynthType::Square(synth) => synth.note_off(),
+            SynthType::Sawtooth(synth) => synth.note_off(),
+            SynthType::FM(synth) => synth.note_off(),
+            SynthType::Hammond(synth) => synth.note_off(),
+        }
+    }
 }
 
 impl SynthType {
@@ -47,16 +69,16 @@ impl SynthType {
         SynthType::Sine(synth)
     }
 
-    /// Create a sine synthesizer with LFO
+    /// Create a sine synthesizer with LFO/GAIN/ADSR
     pub fn lfo_sine() -> Self {
         let oscillator = SineOscillator;
-        let gain = Gain::new(5.5);
-        let lfo = LFO::new(LfoWaveform::Square, 5.0, 44100.0);
+        let gain = Gain::new(0.5);
+        let lfo = LFO::new(LfoWaveform::Sine, 5.0, 44100.0);
         let adsr = ADSR::new(44100.0);
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
-        // synth.add_module(adsr);
+        synth.add_module(adsr);
         SynthType::Sine(synth)
     }
 

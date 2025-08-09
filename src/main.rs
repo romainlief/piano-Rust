@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         // Check for released keys
         for key in previous_keys.difference(&keys) {
-            key_handlers::matching_key_released(key.clone(), &active_frequencies);
+            key_handlers::matching_key_released(key.clone(), &active_frequencies, &current_synth_type);
         }
         previous_keys = keys;
         // Small sleep to avoid busy-waiting

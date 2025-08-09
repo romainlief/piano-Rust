@@ -14,31 +14,31 @@ pub fn matching_key_pressed(
     match key {
         Keycode::Q => {
             println!("Touche Q pressée - fréquence: {}", consts::constants::A4);
-            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::A4);
+            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::A4, current_synth_type);
         }
         Keycode::B => {
             println!("Touche B pressée - fréquence: {}", consts::constants::B4);
-            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::B4);
+            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::B4, current_synth_type);
         }
         Keycode::C => {
             println!("Touche C pressée - fréquence: {}", consts::constants::C5);
-            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::C5);
+            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::C5, current_synth_type);
         }
         Keycode::D => {
             println!("Touche D pressée - fréquence: {}", consts::constants::D5);
-            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::D5);
+            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::D5, current_synth_type);
         }
         Keycode::E => {
             println!("Touche E pressée - fréquence: {}", consts::constants::E5);
-            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::E5);
+            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::E5, current_synth_type);
         }
         Keycode::F => {
             println!("Touche F pressée - fréquence: {}", consts::constants::F5);
-            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::F5);
+            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::F5, current_synth_type);
         }
         Keycode::G => {
             println!("Touche G pressée - fréquence: {}", consts::constants::G5);
-            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::G5);
+            frequency_manager::add_frequency_realtime(&active_frequencies, consts::constants::G5, current_synth_type);
         }
         Keycode::Key1 => {
             println!(
@@ -48,6 +48,7 @@ pub fn matching_key_pressed(
             frequency_manager::add_frequency_realtime(
                 &active_frequencies,
                 consts::constants::ASharp4,
+                current_synth_type,
             );
         }
         Keycode::Key2 => {
@@ -58,6 +59,7 @@ pub fn matching_key_pressed(
             frequency_manager::add_frequency_realtime(
                 &active_frequencies,
                 consts::constants::CSharp5,
+                current_synth_type,
             );
         }
         Keycode::Key3 => {
@@ -68,6 +70,7 @@ pub fn matching_key_pressed(
             frequency_manager::add_frequency_realtime(
                 &active_frequencies,
                 consts::constants::DSharp5,
+                current_synth_type,
             );
         }
         Keycode::Key4 => {
@@ -78,6 +81,7 @@ pub fn matching_key_pressed(
             frequency_manager::add_frequency_realtime(
                 &active_frequencies,
                 consts::constants::FSharp5,
+                current_synth_type,
             );
         }
         Keycode::Key5 => {
@@ -88,11 +92,12 @@ pub fn matching_key_pressed(
             frequency_manager::add_frequency_realtime(
                 &active_frequencies,
                 consts::constants::GSharp5,
+                current_synth_type,
             );
         }
         Keycode::Space => {
             println!("Espace pressé - arrêt de toutes les notes");
-            frequency_manager::stop_all_frequencies_realtime(&active_frequencies);
+            frequency_manager::stop_all_frequencies_realtime(&active_frequencies, current_synth_type);
         }
         Keycode::Z => {
             *current_synth_type.lock().unwrap() = synths::manager::SynthType::n_sine();
@@ -126,13 +131,18 @@ pub fn matching_key_pressed(
     }
 }
 
-pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSet<u64>>>) {
+pub fn matching_key_released(
+    key: Keycode,
+    active_frequencies: &Arc<Mutex<HashSet<u64>>>,
+    current_synth_type: &Arc<Mutex<synths::manager::SynthType>>,
+) {
     match key {
         Keycode::Q => {
             println!("Touche Q relâchée - fréquence: {}", consts::constants::A4);
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::A4,
+                current_synth_type,
             );
         }
         Keycode::B => {
@@ -140,6 +150,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::B4,
+                current_synth_type,
             );
         }
         Keycode::C => {
@@ -147,6 +158,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::C5,
+                current_synth_type,
             );
         }
         Keycode::D => {
@@ -154,6 +166,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::D5,
+                current_synth_type,
             );
         }
         Keycode::E => {
@@ -161,6 +174,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::E5,
+                current_synth_type,
             );
         }
         Keycode::F => {
@@ -168,6 +182,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::F5,
+                current_synth_type,
             );
         }
         Keycode::G => {
@@ -175,6 +190,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::G5,
+                current_synth_type,
             );
         }
         Keycode::Key1 => {
@@ -185,6 +201,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::ASharp4,
+                current_synth_type,
             );
         }
         Keycode::Key2 => {
@@ -195,6 +212,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::CSharp5,
+                current_synth_type,
             );
         }
         Keycode::Key3 => {
@@ -205,6 +223,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::DSharp5,
+                current_synth_type,
             );
         }
         Keycode::Key4 => {
@@ -215,6 +234,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::FSharp5,
+                current_synth_type,
             );
         }
         Keycode::Key5 => {
@@ -225,6 +245,7 @@ pub fn matching_key_released(key: Keycode, active_frequencies: &Arc<Mutex<HashSe
             frequency_manager::remove_frequency_realtime(
                 &active_frequencies,
                 consts::constants::GSharp5,
+                current_synth_type,
             );
         }
         _ => {}

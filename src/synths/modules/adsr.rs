@@ -31,7 +31,7 @@ pub struct ADSR {
 impl ADSR {
     pub fn new(sample_rate: f64) -> Self {
         Self {
-            attack: 0.01,
+            attack: 0.5,
             decay: 0.1,
             sustain: 0.7,
             release: 0.2,
@@ -46,7 +46,7 @@ impl ADSR {
     fn calc_step(&mut self, target: f64, time: f64) {
         if time <= 0.0 {
             self.level = target;
-            self.step = 0.0;
+            self.step = 1.0;
             return;
         }
         let samples = time * self.sample_rate;
@@ -55,13 +55,23 @@ impl ADSR {
                 self.step = (target - self.level) / samples;
             }
             EnvelopeCurve::Exponential => {
-                self.step = ((target / self.level.max(1e-6)).ln()) / samples;
+                // Assure-toi que level > 0 pour la puissance
+                let start = self.level.max(1e-6);
+                self.step = (target / start).powf(1.0 / samples);
             }
         }
     }
 
     pub fn note_on(&mut self) {
         self.stage = EnvelopeStage::Attack;
+        // Reset à un petit niveau non nul si exponentiel pour éviter la stagnation
+        if let EnvelopeCurve::Exponential = self.curve {
+            if self.level < 1e-6 {
+                self.level = 1e-6;
+            }
+        } else {
+            self.level = 0.0;
+        }
         self.calc_step(1.0, self.attack);
     }
 
@@ -82,7 +92,7 @@ impl ADSR {
                     }
                 }
                 EnvelopeCurve::Exponential => {
-                    self.level *= (1.0 + self.step).max(0.0);
+                    self.level *= self.step;
                     if self.level >= 1.0 {
                         self.level = 1.0;
                         self.stage = EnvelopeStage::Decay;
@@ -99,7 +109,7 @@ impl ADSR {
                     }
                 }
                 EnvelopeCurve::Exponential => {
-                    self.level *= (1.0 + self.step).max(0.0);
+                    self.level *= self.step;
                     if self.level <= self.sustain {
                         self.level = self.sustain;
                         self.stage = EnvelopeStage::Sustain;
@@ -107,7 +117,7 @@ impl ADSR {
                 }
             },
             EnvelopeStage::Sustain => {
-                // Niveau constant jusqu'au note_off
+                // Stable
             }
             EnvelopeStage::Release => match self.curve {
                 EnvelopeCurve::Linear => {
@@ -118,7 +128,7 @@ impl ADSR {
                     }
                 }
                 EnvelopeCurve::Exponential => {
-                    self.level *= (1.0 + self.step).max(0.0);
+                    self.level *= self.step;
                     if self.level <= 0.0001 {
                         self.level = 0.0;
                         self.stage = EnvelopeStage::Idle;
@@ -128,7 +138,6 @@ impl ADSR {
             EnvelopeStage::Idle => {}
         }
     }
-
     // #### Setters ####
     pub fn set_attack(&mut self, seconds: f64) {
         self.attack = seconds.max(0.0);
@@ -204,5 +213,9 @@ impl Module for ADSR {
 
     fn clone_box(&self) -> Box<dyn Module> {
         Box::new(*self)
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
+        self
     }
 }

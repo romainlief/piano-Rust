@@ -12,4 +12,7 @@ pub trait Module: Send + Sync {
     fn process(&mut self, input: f64, time: f64) -> f64;
     fn name(&self) -> &'static str;
     fn clone_box(&self) -> Box<dyn Module>;
+    
+    /// Pour le downcasting
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any;
 }

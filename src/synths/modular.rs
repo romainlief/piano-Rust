@@ -38,4 +38,23 @@ impl<O: Oscillator> ModularSynth<O> {
 
         sample
     }
+
+    /// Déclenche note_on sur tous les modules ADSR
+    pub fn note_on(&mut self) {
+        for module in &mut self.modules {
+            // Utilise Any pour downcaster vers ADSR si possible
+            if let Some(adsr) = module.as_any_mut().downcast_mut::<crate::synths::modules::adsr::ADSR>() {
+                adsr.note_on();
+            }
+        }
+    }
+
+    /// Déclenche note_off sur tous les modules ADSR
+    pub fn note_off(&mut self) {
+        for module in &mut self.modules {
+            if let Some(adsr) = module.as_any_mut().downcast_mut::<crate::synths::modules::adsr::ADSR>() {
+                adsr.note_off();
+            }
+        }
+    }
 }

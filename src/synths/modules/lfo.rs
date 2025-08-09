@@ -139,4 +139,8 @@ impl Module for LFO {
     fn clone_box(&self) -> Box<dyn Module> {
         Box::new(*self)
     }
+    
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
+        self
+    }
 }
