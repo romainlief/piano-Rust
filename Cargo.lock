@@ -479,6 +479,7 @@ version = "0.1.0"
 dependencies = [
  "cpal",
  "device_query",
+ "once_cell",
 ]
 
 [[package]]
