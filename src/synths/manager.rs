@@ -1,6 +1,6 @@
 use crate::synths::modular::ModularSynth;
 use crate::synths::modules::gain::Gain;
-use crate::synths::modules::lfo::LFO;
+use crate::synths::modules::lfo::{LFO, LfoWaveform};
 use crate::synths::oscillators::{
     FmOscillator, HammondOscillator, SawtoothOscillator, SineOscillator, SquareOscillator,
 };
@@ -50,7 +50,7 @@ impl SynthType {
     pub fn lfo_sine() -> Self {
         let oscillator = SineOscillator;
         let gain = Gain::new(5.5);
-        let lfo = LFO::new(25.0, 0.8, 44100.0);
+        let lfo = LFO::new(LfoWaveform::Square, 5.0, 44100.0);
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
