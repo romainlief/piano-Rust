@@ -10,5 +10,3 @@
 - Diff notes
 
 - factoriser la main
-
-- getter/setter => synthé

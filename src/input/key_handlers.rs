@@ -41,37 +41,37 @@ pub fn matching_key_pressed(
         Keycode::Key1 => {
             println!(
                 "Touche 1 pressée - fréquence: {}",
-                consts::constants::ASharp4
+                consts::constants::ASHARP4
             );
-            note_manager::add_note(note_manager, consts::constants::ASharp4, 44100.0);
+            note_manager::add_note(note_manager, consts::constants::ASHARP4, 44100.0);
         }
         Keycode::Key2 => {
             println!(
                 "Touche 2 pressée - fréquence: {}",
-                consts::constants::CSharp5
+                consts::constants::CSHARP5
             );
-            note_manager::add_note(note_manager, consts::constants::CSharp5, 44100.0);
+            note_manager::add_note(note_manager, consts::constants::CSHARP5, 44100.0);
         }
         Keycode::Key3 => {
             println!(
                 "Touche 3 pressée - fréquence: {}",
-                consts::constants::DSharp5
+                consts::constants::DSHARP5
             );
-            note_manager::add_note(note_manager, consts::constants::DSharp5, 44100.0);
+            note_manager::add_note(note_manager, consts::constants::DSHARP5, 44100.0);
         }
         Keycode::Key4 => {
             println!(
                 "Touche 4 pressée - fréquence: {}",
-                consts::constants::FSharp5
+                consts::constants::FSHARP5
             );
-            note_manager::add_note(note_manager, consts::constants::FSharp5, 44100.0);
+            note_manager::add_note(note_manager, consts::constants::FSHARP5, 44100.0);
         }
         Keycode::Key5 => {
             println!(
                 "Touche 5 pressée - fréquence: {}",
-                consts::constants::GSharp5
+                consts::constants::GSHARP5
             );
-            note_manager::add_note(note_manager, consts::constants::GSharp5, 44100.0);
+            note_manager::add_note(note_manager, consts::constants::GSHARP5, 44100.0);
         }
         Keycode::Space => {
             println!("Espace pressé - arrêt de toutes les notes");
@@ -107,7 +107,7 @@ pub fn matching_key_pressed(
 
 pub fn matching_key_released(
     key: Keycode,
-    current_synth_type: &Arc<Mutex<synths::manager::SynthType>>,
+    _current_synth_type: &Arc<Mutex<synths::manager::SynthType>>,
     note_manager: &note_manager::ActiveNoteManager,
 ) {
     match key {
@@ -142,37 +142,37 @@ pub fn matching_key_released(
         Keycode::Key1 => {
             println!(
                 "Touche 1 relâchée - fréquence: {}",
-                consts::constants::ASharp4
+                consts::constants::ASHARP4
             );
-            note_manager::release_note(note_manager, consts::constants::ASharp4);
+            note_manager::release_note(note_manager, consts::constants::ASHARP4);
         }
         Keycode::Key2 => {
             println!(
                 "Touche 2 relâchée - fréquence: {}",
-                consts::constants::CSharp5
+                consts::constants::CSHARP5
             );
-            note_manager::release_note(note_manager, consts::constants::CSharp5);
+            note_manager::release_note(note_manager, consts::constants::CSHARP5);
         }
         Keycode::Key3 => {
             println!(
                 "Touche 3 relâchée - fréquence: {}",
-                consts::constants::DSharp5
+                consts::constants::DSHARP5
             );
-            note_manager::release_note(note_manager, consts::constants::DSharp5);
+            note_manager::release_note(note_manager, consts::constants::DSHARP5);
         }
         Keycode::Key4 => {
             println!(
                 "Touche 4 relâchée - fréquence: {}",
-                consts::constants::FSharp5
+                consts::constants::FSHARP5
             );
-            note_manager::release_note(note_manager, consts::constants::FSharp5);
+            note_manager::release_note(note_manager, consts::constants::FSHARP5);
         }
         Keycode::Key5 => {
             println!(
                 "Touche 5 relâchée - fréquence: {}",
-                consts::constants::GSharp5
+                consts::constants::GSHARP5
             );
-            note_manager::release_note(note_manager, consts::constants::GSharp5);
+            note_manager::release_note(note_manager, consts::constants::GSHARP5);
         }
         _ => {}
     }
