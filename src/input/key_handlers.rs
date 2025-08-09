@@ -1,6 +1,7 @@
 use crate::audio::frequency_manager;
 use crate::consts;
 use crate::synths;
+use crate::synths::modules::adsr;
 use device_query::Keycode;
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
