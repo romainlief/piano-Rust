@@ -2,8 +2,8 @@ use crate::synths::traits::Oscillator;
 
 #[derive(Clone, Copy)]
 pub struct FmOscillator {
-    pub mod_index: f64, // Intensité modulation
-    pub mod_ratio: f64, // Ratio fréquence modulateur/porteur
+    mod_index: f64, // Intensité modulation
+    mod_ratio: f64, // Ratio fréquence modulateur/porteur
 }
 
 impl FmOscillator {
@@ -12,6 +12,24 @@ impl FmOscillator {
             mod_index,
             mod_ratio,
         }
+    }
+
+    // #### Setters ####
+    pub fn set_mod_index(&mut self, mod_index: f64) {
+        self.mod_index = mod_index;
+    }
+
+    pub fn set_mod_ratio(&mut self, mod_ratio: f64) {
+        self.mod_ratio = mod_ratio;
+    }
+
+    // #### Getters ####
+    pub fn get_mod_index(&self) -> f64 {
+        self.mod_index
+    }
+
+    pub fn get_mod_ratio(&self) -> f64 {
+        self.mod_ratio
     }
 }
 

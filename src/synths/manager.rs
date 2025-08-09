@@ -6,6 +6,7 @@ use crate::synths::oscillators::{
 };
 
 #[derive(Clone)]
+/// Enum representing different types of modular synthesizers
 pub enum SynthType {
     Sine(ModularSynth<SineOscillator>),
     Square(ModularSynth<SquareOscillator>),
