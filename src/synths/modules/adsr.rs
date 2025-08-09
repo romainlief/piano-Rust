@@ -199,6 +199,11 @@ impl ADSR {
     pub fn get_step(&self) -> f64 {
         self.step
     }
+
+    pub fn get_amplitude(&mut self) -> f64 {
+        self.advance();
+        self.level
+    }
 }
 
 impl Module for ADSR {

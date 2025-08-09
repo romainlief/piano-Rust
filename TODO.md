@@ -5,6 +5,10 @@
 - Modulation synthé a améliorer
   - adsr
   - filter
+  - reverb
+  - delay
+  - lfo
+  - gain
 
 - Diff notes
 
