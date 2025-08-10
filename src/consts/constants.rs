@@ -41,13 +41,15 @@ pub static FM_CURRENT_RELEASE: f64 = 0.1; // release en secondes : 100 ms, perme
 pub static FM_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain de compensation en dB, à ajuster selon besoin (0 dB = pas de gain ajouté)
 pub static FM_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition douce de 6 dB est classique
 pub static FM_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// HAMMOND
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// GAIN
 pub static HAMMOND_CURRENT_GAIN: f64 = 0.6; // Current gain value
+// LFO
 pub static HAMMOND_CURRENT_LFO_FREQ: f64 = 5.0; // Current LFO freq
-
+// COMPRESSOR
 pub static HAMMOND_CURRENT_THRESHOLD: f64 = -24.0; // en dB : seuil de déclenchement de la compression, -24 dB est assez standard
 pub static HAMMOND_CURRENT_RATIO: f64 = 4.0; // ratio de compression : 4:1 est un bon compromis pour un compresseur généraliste
 pub static HAMMOND_CURRENT_ATTACK: f64 = 0.01; // attaque en secondes : 10 ms, assez rapide pour attraper les transitoires
@@ -55,11 +57,15 @@ pub static HAMMOND_CURRENT_RELEASE: f64 = 0.1; // release en secondes : 100 ms, 
 pub static HAMMOND_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain de compensation en dB, à ajuster selon besoin (0 dB = pas de gain ajouté)
 pub static HAMMOND_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition douce de 6 dB est classique
 pub static HAMMOND_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Sawtooth
+/// ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GAIN
 pub static SAWTOOTH_CURRENT_GAIN: f64 = 0.6; // Current gain value
+// LFO
 pub static SAWTOOTH_CURRENT_LFO_FREQ: f64 = 5.0; // Current LFO freq
-
+// COMPRESSOR
 pub static SAWTOOTH_CURRENT_THRESHOLD: f64 = -24.0; // en dB : seuil de déclenchement de la compression, -24 dB est assez standard
 pub static SAWTOOTH_CURRENT_RATIO: f64 = 4.0; // ratio de compression : 4:1 est un bon compromis pour un compresseur généraliste
 pub static SAWTOOTH_CURRENT_ATTACK: f64 = 0.01; // attaque en secondes : 10 ms, assez rapide pour attraper les transitoires
@@ -67,11 +73,15 @@ pub static SAWTOOTH_CURRENT_RELEASE: f64 = 0.1; // release en secondes : 100 ms,
 pub static SAWTOOTH_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain de compensation en dB, à ajuster selon besoin (0 dB = pas de gain ajouté)
 pub static SAWTOOTH_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition douce de 6 dB est classique
 pub static SAWTOOTH_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Square
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GAIN
 pub static SQUARE_CURRENT_GAIN: f64 = 0.6; // Current gain value
+// LFO
 pub static SQUARE_CURRENT_LFO_FREQ: f64 = 5.0; // Current LFO freq
-
+// COMPRESSOR
 pub static SQUARE_CURRENT_THRESHOLD: f64 = -24.0; // en dB : seuil de déclenchement de la compression, -24 dB est assez standard
 pub static SQUARE_CURRENT_RATIO: f64 = 4.0; // ratio de compression : 4:1 est un bon compromis pour un compresseur généraliste
 pub static SQUARE_CURRENT_ATTACK: f64 = 0.01; // attaque en secondes : 10 ms, assez rapide pour attraper les transitoires
@@ -79,3 +89,4 @@ pub static SQUARE_CURRENT_RELEASE: f64 = 0.1; // release en secondes : 100 ms, p
 pub static SQUARE_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain de compensation en dB, à ajuster selon besoin (0 dB = pas de gain ajouté)
 pub static SQUARE_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition douce de 6 dB est classique
 pub static SQUARE_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
+////////////////////////////////////////////////////////////////////////////////////////////////////////////

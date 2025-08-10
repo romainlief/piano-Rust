@@ -60,10 +60,10 @@ impl SynthType {
 }
 
 impl SynthType {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     pub fn n_sine() -> Self {
         let oscillator: SineOscillator = SineOscillator;
 
-        // Compresseur avec paramètres sûrs
         let compressor = Compressor::new(
             constants::SINE_CURRENT_THRESHOLD,
             constants::SINE_CURRENT_RATIO,
@@ -84,64 +84,115 @@ impl SynthType {
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
-        synth.add_module(compressor);
+        // synth.add_module(compressor);
         SynthType::Sine(synth)
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     pub fn n_square() -> Self {
         let oscillator = SquareOscillator;
+
         let gain = Gain::new(constants::SQUARE_CURRENT_GAIN);
+
+        let compressor = Compressor::new(
+            constants::SQUARE_CURRENT_THRESHOLD,
+            constants::SQUARE_CURRENT_RATIO,
+            constants::SQUARE_CURRENT_ATTACK,
+            constants::SQUARE_CURRENT_RELEASE,
+            constants::SQUARE_CURRENT_GAIN,
+            constants::SAMPLE_RATE,
+        );
 
         let lfo = LFO::new(
             LfoWaveform::Square,
             constants::SQUARE_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
+
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
+        synth.add_module(compressor);
         SynthType::Square(synth)
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     pub fn n_sawtooth() -> Self {
         let oscillator = SawtoothOscillator;
+
         let gain = Gain::new(constants::SAWTOOTH_CURRENT_GAIN);
+
+        let compressor = Compressor::new(
+            constants::SAWTOOTH_CURRENT_THRESHOLD,
+            constants::SAWTOOTH_CURRENT_RATIO,
+            constants::SAWTOOTH_CURRENT_ATTACK,
+            constants::SAWTOOTH_CURRENT_RELEASE,
+            constants::SAWTOOTH_CURRENT_GAIN,
+            constants::SAMPLE_RATE,
+        );
+
         let lfo = LFO::new(
             LfoWaveform::SawUp,
             constants::SAWTOOTH_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
+
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
+        synth.add_module(compressor);
         SynthType::Sawtooth(synth)
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     pub fn n_fm() -> Self {
         let oscillator = FmOscillator::new(3.5, 1.414);
+
         let gain = Gain::new(constants::FM_CURRENT_GAIN);
+
+        let compressor = Compressor::new(
+            constants::FM_CURRENT_THRESHOLD,
+            constants::FM_CURRENT_RATIO,
+            constants::FM_CURRENT_ATTACK,
+            constants::FM_CURRENT_RELEASE,
+            constants::FM_CURRENT_GAIN,
+            constants::SAMPLE_RATE,
+        );
+
         let lfo = LFO::new(
             LfoWaveform::SawDown,
             constants::FM_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
+
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
+        synth.add_module(compressor);
         SynthType::FM(synth)
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     pub fn n_hammond() -> Self {
         let oscillator = HammondOscillator;
+
         let gain = Gain::new(constants::HAMMOND_CURRENT_GAIN);
+
+        let compressor = Compressor::new(
+            constants::HAMMOND_CURRENT_THRESHOLD,
+            constants::HAMMOND_CURRENT_RATIO,
+            constants::HAMMOND_CURRENT_ATTACK,
+            constants::HAMMOND_CURRENT_RELEASE,
+            constants::HAMMOND_CURRENT_GAIN,
+            constants::SAMPLE_RATE,
+        );
         let lfo = LFO::new(
             LfoWaveform::Sine,
             constants::HAMMOND_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
+
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
+        synth.add_module(compressor);
         SynthType::Hammond(synth)
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
