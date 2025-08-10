@@ -28,10 +28,10 @@ impl LFO {
             waveform,
             freq,
             sample_rate,
-            phase: 0.0,
-            amplitude: 1.0,
+            phase: 0.9,
+            amplitude: 2.0,
             offset: 0.0,
-            bipolar: true,
+            bipolar: false,
         }
     }
 

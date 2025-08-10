@@ -77,13 +77,13 @@ impl SynthType {
 
         let lfo = LFO::new(
             LfoWaveform::Sine,
-            constants::SINE_CURRENT_LFO_RATE,
+            constants::SINE_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
 
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
         synth.add_module(gain);
-        //synth.add_module(lfo);
+        synth.add_module(lfo);
         synth.add_module(compressor);
         SynthType::Sine(synth)
     }
@@ -94,7 +94,7 @@ impl SynthType {
 
         let lfo = LFO::new(
             LfoWaveform::Square,
-            constants::SQUARE_CURRENT_LFO_RATE,
+            constants::SQUARE_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
         let mut synth = ModularSynth::new(oscillator);
@@ -108,7 +108,7 @@ impl SynthType {
         let gain = Gain::new(constants::SAWTOOTH_CURRENT_GAIN);
         let lfo = LFO::new(
             LfoWaveform::SawUp,
-            constants::SAWTOOTH_CURRENT_LFO_RATE,
+            constants::SAWTOOTH_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
         let mut synth = ModularSynth::new(oscillator);
@@ -122,7 +122,7 @@ impl SynthType {
         let gain = Gain::new(constants::FM_CURRENT_GAIN);
         let lfo = LFO::new(
             LfoWaveform::SawDown,
-            constants::FM_CURRENT_LFO_RATE,
+            constants::FM_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
         let mut synth = ModularSynth::new(oscillator);
@@ -136,7 +136,7 @@ impl SynthType {
         let gain = Gain::new(constants::HAMMOND_CURRENT_GAIN);
         let lfo = LFO::new(
             LfoWaveform::Sine,
-            constants::HAMMOND_CURRENT_LFO_RATE,
+            constants::HAMMOND_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
         let mut synth = ModularSynth::new(oscillator);
