@@ -82,9 +82,15 @@ impl SynthType {
         );
 
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
-        synth.add_module(gain);
-        synth.add_module(lfo);
-        // synth.add_module(compressor);
+        if constants::SINE_ACTIVATION_GAIN {
+            synth.add_module(gain);
+        }
+        if constants::SINE_ACTIVATION_LFO {
+            synth.add_module(lfo);
+        }
+        if constants::SINE_ACTIVATION_COMPRESSOR {
+            synth.add_module(compressor);
+        }
         SynthType::Sine(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,9 +115,15 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        synth.add_module(gain);
-        synth.add_module(lfo);
-        synth.add_module(compressor);
+        if constants::SQUARE_ACTIVATION_GAIN {
+            synth.add_module(gain);
+        }
+        if constants::SQUARE_ACTIVATION_LFO {
+            synth.add_module(lfo);
+        }
+        if constants::SQUARE_ACTIVATION_COMPRESSOR {
+            synth.add_module(compressor);
+        }
         SynthType::Square(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,9 +148,15 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        synth.add_module(gain);
-        synth.add_module(lfo);
-        synth.add_module(compressor);
+        if constants::SAWTOOTH_ACTIVATION_GAIN {
+            synth.add_module(gain);
+        }
+        if constants::SAWTOOTH_ACTIVATION_LFO {
+            synth.add_module(lfo);
+        }
+        if constants::SAWTOOTH_ACTIVATION_COMPRESSOR {
+            synth.add_module(compressor);
+        }
         SynthType::Sawtooth(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,9 +181,15 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        synth.add_module(gain);
-        synth.add_module(lfo);
-        synth.add_module(compressor);
+        if constants::FM_ACTIVATION_GAIN {
+            synth.add_module(gain);
+        }
+        if constants::FM_ACTIVATION_LFO {
+            synth.add_module(lfo);
+        }
+        if constants::FM_ACTIVATION_COMPRESSOR {
+            synth.add_module(compressor);
+        }
         SynthType::FM(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,9 +213,15 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        synth.add_module(gain);
-        synth.add_module(lfo);
-        synth.add_module(compressor);
+        if constants::HAMMOND_ACTIVATION_GAIN {
+            synth.add_module(gain);
+        }
+        if constants::HAMMOND_ACTIVATION_LFO {
+            synth.add_module(lfo);
+        }
+        if constants::HAMMOND_ACTIVATION_COMPRESSOR {
+            synth.add_module(compressor);
+        }
         SynthType::Hammond(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////

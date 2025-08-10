@@ -13,7 +13,13 @@ pub static ADSR_DECAY: f64 = 0.1;
 pub static ADSR_SUSTAIN: f64 = 0.9;
 pub static ADSR_RELEASE: f64 = 0.3;
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// SINE
+///
+/// ACTIVATION EFFECT
+pub static SINE_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
+pub static SINE_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
+pub static SINE_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SINE_CURRENT_GAIN: f64 = 4.1; // Current gain value
@@ -28,6 +34,11 @@ pub static SINE_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain neutre
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// FM
+///
+/// ACTIVATION EFFECT
+pub static FM_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
+pub static FM_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
+pub static FM_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static FM_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -44,6 +55,11 @@ pub static FM_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour an
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// HAMMOND
+///
+/// ACTIVATION EFFECT
+pub static HAMMOND_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
+pub static HAMMOND_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
+pub static HAMMOND_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static HAMMOND_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -60,7 +76,12 @@ pub static HAMMOND_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead po
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Sawtooth
-/// ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// ACTIVATION EFFECT
+pub static SAWTOOTH_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
+pub static SAWTOOTH_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
+pub static SAWTOOTH_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SAWTOOTH_CURRENT_GAIN: f64 = 0.6; // Current gain value
 // LFO
@@ -76,6 +97,10 @@ pub static SAWTOOTH_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead p
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Square
+/// ACTIVATION EFFECT
+pub static SQUARE_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
+pub static SQUARE_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
+pub static SQUARE_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SQUARE_CURRENT_GAIN: f64 = 0.6; // Current gain value
