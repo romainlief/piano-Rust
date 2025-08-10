@@ -9,6 +9,7 @@ pub struct Compressor {
     makeup_gain: f64, // gain applied after compression in dB
     knee: f64,        // dB, taille du "soft knee"
     sample_rate: f64,
+    lookahead_time: f64, // secondes
 
     // États internes
     envelope_db: f64, // niveau RMS lissé en dB
@@ -16,6 +17,10 @@ pub struct Compressor {
     rms_window_size: usize,
     rms_buffer: Vec<f64>,
     rms_index: usize,
+
+    // Buffer look-ahead
+    lookahead_buffer: Vec<f64>,
+    lookahead_pos: usize,
 }
 
 impl Compressor {
@@ -27,8 +32,10 @@ impl Compressor {
         makeup_gain: f64,
         knee: f64,
         sample_rate: f64,
+        lookahead_time: f64,
     ) -> Self {
-        let window_size = (0.025 * sample_rate) as usize; // 25ms RMS window    
+        let window_size = (0.025 * sample_rate) as usize; // 25ms RMS window
+        let lookahead_samples = (lookahead_time * sample_rate) as usize;
         Self {
             threshold,
             ratio,
@@ -37,11 +44,14 @@ impl Compressor {
             makeup_gain,
             knee,
             sample_rate,
+            lookahead_time,
             envelope_db: -120.0,
             rms_sum: 0.0,
             rms_window_size: window_size,
             rms_buffer: vec![0.0; window_size],
             rms_index: 0,
+            lookahead_buffer: vec![0.0; lookahead_samples],
+            lookahead_pos: 0,
         }
     }
 
@@ -119,6 +129,10 @@ impl Compressor {
         self.sample_rate = sample_rate;
     }
 
+    pub fn set_lookahead_time(&mut self, lookahead_time: f64) {
+        self.lookahead_time = lookahead_time;
+    }
+
     /// #### Getters ####
     pub fn threshold(&self) -> f64 {
         self.threshold
@@ -147,15 +161,22 @@ impl Compressor {
     pub fn sample_rate(&self) -> f64 {
         self.sample_rate
     }
+
+    pub fn lookahead_time(&self) -> f64 {
+        self.lookahead_time
+    }
 }
 
 impl Module for Compressor {
     fn process(&mut self, input: f64, _time: f64) -> f64 {
-        // RMS lissé
+        // On insère l'échantillon dans le buffer look-ahead
+        let delayed_sample = self.lookahead_buffer[self.lookahead_pos];
+        self.lookahead_buffer[self.lookahead_pos] = input;
+        self.lookahead_pos = (self.lookahead_pos + 1) % self.lookahead_buffer.len();
+
+        // Analyse sur le signal "futur" (input direct)
         let rms_level = self.update_rms(input);
         let level_db = Self::linear_to_db(rms_level);
-
-        // Gain reduction avec soft knee
         let target_reduction = self.soft_knee_gain_reduction(level_db);
 
         // Attack/Release
@@ -170,9 +191,9 @@ impl Module for Compressor {
                 coeff_release * (self.envelope_db - target_reduction) + target_reduction;
         }
 
-        // Application du gain et make-up
+        // Application du gain et make-up sur le signal retardé
         let output_gain = Self::db_to_linear(-self.envelope_db + self.makeup_gain);
-        input * output_gain
+        delayed_sample * output_gain
     }
 
     fn name(&self) -> &'static str {

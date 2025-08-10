@@ -1,5 +1,7 @@
 use crate::consts::constants;
+use crate::synths::Module;
 use crate::synths::modules::adsr::ADSR;
+use crate::synths::modules::gain;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
@@ -7,6 +9,7 @@ use std::sync::{Arc, Mutex};
 #[derive(Clone)]
 pub struct ActiveNote {
     pub frequency: f64,
+    pub pre_gain: f64,
     pub adsr: ADSR,
     pub is_released: bool, // true quand la touche est relâchée mais l'ADSR est en release
 }
@@ -22,6 +25,7 @@ impl ActiveNote {
 
         Self {
             frequency,
+            pre_gain: constants::PRE_GAIN,
             adsr,
             is_released: false,
         }
@@ -55,13 +59,11 @@ pub fn add_note(manager: &ActiveNoteManager, frequency: f64, sample_rate: f64) {
     let mut notes = manager.lock().unwrap();
 
     if let Some(existing_note) = notes.get_mut(&frequency_key) {
-        // Si la note existe déjà, vérifier si elle est en cours de release
         if existing_note.is_released {
-            existing_note.adsr.note_on();
+            // TODO: code ne servant a rien
             existing_note.is_released = false;
             println!("Note redémarrée: {:.2} Hz", frequency);
         }
-        // Si la note n'est pas relâchée, ne rien faire
     } else {
         // Créer une nouvelle note
         let note = ActiveNote::new(frequency, sample_rate);

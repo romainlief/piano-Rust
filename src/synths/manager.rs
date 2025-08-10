@@ -1,5 +1,6 @@
 use crate::consts::constants;
 use crate::synths::modular::ModularSynth;
+use crate::synths::modules::compressor::Compressor;
 use crate::synths::modules::gain::Gain;
 use crate::synths::modules::lfo::{LFO, LfoWaveform};
 use crate::synths::oscillators::{
@@ -60,16 +61,17 @@ impl SynthType {
 
 impl SynthType {
     pub fn n_sine() -> Self {
-        let oscillator = SineOscillator;
+        let oscillator: SineOscillator = SineOscillator;
+        //let compressor = Compressor::new();
         let gain = Gain::new(constants::SINE_CURRENT_GAIN);
         let lfo = LFO::new(
             LfoWaveform::Sine,
             constants::SINE_CURRENT_LFO_RATE,
             constants::SAMPLE_RATE,
         );
-        let mut synth = ModularSynth::new(oscillator);
+        let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
         synth.add_module(gain);
-        synth.add_module(lfo);
+      //  synth.add_module(lfo);
         SynthType::Sine(synth)
     }
 
