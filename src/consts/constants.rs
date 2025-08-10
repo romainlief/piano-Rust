@@ -17,13 +17,11 @@ pub static ADSR_RELEASE: f64 = 0.3;
 pub static SINE_CURRENT_GAIN: f64 = 0.6; // Current gain value
 pub static SINE_CURRENT_LFO_RATE: f64 = 5.0; // Current LFO freq
 
-pub static SINE_CURRENT_THRESHOLD: f64 = -12.0; // en dB : seuil de déclenchement de la compression, -24 dB est assez standard
-pub static SINE_CURRENT_RATIO: f64 = 2.0; // ratio de compression : 4:1 est un bon compromis pour un compresseur généraliste
-pub static SINE_CURRENT_ATTACK: f64 = 0.05; // attaque en secondes : 10 ms, assez rapide pour attraper les transitoires
-pub static SINE_CURRENT_RELEASE: f64 = 0.3; // release en secondes : 100 ms, permet un relâchement naturel
-pub static SINE_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain de compensation en dB, à ajuster selon besoin (0 dB = pas de gain ajouté)
-pub static SINE_CURRENT_KNEE: f64 = 12.0; // soft knee en dB, une transition douce de 6 dB est classique
-pub static SINE_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
+pub static SINE_CURRENT_THRESHOLD: f64 = -30.0; // en dB : seuil très bas pour compression très douce
+pub static SINE_CURRENT_RATIO: f64 = 1.5; // ratio de compression : 1.5:1 très doux
+pub static SINE_CURRENT_ATTACK: f64 = 0.2; // attaque encore plus lente : 200 ms
+pub static SINE_CURRENT_RELEASE: f64 = 1.0; // release très lente : 1 seconde
+pub static SINE_CURRENT_MAKEUP_GAIN: f64 = 3.0; // gain de compensation réduit
 
 /// FM
 pub static FM_CURRENT_GAIN: f64 = 0.6; // Current gain value

@@ -62,25 +62,28 @@ impl SynthType {
 impl SynthType {
     pub fn n_sine() -> Self {
         let oscillator: SineOscillator = SineOscillator;
+
+        // Compresseur avec paramètres sûrs
         let compressor = Compressor::new(
             constants::SINE_CURRENT_THRESHOLD,
             constants::SINE_CURRENT_RATIO,
             constants::SINE_CURRENT_ATTACK,
             constants::SINE_CURRENT_RELEASE,
             constants::SINE_CURRENT_MAKEUP_GAIN,
-            constants::SINE_CURRENT_KNEE,
             constants::SAMPLE_RATE,
-            constants::SINE_CURRENT_LOOKAHEAD_TIME,
         );
+
         let gain = Gain::new(constants::SINE_CURRENT_GAIN);
+
         let lfo = LFO::new(
             LfoWaveform::Sine,
             constants::SINE_CURRENT_LFO_RATE,
             constants::SAMPLE_RATE,
         );
+
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
         synth.add_module(gain);
-        //  synth.add_module(lfo);
+        //synth.add_module(lfo); 
         synth.add_module(compressor);
         SynthType::Sine(synth)
     }
@@ -88,6 +91,7 @@ impl SynthType {
     pub fn n_square() -> Self {
         let oscillator = SquareOscillator;
         let gain = Gain::new(constants::SQUARE_CURRENT_GAIN);
+        
         let lfo = LFO::new(
             LfoWaveform::Square,
             constants::SQUARE_CURRENT_LFO_RATE,
