@@ -1,3 +1,9 @@
+use std::sync::atomic::{AtomicUsize, Ordering};
+
+pub const VECTEUR_NOTES: [u8; 9] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+// Index actuel dans VECTEUR_NOTES (thread-safe)
+pub static CURRENT_OCTAVE_INDEX: AtomicUsize = AtomicUsize::new(4); // Octave 4
+
 fn note_frequency(semitone_distance_from_a4: i32) -> f64 {
     // A4 = 440 Hz, 12-TET formula
     440.0 * 2f64.powf(semitone_distance_from_a4 as f64 / 12.0)

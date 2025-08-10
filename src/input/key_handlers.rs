@@ -1,14 +1,15 @@
 use crate::audio::note_manager;
+use crate::consts::constants::{CURRENT_OCTAVE_INDEX, VECTEUR_NOTES};
 use crate::synths;
 use device_query::Keycode;
 use once_cell::sync::Lazy;
 use serde::Deserialize;
 use std::collections::HashMap;
+use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
 
 #[derive(Debug, Deserialize)]
 pub struct Notes(pub HashMap<u8, HashMap<String, f64>>);
-const VECTEUR_NOTES: [u8; 9] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 pub static NOTES: Lazy<Notes> = Lazy::new(|| {
     let json_str = include_str!("../../res/notes.json");
@@ -24,76 +25,116 @@ pub fn matching_key_pressed(
     let get_frequency =
         |octave: u8, note: &str| -> Option<f64> { NOTES.0.get(&octave)?.get(note).copied() };
 
+    // Récupère l'octave actuelle
+    let current_index = CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed);
+    let current_octave = VECTEUR_NOTES[current_index];
+
     match key {
         Keycode::Q => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "A") {
-                println!("Touche Q pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "A") {
+                println!(
+                    "Touche Q pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::B => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "B") {
-                println!("Touche B pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "B") {
+                println!(
+                    "Touche B pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::C => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "C") {
-                println!("Touche C pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "C") {
+                println!(
+                    "Touche C pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::D => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "D") {
-                println!("Touche D pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "D") {
+                println!(
+                    "Touche D pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::E => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "E") {
-                println!("Touche E pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "E") {
+                println!(
+                    "Touche E pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::F => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "F") {
-                println!("Touche F pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "F") {
+                println!(
+                    "Touche F pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::G => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "G") {
-                println!("Touche G pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "G") {
+                println!(
+                    "Touche G pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::Key1 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "ASHARP") {
-                println!("Touche 1 pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "ASHARP") {
+                println!(
+                    "Touche 1 pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::Key2 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "CSHARP") {
-                println!("Touche 2 pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "CSHARP") {
+                println!(
+                    "Touche 2 pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::Key3 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "DSHARP") {
-                println!("Touche 3 pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "DSHARP") {
+                println!(
+                    "Touche 3 pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::Key4 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "FSHARP") {
-                println!("Touche 4 pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "FSHARP") {
+                println!(
+                    "Touche 4 pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
         Keycode::Key5 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "GSHARP") {
-                println!("Touche 5 pressée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "GSHARP") {
+                println!(
+                    "Touche 5 pressée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::add_note(note_manager, freq, 44100.0);
             }
         }
@@ -126,10 +167,29 @@ pub fn matching_key_pressed(
             std::process::exit(0);
         }
         Keycode::Left => {
-            println!("Touche Flèche Gauche pressée");
+            // Diminuer l'octave (index - 1)
+            let current_index = CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed);
+            if current_index > 0 {
+                CURRENT_OCTAVE_INDEX.store(current_index - 1, Ordering::Relaxed);
+                let new_octave = VECTEUR_NOTES[current_index - 1];
+                println!("Octave changée vers: {}", new_octave);
+            } else {
+                println!("Octave minimum atteinte ({})", VECTEUR_NOTES[0]);
+            }
         }
         Keycode::Right => {
-            println!("Touche Flèche Droite pressée");
+            // Augmenter l'octave (index + 1)
+            let current_index = CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed);
+            if current_index < VECTEUR_NOTES.len() - 1 {
+                CURRENT_OCTAVE_INDEX.store(current_index + 1, Ordering::Relaxed);
+                let new_octave = VECTEUR_NOTES[current_index + 1];
+                println!("Octave changée vers: {})", new_octave);
+            } else {
+                println!(
+                    "Octave maximum atteinte ({})",
+                    VECTEUR_NOTES[VECTEUR_NOTES.len() - 1]
+                );
+            }
         }
         _ => {}
     }
@@ -140,80 +200,118 @@ pub fn matching_key_released(
     _current_synth_type: &Arc<Mutex<synths::manager::SynthType>>,
     note_manager: &note_manager::ActiveNoteManager,
 ) {
-    // Fonction helper pour récupérer la fréquence depuis le JSON
     let get_frequency =
         |octave: u8, note: &str| -> Option<f64> { NOTES.0.get(&octave)?.get(note).copied() };
 
+    let current_index = CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed);
+    let current_octave = VECTEUR_NOTES[current_index];
+
     match key {
         Keycode::Q => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "A") {
-                println!("Touche Q relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "A") {
+                println!(
+                    "Touche Q relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::B => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "B") {
-                println!("Touche B relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "B") {
+                println!(
+                    "Touche B relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::C => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "C") {
-                println!("Touche C relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "C") {
+                println!(
+                    "Touche C relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::D => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "D") {
-                println!("Touche D relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "D") {
+                println!(
+                    "Touche D relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::E => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "E") {
-                println!("Touche E relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "E") {
+                println!(
+                    "Touche E relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::F => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "F") {
-                println!("Touche F relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "F") {
+                println!(
+                    "Touche F relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::G => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "G") {
-                println!("Touche G relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "G") {
+                println!(
+                    "Touche G relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::Key1 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "ASHARP") {
-                println!("Touche 1 relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "ASHARP") {
+                println!(
+                    "Touche 1 relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::Key2 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "CSHARP") {
-                println!("Touche 2 relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "CSHARP") {
+                println!(
+                    "Touche 2 relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::Key3 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "DSHARP") {
-                println!("Touche 3 relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "DSHARP") {
+                println!(
+                    "Touche 3 relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::Key4 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "FSHARP") {
-                println!("Touche 4 relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "FSHARP") {
+                println!(
+                    "Touche 4 relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }
         Keycode::Key5 => {
-            if let Some(freq) = get_frequency(VECTEUR_NOTES[3], "GSHARP") {
-                println!("Touche 5 relâchée - fréquence: {}", freq);
+            if let Some(freq) = get_frequency(current_octave, "GSHARP") {
+                println!(
+                    "Touche 5 relâchée - octave: {} - fréquence: {}",
+                    current_octave, freq
+                );
                 note_manager::release_note(note_manager, freq);
             }
         }

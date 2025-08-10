@@ -7,6 +7,4 @@
   - reverb
   - delay
 
-- Diff notes
-
 - factoriser la main
