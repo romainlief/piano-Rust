@@ -5,3 +5,4 @@ pub struct Filter {
     cutoff: f64,
     resonance: f64,
 }
+use crate::synths::traits::Module;
