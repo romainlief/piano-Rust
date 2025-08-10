@@ -1,7 +1,5 @@
 use crate::consts::constants;
-use crate::synths::Module;
 use crate::synths::modules::adsr::ADSR;
-use crate::synths::modules::gain;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
@@ -9,7 +7,6 @@ use std::sync::{Arc, Mutex};
 #[derive(Clone)]
 pub struct ActiveNote {
     pub frequency: f64,
-    pub pre_gain: f64,
     pub adsr: ADSR,
     pub is_released: bool, // true quand la touche est relâchée mais l'ADSR est en release
 }
@@ -25,7 +22,6 @@ impl ActiveNote {
 
         Self {
             frequency,
-            pre_gain: constants::PRE_GAIN,
             adsr,
             is_released: false,
         }
@@ -55,47 +51,59 @@ pub fn create_note_manager() -> ActiveNoteManager {
 
 /// Ajoute une nouvelle note avec son ADSR
 pub fn add_note(manager: &ActiveNoteManager, frequency: f64, sample_rate: f64) {
-    let frequency_key = (frequency * 1000.0) as u64; // Convertir en clé entière
-    let mut notes = manager.lock().unwrap();
+    if let Ok(mut notes) = manager.lock() {
+        let frequency_key = (frequency * 1000.0) as u64; // Convertir en clé entière
 
-    if let Some(existing_note) = notes.get_mut(&frequency_key) {
-        if existing_note.is_released {
-            // TODO: code ne servant a rien
-            existing_note.is_released = false;
-            println!("Note redémarrée: {:.2} Hz", frequency);
+        if let Some(existing_note) = notes.get_mut(&frequency_key) {
+            if existing_note.is_released {
+                // TODO: code ne servant a rien
+                existing_note.is_released = false;
+                println!("Note redémarrée: {:.2} Hz", frequency);
+            }
+        } else {
+            // Créer une nouvelle note
+            let note = ActiveNote::new(frequency, sample_rate);
+            notes.insert(frequency_key, note);
+            println!("Note ajoutée: {:.2} Hz", frequency);
         }
     } else {
-        // Créer une nouvelle note
-        let note = ActiveNote::new(frequency, sample_rate);
-        notes.insert(frequency_key, note);
-        println!("Note ajoutée: {:.2} Hz", frequency);
+        eprintln!("Warning: Failed to lock note manager to add note");
     }
 }
 
 pub fn release_note(manager: &ActiveNoteManager, frequency: f64) {
-    let frequency_key = (frequency * 1000.0) as u64;
-    let mut notes = manager.lock().unwrap();
+    if let Ok(mut notes) = manager.lock() {
+        let frequency_key = (frequency * 1000.0) as u64;
 
-    if let Some(note) = notes.get_mut(&frequency_key) {
-        if !note.is_released {
-            note.note_off();
-            println!("Note relâchée: {:.2} Hz", frequency);
+        if let Some(note) = notes.get_mut(&frequency_key) {
+            if !note.is_released {
+                note.note_off();
+                println!("Note relâchée: {:.2} Hz", frequency);
+            }
         }
+    } else {
+        eprintln!("Warning: Failed to lock note manager to release note");
     }
 }
 
 /// Nettoie les notes finies (ADSR en Idle)
 pub fn cleanup_finished_notes(manager: &ActiveNoteManager) {
-    let mut notes = manager.lock().unwrap();
-    notes.retain(|_key, note| !note.is_finished());
+    if let Ok(mut notes) = manager.lock() {
+        notes.retain(|_key, note| !note.is_finished());
+    } else {
+        eprintln!("Warning: Failed to lock note manager for cleanup");
+    }
 }
 
 /// Arrête toutes les notes
 pub fn stop_all_notes(manager: &ActiveNoteManager) {
-    let mut notes = manager.lock().unwrap();
-    for note in notes.values_mut() {
-        if !note.is_released {
-            note.note_off();
+    if let Ok(mut notes) = manager.lock() {
+        for note in notes.values_mut() {
+            if !note.is_released {
+                note.note_off();
+            }
         }
+    } else {
+        eprintln!("Warning: Failed to lock note manager to stop notes");
     }
 }
