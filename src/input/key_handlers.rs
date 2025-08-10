@@ -1,5 +1,5 @@
 use crate::audio::note_manager;
-use crate::consts::constants::{CURRENT_OCTAVE_INDEX, VECTEUR_NOTES};
+use crate::consts::constants::{CURRENT_OCTAVE_INDEX, VECTEUR_NOTES, SAMPLE_RATE};
 use crate::synths;
 use device_query::Keycode;
 use once_cell::sync::Lazy;
@@ -25,7 +25,6 @@ pub fn matching_key_pressed(
     let get_frequency =
         |octave: u8, note: &str| -> Option<f64> { NOTES.0.get(&octave)?.get(note).copied() };
 
-    // Récupère l'octave actuelle
     let current_index = CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed);
     let current_octave = VECTEUR_NOTES[current_index];
 
@@ -36,7 +35,7 @@ pub fn matching_key_pressed(
                     "Touche Q pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::B => {
@@ -45,7 +44,7 @@ pub fn matching_key_pressed(
                     "Touche B pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::C => {
@@ -54,7 +53,7 @@ pub fn matching_key_pressed(
                     "Touche C pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::D => {
@@ -63,7 +62,7 @@ pub fn matching_key_pressed(
                     "Touche D pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::E => {
@@ -72,7 +71,7 @@ pub fn matching_key_pressed(
                     "Touche E pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::F => {
@@ -81,7 +80,7 @@ pub fn matching_key_pressed(
                     "Touche F pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::G => {
@@ -90,7 +89,7 @@ pub fn matching_key_pressed(
                     "Touche G pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::Key1 => {
@@ -99,7 +98,7 @@ pub fn matching_key_pressed(
                     "Touche 1 pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::Key2 => {
@@ -108,7 +107,7 @@ pub fn matching_key_pressed(
                     "Touche 2 pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::Key3 => {
@@ -117,7 +116,7 @@ pub fn matching_key_pressed(
                     "Touche 3 pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::Key4 => {
@@ -126,7 +125,7 @@ pub fn matching_key_pressed(
                     "Touche 4 pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::Key5 => {
@@ -135,7 +134,7 @@ pub fn matching_key_pressed(
                     "Touche 5 pressée - octave: {} - fréquence: {}",
                     current_octave, freq
                 );
-                note_manager::add_note(note_manager, freq, 44100.0);
+                note_manager::add_note(note_manager, freq, SAMPLE_RATE);
             }
         }
         Keycode::Space => {
@@ -167,7 +166,7 @@ pub fn matching_key_pressed(
             std::process::exit(0);
         }
         Keycode::Left => {
-            // Diminuer l'octave (index - 1)
+            // Octave - 1
             let current_index = CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed);
             if current_index > 0 {
                 CURRENT_OCTAVE_INDEX.store(current_index - 1, Ordering::Relaxed);
@@ -178,7 +177,7 @@ pub fn matching_key_pressed(
             }
         }
         Keycode::Right => {
-            // Augmenter l'octave (index + 1)
+            // Octave + 1
             let current_index = CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed);
             if current_index < VECTEUR_NOTES.len() - 1 {
                 CURRENT_OCTAVE_INDEX.store(current_index + 1, Ordering::Relaxed);

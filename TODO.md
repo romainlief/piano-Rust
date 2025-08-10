@@ -8,3 +8,5 @@
   - delay
 
 - factoriser la main
+
+- faire les constantes dans constantes
