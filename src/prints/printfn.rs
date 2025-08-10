@@ -1,8 +1,21 @@
 pub fn print_intro() {
     println!("Piano en temps réel avec synthétiseurs avancés !");
     println!("Touches musicales :");
-    println!("Q-B-C-D-E-F-G - Notes naturelles");
-    println!("1-2-3-4-5 - Notes dièses");
+    println!("Notes naturelles");
+    println!("Q - A");
+    println!("B - B");
+    println!("E - E");
+    println!("C - C");
+    println!("D - D");
+    println!("F - F");
+    println!("G - G");
+    println!();
+    println!("Notes dièses");
+    println!("1 - C#");
+    println!("2 - D#");
+    println!("3 - F#");
+    println!("4 - G#");
+    println!("5 - A#");
     println!();
     println!("Synthétiseurs :");
     println!("W - Modular Sine        X - Modular Square");

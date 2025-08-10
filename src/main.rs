@@ -1,9 +1,8 @@
-use device_query::{DeviceQuery, DeviceState, Keycode};
+use device_query::DeviceState;
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
 use synthesizer_emulation::audio::{note_manager, setup_realtime_audio};
-use synthesizer_emulation::input::key_handlers;
+use synthesizer_emulation::input::key_logic;
 use synthesizer_emulation::{prints, synths};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -24,20 +23,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut previous_keys = HashSet::new();
 
     loop {
-        let keys: HashSet<Keycode> = device_state.get_keys().into_iter().collect();
-        // Check for pressed keys
-        for key in keys.difference(&previous_keys) {
-            key_handlers::matching_key_pressed(key.clone(), &current_synth_type, &note_manager);
-        }
-        // Check for released keys
-        for key in previous_keys.difference(&keys) {
-            key_handlers::matching_key_released(key.clone(), &current_synth_type, &note_manager);
-        }
-
-        // Clean up finished notes
-        note_manager::cleanup_finished_notes(&note_manager);
-        previous_keys = keys;
-        // Small sleep to avoid busy-waiting
-        std::thread::sleep(Duration::from_millis(10));
+        key_logic::key_management(&device_state, &mut previous_keys, &current_synth_type, &note_manager);
     }
 }

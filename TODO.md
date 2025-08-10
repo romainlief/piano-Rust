@@ -3,12 +3,11 @@
 - GUI
 
 - Modulation synthé a améliorer
-  - filter
+  - filter (low pass)
   - reverb
   - delay
+  - noise
 
 - factoriser la main
 
 - faire les constantes dans constantes
-
-- faire un bool pour activer ou non les effets
