@@ -9,6 +9,9 @@ pub fn print_intro() {
     println!("S - Modular Sawtooth    H - Modular Hammond");
     println!("K - Modular FM");
     println!();
+    println!("Contrôles :");
+    println!("FLÈCHE DROITE - Octave supérieure");
+    println!("FLÈCHE GAUCHE - Octave inférieure");
     println!("ESPACE - Arrêter toutes les notes");
     println!("ESC - Quitter");
 }

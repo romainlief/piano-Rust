@@ -7,7 +7,6 @@ use synthesizer_emulation::input::key_handlers;
 use synthesizer_emulation::{prints, synths};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Nouveau système : gestionnaire de notes avec ADSR individuels
     let note_manager = note_manager::create_note_manager();
     let current_synth_type: Arc<Mutex<synths::manager::SynthType>> =
         Arc::new(Mutex::new(synths::manager::SynthType::n_sine()));
@@ -35,7 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             key_handlers::matching_key_released(key.clone(), &current_synth_type, &note_manager);
         }
 
-        // Nettoie les notes finies
+        // Clean up finished notes
         note_manager::cleanup_finished_notes(&note_manager);
         previous_keys = keys;
         // Small sleep to avoid busy-waiting
