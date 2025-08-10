@@ -7,7 +7,3 @@
   - reverb
   - delay
   - noise
-
-- factoriser la main
-
-- faire les constantes dans constantes

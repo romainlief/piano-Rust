@@ -3,6 +3,7 @@ use crate::synths::modular::ModularSynth;
 use crate::synths::modules::compressor::Compressor;
 use crate::synths::modules::gain::Gain;
 use crate::synths::modules::lfo::{LFO, LfoWaveform};
+use crate::synths::modules::noise::Noise;
 use crate::synths::oscillators::{
     FmOscillator, HammondOscillator, SawtoothOscillator, SineOscillator, SquareOscillator,
 };
@@ -73,6 +74,8 @@ impl SynthType {
             constants::SAMPLE_RATE,
         );
 
+        let noise = Noise::new(constants::SINE_CURRENT_NOISE);
+
         let gain = Gain::new(constants::SINE_CURRENT_GAIN);
 
         let lfo = LFO::new(
@@ -82,6 +85,9 @@ impl SynthType {
         );
 
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
+        if constants::SINE_ACTIVATION_NOISE {
+            synth.add_module(noise);
+        }
         if constants::SINE_ACTIVATION_GAIN {
             synth.add_module(gain);
         }
@@ -99,6 +105,8 @@ impl SynthType {
 
         let gain = Gain::new(constants::SQUARE_CURRENT_GAIN);
 
+        let noise: Noise = Noise::new(constants::SQUARE_CURRENT_NOISE);
+
         let compressor = Compressor::new(
             constants::SQUARE_CURRENT_THRESHOLD,
             constants::SQUARE_CURRENT_RATIO,
@@ -115,6 +123,9 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
+        if constants::SQUARE_ACTIVATION_NOISE {
+            synth.add_module(noise);
+        }
         if constants::SQUARE_ACTIVATION_GAIN {
             synth.add_module(gain);
         }
@@ -132,6 +143,8 @@ impl SynthType {
 
         let gain = Gain::new(constants::SAWTOOTH_CURRENT_GAIN);
 
+        let noise = Noise::new(constants::SAWTOOTH_CURRENT_NOISE);
+
         let compressor = Compressor::new(
             constants::SAWTOOTH_CURRENT_THRESHOLD,
             constants::SAWTOOTH_CURRENT_RATIO,
@@ -148,6 +161,9 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
+        if constants::SAWTOOTH_ACTIVATION_NOISE {
+            synth.add_module(noise);
+        }
         if constants::SAWTOOTH_ACTIVATION_GAIN {
             synth.add_module(gain);
         }
@@ -165,6 +181,8 @@ impl SynthType {
 
         let gain = Gain::new(constants::FM_CURRENT_GAIN);
 
+        let noise = Noise::new(constants::FM_CURRENT_NOISE);
+
         let compressor = Compressor::new(
             constants::FM_CURRENT_THRESHOLD,
             constants::FM_CURRENT_RATIO,
@@ -181,6 +199,9 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
+        if constants::FM_ACTIVATION_NOISE {
+            synth.add_module(noise);
+        }
         if constants::FM_ACTIVATION_GAIN {
             synth.add_module(gain);
         }
@@ -198,6 +219,8 @@ impl SynthType {
 
         let gain = Gain::new(constants::HAMMOND_CURRENT_GAIN);
 
+        let noise = Noise::new(constants::HAMMOND_CURRENT_NOISE);
+
         let compressor = Compressor::new(
             constants::HAMMOND_CURRENT_THRESHOLD,
             constants::HAMMOND_CURRENT_RATIO,
@@ -213,6 +236,9 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
+        if constants::HAMMOND_ACTIVATION_NOISE {
+            synth.add_module(noise);
+        }
         if constants::HAMMOND_ACTIVATION_GAIN {
             synth.add_module(gain);
         }

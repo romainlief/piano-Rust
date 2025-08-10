@@ -1,8 +1,8 @@
 use crate::synths::traits::Module;
 
+#[derive(Clone, Copy)]
 /// Gain struct:
 /// This module implements a simple gain control for audio signals.
-#[derive(Clone, Copy)]
 pub struct Gain {
     gain: f64,
 }

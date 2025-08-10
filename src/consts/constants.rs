@@ -17,9 +17,10 @@ pub static ADSR_RELEASE: f64 = 0.3;
 /// SINE
 ///
 /// ACTIVATION EFFECT
-pub static SINE_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
-pub static SINE_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
-pub static SINE_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+pub static SINE_ACTIVATION_GAIN: bool = false; // true to activate the gain effect
+pub static SINE_ACTIVATION_LFO: bool = false; // true to activate the LFO effect
+pub static SINE_ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
+pub static SINE_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SINE_CURRENT_GAIN: f64 = 4.1; // Current gain value
@@ -31,6 +32,8 @@ pub static SINE_CURRENT_RATIO: f64 = 4.0; // ratio très doux : 1.2:1 - compress
 pub static SINE_CURRENT_ATTACK: f64 = 1.01; // attaque encore plus lente : 200 ms
 pub static SINE_CURRENT_RELEASE: f64 = 0.2; // release très lente : 1 seconde
 pub static SINE_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain neutre
+// NOISE
+pub static SINE_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// FM
@@ -39,6 +42,7 @@ pub static SINE_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain neutre
 pub static FM_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
 pub static FM_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
 pub static FM_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+pub static FM_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static FM_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -52,6 +56,8 @@ pub static FM_CURRENT_RELEASE: f64 = 0.1; // release en secondes : 100 ms, perme
 pub static FM_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain de compensation en dB, à ajuster selon besoin (0 dB = pas de gain ajouté)
 pub static FM_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition douce de 6 dB est classique
 pub static FM_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
+// NOISE
+pub static FM_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// HAMMOND
@@ -60,6 +66,7 @@ pub static FM_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour an
 pub static HAMMOND_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
 pub static HAMMOND_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
 pub static HAMMOND_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+pub static HAMMOND_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static HAMMOND_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -73,6 +80,8 @@ pub static HAMMOND_CURRENT_RELEASE: f64 = 0.1; // release en secondes : 100 ms, 
 pub static HAMMOND_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain de compensation en dB, à ajuster selon besoin (0 dB = pas de gain ajouté)
 pub static HAMMOND_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition douce de 6 dB est classique
 pub static HAMMOND_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
+// NOISE
+pub static HAMMOND_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Sawtooth
@@ -81,6 +90,7 @@ pub static HAMMOND_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead po
 pub static SAWTOOTH_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
 pub static SAWTOOTH_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
 pub static SAWTOOTH_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+pub static SAWTOOTH_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SAWTOOTH_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -94,6 +104,8 @@ pub static SAWTOOTH_CURRENT_RELEASE: f64 = 0.1; // release en secondes : 100 ms,
 pub static SAWTOOTH_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain de compensation en dB, à ajuster selon besoin (0 dB = pas de gain ajouté)
 pub static SAWTOOTH_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition douce de 6 dB est classique
 pub static SAWTOOTH_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
+// NOISE
+pub static SAWTOOTH_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Square
@@ -101,6 +113,7 @@ pub static SAWTOOTH_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead p
 pub static SQUARE_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
 pub static SQUARE_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
 pub static SQUARE_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+pub static SQUARE_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SQUARE_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -114,4 +127,6 @@ pub static SQUARE_CURRENT_RELEASE: f64 = 0.1; // release en secondes : 100 ms, p
 pub static SQUARE_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain de compensation en dB, à ajuster selon besoin (0 dB = pas de gain ajouté)
 pub static SQUARE_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition douce de 6 dB est classique
 pub static SQUARE_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
+// NOISE
+pub static SQUARE_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
