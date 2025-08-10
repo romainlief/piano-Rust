@@ -6,6 +6,7 @@
   - filter
   - reverb
   - delay
+  - compresseur
 
 - factoriser la main
 

@@ -1,4 +1,4 @@
-use crate::consts::constants::SAMPLE_RATE;
+use crate::consts::constants;
 use crate::synths::modular::ModularSynth;
 use crate::synths::modules::gain::Gain;
 use crate::synths::modules::lfo::{LFO, LfoWaveform};
@@ -61,8 +61,12 @@ impl SynthType {
 impl SynthType {
     pub fn n_sine() -> Self {
         let oscillator = SineOscillator;
-        let gain = Gain::new(0.6);
-        let lfo = LFO::new(LfoWaveform::Sine, 5.0, SAMPLE_RATE);
+        let gain = Gain::new(constants::SINE_CURRENT_GAIN);
+        let lfo = LFO::new(
+            LfoWaveform::Sine,
+            constants::SINE_CURRENT_LFO_RATE,
+            constants::SAMPLE_RATE,
+        );
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
@@ -71,8 +75,12 @@ impl SynthType {
 
     pub fn n_square() -> Self {
         let oscillator = SquareOscillator;
-        let gain = Gain::new(0.6);
-        let lfo = LFO::new(LfoWaveform::Square, 5.0, SAMPLE_RATE);
+        let gain = Gain::new(constants::SQUARE_CURRENT_GAIN);
+        let lfo = LFO::new(
+            LfoWaveform::Square,
+            constants::SQUARE_CURRENT_LFO_RATE,
+            constants::SAMPLE_RATE,
+        );
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
@@ -81,8 +89,12 @@ impl SynthType {
 
     pub fn n_sawtooth() -> Self {
         let oscillator = SawtoothOscillator;
-        let gain = Gain::new(0.6);
-        let lfo = LFO::new(LfoWaveform::SawUp, 5.0, SAMPLE_RATE);
+        let gain = Gain::new(constants::SAWTOOTH_CURRENT_GAIN);
+        let lfo = LFO::new(
+            LfoWaveform::SawUp,
+            constants::SAWTOOTH_CURRENT_LFO_RATE,
+            constants::SAMPLE_RATE,
+        );
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
@@ -91,8 +103,12 @@ impl SynthType {
 
     pub fn n_fm() -> Self {
         let oscillator = FmOscillator::new(3.5, 1.414);
-        let gain = Gain::new(0.6); // Gain plus faible car FM peut être fort
-        let lfo = LFO::new(LfoWaveform::SawDown, 5.0, SAMPLE_RATE);
+        let gain = Gain::new(constants::FM_CURRENT_GAIN);
+        let lfo = LFO::new(
+            LfoWaveform::SawDown,
+            constants::FM_CURRENT_LFO_RATE,
+            constants::SAMPLE_RATE,
+        );
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);
@@ -101,8 +117,12 @@ impl SynthType {
 
     pub fn n_hammond() -> Self {
         let oscillator = HammondOscillator;
-        let gain = Gain::new(0.6);
-        let lfo = LFO::new(LfoWaveform::Sine, 5.0, SAMPLE_RATE);
+        let gain = Gain::new(constants::HAMMOND_CURRENT_GAIN);
+        let lfo = LFO::new(
+            LfoWaveform::Sine,
+            constants::HAMMOND_CURRENT_LFO_RATE,
+            constants::SAMPLE_RATE,
+        );
         let mut synth = ModularSynth::new(oscillator);
         synth.add_module(gain);
         synth.add_module(lfo);

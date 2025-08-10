@@ -1,3 +1,4 @@
+use crate::consts::constants;
 use crate::synths::modules::adsr::ADSR;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -13,10 +14,10 @@ pub struct ActiveNote {
 impl ActiveNote {
     pub fn new(frequency: f64, sample_rate: f64) -> Self {
         let mut adsr = ADSR::new(sample_rate);
-        adsr.set_attack(1.0); // 5ms attack très rapide
-        adsr.set_decay(0.1); // 100ms decay
-        adsr.set_sustain(0.9); // 90% sustain level (plus fort)
-        adsr.set_release(0.3); // 300ms release plus long
+        adsr.set_attack(constants::ADSR_ATTACK);
+        adsr.set_decay(constants::ADSR_DECAY);
+        adsr.set_sustain(constants::ADSR_SUSTAIN);
+        adsr.set_release(constants::ADSR_RELEASE);
         adsr.note_on();
 
         Self {
