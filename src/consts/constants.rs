@@ -14,14 +14,14 @@ pub static ADSR_SUSTAIN: f64 = 0.9;
 pub static ADSR_RELEASE: f64 = 0.3;
 
 /// SINE
-pub static SINE_CURRENT_GAIN: f64 = 0.6; // Current gain value
+pub static SINE_CURRENT_GAIN: f64 = 4.1; // Current gain value
 pub static SINE_CURRENT_LFO_RATE: f64 = 5.0; // Current LFO freq
 
-pub static SINE_CURRENT_THRESHOLD: f64 = -30.0; // en dB : seuil très bas pour compression très douce
-pub static SINE_CURRENT_RATIO: f64 = 1.5; // ratio de compression : 1.5:1 très doux
-pub static SINE_CURRENT_ATTACK: f64 = 0.2; // attaque encore plus lente : 200 ms
-pub static SINE_CURRENT_RELEASE: f64 = 1.0; // release très lente : 1 seconde
-pub static SINE_CURRENT_MAKEUP_GAIN: f64 = 3.0; // gain de compensation réduit
+pub static SINE_CURRENT_THRESHOLD: f64 = -10.0; // en dB : seuil élevé - compression seulement sur les pics
+pub static SINE_CURRENT_RATIO: f64 = 4.0; // ratio très doux : 1.2:1 - compression très légère
+pub static SINE_CURRENT_ATTACK: f64 = 1.01; // attaque encore plus lente : 200 ms
+pub static SINE_CURRENT_RELEASE: f64 = 0.2; // release très lente : 1 seconde
+pub static SINE_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain neutre
 
 /// FM
 pub static FM_CURRENT_GAIN: f64 = 0.6; // Current gain value

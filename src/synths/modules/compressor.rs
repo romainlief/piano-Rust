@@ -9,7 +9,13 @@ pub struct Compressor {
     makeup_gain_db: f64,
     sample_rate: f64,
 
-    envelope_db: f64, // niveau d’enveloppe lissé (en dB)
+    // Pour calcul RMS
+    rms_buffer: Vec<f64>,
+    rms_sum: f64,
+    rms_index: usize,
+    rms_window_size: usize,
+
+    envelope_db: f64,
 }
 
 impl Compressor {
@@ -23,6 +29,9 @@ impl Compressor {
     ) -> Self {
         let attack_coeff = (-1.0 / (attack_sec * sample_rate)).exp();
         let release_coeff = (-1.0 / (release_sec * sample_rate)).exp();
+
+        let rms_window_size = (0.03 * sample_rate) as usize; // 30 ms window
+
         Self {
             threshold_db,
             ratio,
@@ -30,18 +39,31 @@ impl Compressor {
             release_coeff,
             makeup_gain_db,
             sample_rate,
+            rms_buffer: vec![0.0; rms_window_size],
+            rms_sum: 0.0,
+            rms_index: 0,
+            rms_window_size,
             envelope_db: -120.0,
         }
     }
 
-    #[inline]
     fn linear_to_db(linear: f64) -> f64 {
         20.0 * linear.max(1e-12).log10()
     }
 
-    #[inline]
     fn db_to_linear(db: f64) -> f64 {
         10f64.powf(db / 20.0)
+    }
+
+    // Met à jour le RMS avec le nouvel échantillon et retourne le RMS courant
+    fn update_rms(&mut self, sample: f64) -> f64 {
+        let sq = sample * sample;
+        self.rms_sum -= self.rms_buffer[self.rms_index];
+        self.rms_sum += sq;
+        self.rms_buffer[self.rms_index] = sq;
+        self.rms_index = (self.rms_index + 1) % self.rms_window_size;
+
+        (self.rms_sum / self.rms_window_size as f64).sqrt()
     }
 
     fn gain_reduction(&self, input_db: f64) -> f64 {
@@ -55,33 +77,31 @@ impl Compressor {
 
 impl Module for Compressor {
     fn process(&mut self, input: f64, _time: f64) -> f64 {
-        let input_level = input.abs();
-        let input_db = Self::linear_to_db(input_level);
+        // Calcul du niveau RMS sur la fenêtre glissante
+        let rms = self.update_rms(input.abs());
+        let input_db = Self::linear_to_db(rms);
 
         let target_reduction = self.gain_reduction(input_db);
 
-        // Attack/Release smoothing correct sur l'enveloppe de réduction
+        // Attack/Release smoothing de la réduction de gain
         if target_reduction > self.envelope_db {
-            // Attack - transition rapide vers plus de compression
-            self.envelope_db = target_reduction + self.attack_coeff * (self.envelope_db - target_reduction);
+            self.envelope_db =
+                target_reduction + self.attack_coeff * (self.envelope_db - target_reduction);
         } else {
-            // Release - transition lente vers moins de compression
-            self.envelope_db = target_reduction + self.release_coeff * (self.envelope_db - target_reduction);
+            self.envelope_db =
+                target_reduction + self.release_coeff * (self.envelope_db - target_reduction);
         }
 
-        // Calcul gain linéaire final (compression + makeup)
+        // Gain final avec make-up
         let gain_db = -self.envelope_db + self.makeup_gain_db;
         let gain = Self::db_to_linear(gain_db);
 
-        // Limiter le gain pour éviter les explosions
-        let safe_gain = gain.min(4.0).max(0.01); // Entre 0.01 et 4.0
-
-        // Applique gain en préservant le signe
-        input * safe_gain
+        // Applique le gain sur le signal d'entrée (préserve la phase)
+        input * gain
     }
 
     fn name(&self) -> &'static str {
-        "SimpleCompressor"
+        "SimpleRMSCompressor"
     }
 
     fn clone_box(&self) -> Box<dyn Module> {
