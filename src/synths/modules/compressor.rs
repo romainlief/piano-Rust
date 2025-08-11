@@ -7,7 +7,7 @@ pub struct Compressor {
     attack_coeff: f64,
     release_coeff: f64,
     makeup_gain_db: f64,
-    sample_rate: f64,
+    _sample_rate: f64,
 
     // Pour calcul RMS
     rms_buffer: Vec<f64>,
@@ -38,7 +38,7 @@ impl Compressor {
             attack_coeff,
             release_coeff,
             makeup_gain_db,
-            sample_rate,
+            _sample_rate: sample_rate,
             rms_buffer: vec![0.0; rms_window_size],
             rms_sum: 0.0,
             rms_index: 0,
