@@ -17,10 +17,11 @@ pub static ADSR_RELEASE: f64 = 0.3;
 /// SINE
 ///
 /// ACTIVATION EFFECT
-pub static SINE_ACTIVATION_GAIN: bool = false; // true to activate the gain effect
-pub static SINE_ACTIVATION_LFO: bool = false; // true to activate the LFO effect
-pub static SINE_ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
+pub static SINE_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
+pub static SINE_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
+pub static SINE_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 pub static SINE_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
+pub static SINE_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SINE_CURRENT_GAIN: f64 = 4.1; // Current gain value
@@ -34,6 +35,9 @@ pub static SINE_CURRENT_RELEASE: f64 = 0.2; // release très lente : 1 seconde
 pub static SINE_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain neutre
 // NOISE
 pub static SINE_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
+// LOW PASS
+pub static SINE_CURRENT_FILTER_CUTOFF: f64 = 50.0; // fréquence de coupure en Hz
+pub static SINE_CURRENT_FILTER_RESONANCE: f64 = 0.05; // résonance (Q)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// FM

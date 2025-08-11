@@ -6,4 +6,3 @@
   - filter (low pass)
   - reverb
   - delay
-  - noise

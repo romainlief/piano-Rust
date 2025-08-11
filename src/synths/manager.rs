@@ -1,6 +1,7 @@
 use crate::consts::constants;
 use crate::synths::modular::ModularSynth;
 use crate::synths::modules::compressor::Compressor;
+use crate::synths::modules::filter::LowPassFilter;
 use crate::synths::modules::gain::Gain;
 use crate::synths::modules::lfo::{LFO, LfoWaveform};
 use crate::synths::modules::noise::Noise;
@@ -84,16 +85,26 @@ impl SynthType {
             constants::SAMPLE_RATE,
         );
 
+        let filter = LowPassFilter::new(
+            constants::SINE_CURRENT_FILTER_CUTOFF,
+            constants::SINE_CURRENT_FILTER_RESONANCE,
+            constants::SAMPLE_RATE,
+        );
+
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
         if constants::SINE_ACTIVATION_NOISE {
             synth.add_module(noise);
         }
-        if constants::SINE_ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
         if constants::SINE_ACTIVATION_LFO {
             synth.add_module(lfo);
         }
+        if constants::SINE_ACTIVATION_FILTER {
+            synth.add_module(filter);
+        }
+        if constants::SINE_ACTIVATION_GAIN {
+            synth.add_module(gain);
+        }
+
         if constants::SINE_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
