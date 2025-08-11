@@ -104,7 +104,6 @@ impl SynthType {
         if constants::SINE_ACTIVATION_GAIN {
             synth.add_module(gain);
         }
-
         if constants::SINE_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
@@ -133,15 +132,24 @@ impl SynthType {
             constants::SAMPLE_RATE,
         );
 
+        let filter = LowPassFilter::new(
+            constants::SQUARE_CURRENT_FILTER_CUTOFF,
+            constants::SQUARE_CURRENT_FILTER_RESONANCE,
+            constants::SAMPLE_RATE,
+        );
+
         let mut synth = ModularSynth::new(oscillator);
         if constants::SQUARE_ACTIVATION_NOISE {
             synth.add_module(noise);
         }
-        if constants::SQUARE_ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
         if constants::SQUARE_ACTIVATION_LFO {
             synth.add_module(lfo);
+        }
+        if constants::SQUARE_ACTIVATION_FILTER {
+            synth.add_module(filter);
+        }
+        if constants::SQUARE_ACTIVATION_GAIN {
+            synth.add_module(gain);
         }
         if constants::SQUARE_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
@@ -165,6 +173,12 @@ impl SynthType {
             constants::SAMPLE_RATE,
         );
 
+        let filter = LowPassFilter::new(
+            constants::SAWTOOTH_CURRENT_FILTER_CUTOFF,
+            constants::SAWTOOTH_CURRENT_FILTER_RESONANCE,
+            constants::SAMPLE_RATE,
+        );
+
         let lfo = LFO::new(
             LfoWaveform::SawUp,
             constants::SAWTOOTH_CURRENT_LFO_FREQ,
@@ -175,11 +189,14 @@ impl SynthType {
         if constants::SAWTOOTH_ACTIVATION_NOISE {
             synth.add_module(noise);
         }
-        if constants::SAWTOOTH_ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
         if constants::SAWTOOTH_ACTIVATION_LFO {
             synth.add_module(lfo);
+        }
+        if constants::SAWTOOTH_ACTIVATION_FILTER {
+            synth.add_module(filter);
+        }
+        if constants::SAWTOOTH_ACTIVATION_GAIN {
+            synth.add_module(gain);
         }
         if constants::SAWTOOTH_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
@@ -203,6 +220,12 @@ impl SynthType {
             constants::SAMPLE_RATE,
         );
 
+        let filter = LowPassFilter::new(
+            constants::FM_CURRENT_FILTER_CUTOFF,
+            constants::FM_CURRENT_FILTER_RESONANCE,
+            constants::SAMPLE_RATE,
+        );
+
         let lfo = LFO::new(
             LfoWaveform::SawDown,
             constants::FM_CURRENT_LFO_FREQ,
@@ -213,11 +236,14 @@ impl SynthType {
         if constants::FM_ACTIVATION_NOISE {
             synth.add_module(noise);
         }
-        if constants::FM_ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
         if constants::FM_ACTIVATION_LFO {
             synth.add_module(lfo);
+        }
+        if constants::FM_ACTIVATION_FILTER {
+            synth.add_module(filter);
+        }
+        if constants::FM_ACTIVATION_GAIN {
+            synth.add_module(gain);
         }
         if constants::FM_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
@@ -240,6 +266,13 @@ impl SynthType {
             constants::HAMMOND_CURRENT_GAIN,
             constants::SAMPLE_RATE,
         );
+
+        let filter = LowPassFilter::new(
+            constants::HAMMOND_CURRENT_FILTER_CUTOFF,
+            constants::HAMMOND_CURRENT_FILTER_RESONANCE,
+            constants::SAMPLE_RATE,
+        );
+
         let lfo = LFO::new(
             LfoWaveform::Sine,
             constants::HAMMOND_CURRENT_LFO_FREQ,
@@ -250,11 +283,14 @@ impl SynthType {
         if constants::HAMMOND_ACTIVATION_NOISE {
             synth.add_module(noise);
         }
-        if constants::HAMMOND_ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
         if constants::HAMMOND_ACTIVATION_LFO {
             synth.add_module(lfo);
+        }
+        if constants::HAMMOND_ACTIVATION_FILTER {
+            synth.add_module(filter);
+        }
+        if constants::HAMMOND_ACTIVATION_GAIN {
+            synth.add_module(gain);
         }
         if constants::HAMMOND_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);

@@ -36,8 +36,8 @@ pub static SINE_CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain neutre
 // NOISE
 pub static SINE_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 // LOW PASS
-pub static SINE_CURRENT_FILTER_CUTOFF: f64 = 50.0; // fréquence de coupure en Hz
-pub static SINE_CURRENT_FILTER_RESONANCE: f64 = 0.05; // résonance (Q)
+pub static SINE_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
+pub static SINE_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// FM
@@ -47,6 +47,7 @@ pub static FM_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
 pub static FM_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
 pub static FM_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 pub static FM_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
+pub static FM_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static FM_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -62,6 +63,9 @@ pub static FM_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition douce 
 pub static FM_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
 // NOISE
 pub static FM_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
+// LOW PASS
+pub static FM_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
+pub static FM_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// HAMMOND
@@ -71,6 +75,7 @@ pub static HAMMOND_ACTIVATION_GAIN: bool = true; // true to activate the gain ef
 pub static HAMMOND_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
 pub static HAMMOND_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 pub static HAMMOND_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
+pub static HAMMOND_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static HAMMOND_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -86,6 +91,9 @@ pub static HAMMOND_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition d
 pub static HAMMOND_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
 // NOISE
 pub static HAMMOND_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
+// LOW PASS
+pub static HAMMOND_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
+pub static HAMMOND_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Sawtooth
@@ -95,6 +103,7 @@ pub static SAWTOOTH_ACTIVATION_GAIN: bool = true; // true to activate the gain e
 pub static SAWTOOTH_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
 pub static SAWTOOTH_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 pub static SAWTOOTH_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
+pub static SAWTOOTH_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SAWTOOTH_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -110,6 +119,9 @@ pub static SAWTOOTH_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition 
 pub static SAWTOOTH_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
 // NOISE
 pub static SAWTOOTH_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
+// LOW PASS
+pub static SAWTOOTH_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
+pub static SAWTOOTH_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Square
@@ -118,6 +130,7 @@ pub static SQUARE_ACTIVATION_GAIN: bool = true; // true to activate the gain eff
 pub static SQUARE_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
 pub static SQUARE_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 pub static SQUARE_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
+pub static SQUARE_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SQUARE_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -133,4 +146,7 @@ pub static SQUARE_CURRENT_KNEE: f64 = 6.0; // soft knee en dB, une transition do
 pub static SQUARE_CURRENT_LOOKAHEAD_TIME: f64 = 0.005; // 5 ms de look-ahead pour anticiper les pics
 // NOISE
 pub static SQUARE_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
+// LOW PASS
+pub static SQUARE_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
+pub static SQUARE_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////

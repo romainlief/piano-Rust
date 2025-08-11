@@ -12,8 +12,10 @@ pub struct LowPassFilter {
     b1: f64,
     b2: f64,
     // mémoire des échantillons
-    z1: f64,
-    z2: f64,
+    x1: f64, // entrée précédente
+    x2: f64, // entrée il y a 2 échantillons
+    y1: f64, // sortie précédente
+    y2: f64, // sortie il y a 2 échantillons
 }
 
 impl LowPassFilter {
@@ -27,8 +29,10 @@ impl LowPassFilter {
             a2: 0.0,
             b1: 0.0,
             b2: 0.0,
-            z1: 0.0,
-            z2: 0.0,
+            x1: 0.0,
+            x2: 0.0,
+            y1: 0.0,
+            y2: 0.0,
         };
         filter.calc_coefficients();
         filter
@@ -61,7 +65,7 @@ impl LowPassFilter {
     }
 
     pub fn set_resonance(&mut self, resonance: f64) {
-        self.resonance = resonance;
+        self.resonance = if resonance < 0.01 { 0.01 } else { resonance };
         self.calc_coefficients();
     }
 
@@ -87,11 +91,17 @@ impl LowPassFilter {
 
 impl Module for LowPassFilter {
     fn process(&mut self, input: f64, _time: f64) -> f64 {
-        let output = self.a0 * input + self.a1 * self.z1 + self.a2 * self.z2
-            - self.b1 * self.z1
-            - self.b2 * self.z2;
-        self.z2 = self.z1;
-        self.z1 = output;
+        // Formule du filtre biquad: y[n] = a0*x[n] + a1*x[n-1] + a2*x[n-2] - b1*y[n-1] - b2*y[n-2]
+        let output = self.a0 * input + self.a1 * self.x1 + self.a2 * self.x2
+            - self.b1 * self.y1
+            - self.b2 * self.y2;
+
+        // Mise à jour de la mémoire
+        self.x2 = self.x1;
+        self.x1 = input;
+        self.y2 = self.y1;
+        self.y1 = output;
+
         output
     }
 
