@@ -1,6 +1,6 @@
 # 🎹 Synthesizer in Rust
 
-This project is a synthesizer in Rust made with cpal and device_query.
+This project is a synthesizer in Rust made with cpal, device_query, once_cell, serde, serde_json and rand
 
 ## Features
 
@@ -15,9 +15,9 @@ This project is a synthesizer in Rust made with cpal and device_query.
 | Type                | Touche  | Description                                             |
 |---------------------|---------|---------------------------------------------------------|
 | **Sine**            |   `W`   | Pure and clear sine wave                                |
-| **Square 50%**      |   `X`   | Classic square wave                                     |
+| **Square**          |   `X`   | Classic square wave                                     |
 | **Sawtooth**        |   `S`   | Sawtooth wave, rich in harmonics                        |
-| **Hammond**         |   `N`   | Hammond organ simulation with controlled harmonics      |
+| **Hammond**         |   `H`   | Hammond organ simulation with controlled harmonics      |
 | **FM**              |   `K`   | Soft Frequency Modulation Synthesis                     |
 
 ## 🛠️ Installation and launch of the program
@@ -37,4 +37,8 @@ cargo run --release
 ## Dependencies
 
 - **[cpal](https://crates.io/crates/cpal)** `0.16.0` - Audio cross-platform
-- **[device_query](https://crates.io/crates/device_query)** `4.0.1` - Détection des touches en temps réel
+- **[device_query](https://crates.io/crates/device_query)** `4.0.1` - Note management in reql time
+- **[once_cell](https://crates.io/crates/once_cell)** `1.18.0` - For the JSON note file
+- **[serde](https://serde.rs/)** `1.0` - For the JSON note file
+- **[serde_json](https://crates.io/crates/serde_json/1.0.1/dependencies)** `1.0` - For the JSON note file
+- **[rand](https://crates.io/crates/rand)** `0.9.2` - To generate random numbers
