@@ -34,6 +34,12 @@ This project is a synthesizer in Rust made with cpal, device_query, once_cell, s
 cargo run --release
 ```
 
+or
+
+```bash
+cargo run
+```
+
 ## Dependencies
 
 - **[cpal](https://crates.io/crates/cpal)** `0.16.0` - Audio cross-platform
