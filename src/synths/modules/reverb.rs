@@ -101,13 +101,20 @@ pub struct Reverb {
 }
 
 impl Reverb {
-    pub fn new(sample_rate: f64, reverb_type: ReverbType) -> Self {
+    pub fn new(
+        sample_rate: f64,
+        reverb_type: ReverbType,
+        dry_wet: f64,
+        early_gain: f64,
+        tail_gain: f64,
+        pre_delay_ms: f64,
+    ) -> Self {
         let mut reverb = Self {
             reverb_type,
-            dry_wet: 0.25, // mix de base
-            early_gain: 0.9,
-            tail_gain: 0.9,
-            pre_delay_ms: 10.0, // pré-délai léger par défaut
+            dry_wet, // mix de base
+            early_gain,
+            tail_gain,
+            pre_delay_ms, // pré-délai léger par défaut
             sample_rate,
 
             ir: Vec::new(),

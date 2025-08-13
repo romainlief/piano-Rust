@@ -5,6 +5,7 @@ use crate::synths::modules::filter::LowPassFilter;
 use crate::synths::modules::gain::Gain;
 use crate::synths::modules::lfo::{LFO, LfoWaveform};
 use crate::synths::modules::noise::Noise;
+use crate::synths::modules::reverb::{Reverb, ReverbType};
 use crate::synths::oscillators::{
     FmOscillator, HammondOscillator, SawtoothOscillator, SineOscillator, SquareOscillator,
 };
@@ -80,7 +81,7 @@ impl SynthType {
         let gain = Gain::new(constants::SINE_CURRENT_GAIN);
 
         let lfo = LFO::new(
-            LfoWaveform::Sine,
+            constants::SINE_CURRENT_LFO_WAVEFORM,
             constants::SINE_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
@@ -89,6 +90,15 @@ impl SynthType {
             constants::SINE_CURRENT_FILTER_CUTOFF,
             constants::SINE_CURRENT_FILTER_RESONANCE,
             constants::SAMPLE_RATE,
+        );
+
+        let reverb = Reverb::new(
+            constants::SAMPLE_RATE,
+            constants::SINE_CURRENT_REVERB_TYPE,
+            constants::SINE_CURRENT_DRY_WET,
+            constants::SINE_CURRENT_REVERB_EARLY_GAIN,
+            constants::SINE_CURRENT_REVERB_TAIL_GAIN,
+            constants::SINE_CURRENT_REVERB_PRE_DELAY_MS,
         );
 
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
@@ -106,6 +116,9 @@ impl SynthType {
         }
         if constants::SINE_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
+        }
+        if constants::SINE_ACTIVATION_REVERB {
+            synth.add_module(reverb);
         }
         SynthType::Sine(synth)
     }
@@ -127,7 +140,7 @@ impl SynthType {
         );
 
         let lfo = LFO::new(
-            LfoWaveform::Square,
+            constants::SQUARE_CURRENT_LFO_WAVEFORM,
             constants::SQUARE_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
@@ -180,7 +193,7 @@ impl SynthType {
         );
 
         let lfo = LFO::new(
-            LfoWaveform::SawUp,
+            constants::SAWTOOTH_CURRENT_LFO_WAVEFORM,
             constants::SAWTOOTH_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
@@ -227,7 +240,7 @@ impl SynthType {
         );
 
         let lfo = LFO::new(
-            LfoWaveform::SawDown,
+            constants::FM_CURRENT_LFO_WAVEFORM,
             constants::FM_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
@@ -274,7 +287,7 @@ impl SynthType {
         );
 
         let lfo = LFO::new(
-            LfoWaveform::Sine,
+            constants::HAMMOND_CURRENT_LFO_WAVEFORM,
             constants::HAMMOND_CURRENT_LFO_FREQ,
             constants::SAMPLE_RATE,
         );
