@@ -58,6 +58,7 @@ pub static FM_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
 pub static FM_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 pub static FM_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 pub static FM_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
+pub static FM_ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static FM_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -77,6 +78,12 @@ pub static FM_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 // LOW PASS
 pub static FM_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
 pub static FM_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
+// REVERB
+pub static FM_CURRENT_DRY_WET: f64 = 0.2; // niveau de réverbération à ajouter
+pub static FM_CURRENT_REVERB_TYPE: ReverbType = ReverbType::Spring; // Type de réverbération par défaut
+pub static FM_CURRENT_REVERB_EARLY_GAIN: f64 = 0.9; // Gain des premières réflexions
+pub static FM_CURRENT_REVERB_TAIL_GAIN: f64 = 0.9; // Gain de la queue
+pub static FM_CURRENT_REVERB_PRE_DELAY_MS: f64 = 10.0; // Pré-délai en millisecondes
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// HAMMOND
@@ -87,6 +94,7 @@ pub static HAMMOND_ACTIVATION_LFO: bool = true; // true to activate the LFO effe
 pub static HAMMOND_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 pub static HAMMOND_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 pub static HAMMOND_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
+pub static HAMMOND_ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static HAMMOND_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -106,6 +114,12 @@ pub static HAMMOND_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 // LOW PASS
 pub static HAMMOND_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
 pub static HAMMOND_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
+// REVERB
+pub static HAMMOND_CURRENT_DRY_WET: f64 = 0.2; // niveau de réverbération à ajouter
+pub static HAMMOND_CURRENT_REVERB_TYPE: ReverbType = ReverbType::Spring; // Type de réverbération par défaut
+pub static HAMMOND_CURRENT_REVERB_EARLY_GAIN: f64 = 0.9; // Gain des premières réflexions
+pub static HAMMOND_CURRENT_REVERB_TAIL_GAIN: f64 = 0.9; // Gain de la queue
+pub static HAMMOND_CURRENT_REVERB_PRE_DELAY_MS: f64 = 10.0; // Pré-délai en millisecondes
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Sawtooth
@@ -116,6 +130,7 @@ pub static SAWTOOTH_ACTIVATION_LFO: bool = true; // true to activate the LFO eff
 pub static SAWTOOTH_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 pub static SAWTOOTH_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 pub static SAWTOOTH_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
+pub static SAWTOOTH_ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SAWTOOTH_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -135,6 +150,12 @@ pub static SAWTOOTH_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 // LOW PASS
 pub static SAWTOOTH_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
 pub static SAWTOOTH_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
+// REVERB
+pub static SAWTOOTH_CURRENT_DRY_WET: f64 = 0.2; // niveau de réverbération à ajouter
+pub static SAWTOOTH_CURRENT_REVERB_TYPE: ReverbType = ReverbType::Spring; // Type de réverbération par défaut
+pub static SAWTOOTH_CURRENT_REVERB_EARLY_GAIN: f64 = 0.9; // Gain des premières réflexions
+pub static SAWTOOTH_CURRENT_REVERB_TAIL_GAIN: f64 = 0.9; // Gain de la queue
+pub static SAWTOOTH_CURRENT_REVERB_PRE_DELAY_MS: f64 = 10.0; // Pré-délai en millisecondes
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Square
@@ -144,6 +165,7 @@ pub static SQUARE_ACTIVATION_LFO: bool = true; // true to activate the LFO effec
 pub static SQUARE_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
 pub static SQUARE_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 pub static SQUARE_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
+pub static SQUARE_ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static SQUARE_CURRENT_GAIN: f64 = 0.6; // Current gain value
@@ -163,4 +185,10 @@ pub static SQUARE_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 // LOW PASS
 pub static SQUARE_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
 pub static SQUARE_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
+// REVERB
+pub static SQUARE_CURRENT_DRY_WET: f64 = 0.2; // niveau de réverbération à ajouter
+pub static SQUARE_CURRENT_REVERB_TYPE: ReverbType = ReverbType::Spring; // Type de réverbération par défaut
+pub static SQUARE_CURRENT_REVERB_EARLY_GAIN: f64 = 0.9; // Gain des premières réflexions
+pub static SQUARE_CURRENT_REVERB_TAIL_GAIN: f64 = 0.9; // Gain de la queue
+pub static SQUARE_CURRENT_REVERB_PRE_DELAY_MS: f64 = 10.0; // Pré-délai en millisecondes
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////

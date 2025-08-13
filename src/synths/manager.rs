@@ -3,9 +3,9 @@ use crate::synths::modular::ModularSynth;
 use crate::synths::modules::compressor::Compressor;
 use crate::synths::modules::filter::LowPassFilter;
 use crate::synths::modules::gain::Gain;
-use crate::synths::modules::lfo::{LFO, LfoWaveform};
+use crate::synths::modules::lfo::LFO;
 use crate::synths::modules::noise::Noise;
-use crate::synths::modules::reverb::{Reverb, ReverbType};
+use crate::synths::modules::reverb::Reverb;
 use crate::synths::oscillators::{
     FmOscillator, HammondOscillator, SawtoothOscillator, SineOscillator, SquareOscillator,
 };
@@ -151,6 +151,15 @@ impl SynthType {
             constants::SAMPLE_RATE,
         );
 
+        let reverb = Reverb::new(
+            constants::SAMPLE_RATE,
+            constants::SQUARE_CURRENT_REVERB_TYPE,
+            constants::SQUARE_CURRENT_DRY_WET,
+            constants::SQUARE_CURRENT_REVERB_EARLY_GAIN,
+            constants::SQUARE_CURRENT_REVERB_TAIL_GAIN,
+            constants::SQUARE_CURRENT_REVERB_PRE_DELAY_MS,
+        );
+
         let mut synth = ModularSynth::new(oscillator);
         if constants::SQUARE_ACTIVATION_NOISE {
             synth.add_module(noise);
@@ -166,6 +175,9 @@ impl SynthType {
         }
         if constants::SQUARE_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
+        }
+        if constants::SQUARE_ACTIVATION_REVERB {
+            synth.add_module(reverb);
         }
         SynthType::Square(synth)
     }
@@ -198,6 +210,15 @@ impl SynthType {
             constants::SAMPLE_RATE,
         );
 
+        let reverb = Reverb::new(
+            constants::SAMPLE_RATE,
+            constants::SAWTOOTH_CURRENT_REVERB_TYPE,
+            constants::SAWTOOTH_CURRENT_DRY_WET,
+            constants::SAWTOOTH_CURRENT_REVERB_EARLY_GAIN,
+            constants::SAWTOOTH_CURRENT_REVERB_TAIL_GAIN,
+            constants::SAWTOOTH_CURRENT_REVERB_PRE_DELAY_MS,
+        );
+
         let mut synth = ModularSynth::new(oscillator);
         if constants::SAWTOOTH_ACTIVATION_NOISE {
             synth.add_module(noise);
@@ -213,6 +234,9 @@ impl SynthType {
         }
         if constants::SAWTOOTH_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
+        }
+        if constants::SAWTOOTH_ACTIVATION_REVERB {
+            synth.add_module(reverb);
         }
         SynthType::Sawtooth(synth)
     }
@@ -245,6 +269,15 @@ impl SynthType {
             constants::SAMPLE_RATE,
         );
 
+        let reverb = Reverb::new(
+            constants::SAMPLE_RATE,
+            constants::FM_CURRENT_REVERB_TYPE,
+            constants::FM_CURRENT_DRY_WET,
+            constants::FM_CURRENT_REVERB_EARLY_GAIN,
+            constants::FM_CURRENT_REVERB_TAIL_GAIN,
+            constants::FM_CURRENT_REVERB_PRE_DELAY_MS,
+        );
+
         let mut synth = ModularSynth::new(oscillator);
         if constants::FM_ACTIVATION_NOISE {
             synth.add_module(noise);
@@ -260,6 +293,9 @@ impl SynthType {
         }
         if constants::FM_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
+        }
+        if constants::FM_ACTIVATION_REVERB {
+            synth.add_module(reverb);
         }
         SynthType::FM(synth)
     }
@@ -292,6 +328,15 @@ impl SynthType {
             constants::SAMPLE_RATE,
         );
 
+        let reverb = Reverb::new(
+            constants::SAMPLE_RATE,
+            constants::HAMMOND_CURRENT_REVERB_TYPE,
+            constants::HAMMOND_CURRENT_DRY_WET,
+            constants::HAMMOND_CURRENT_REVERB_EARLY_GAIN,
+            constants::HAMMOND_CURRENT_REVERB_TAIL_GAIN,
+            constants::HAMMOND_CURRENT_REVERB_PRE_DELAY_MS,
+        );
+
         let mut synth = ModularSynth::new(oscillator);
         if constants::HAMMOND_ACTIVATION_NOISE {
             synth.add_module(noise);
@@ -307,6 +352,9 @@ impl SynthType {
         }
         if constants::HAMMOND_ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
+        }
+        if constants::HAMMOND_ACTIVATION_REVERB {
+            synth.add_module(reverb);
         }
         SynthType::Hammond(synth)
     }
