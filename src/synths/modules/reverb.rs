@@ -1,6 +1,7 @@
 use crate::synths::traits::Module;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
+/// Types of reverb
 pub enum ReverbType {
     Hall,
     Room,

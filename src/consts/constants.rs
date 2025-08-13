@@ -10,20 +10,20 @@ pub const SAMPLE_RATE: f64 = 44100.0;
 pub static CURRENT_OCTAVE_INDEX: AtomicUsize = AtomicUsize::new(4); // Current index in VECTEUR_NOTES (thread-safe)
 
 /// ADSR
-pub static ADSR_ATTACK: f64 = 1.0;
-pub static ADSR_DECAY: f64 = 0.1;
-pub static ADSR_SUSTAIN: f64 = 0.9;
-pub static ADSR_RELEASE: f64 = 0.3;
+pub static ADSR_ATTACK: f64 = 1.0; // Attack time in seconds
+pub static ADSR_DECAY: f64 = 0.1; // Decay time in seconds
+pub static ADSR_SUSTAIN: f64 = 1.0; // Sustain level (0.0 to 1.0)
+pub static ADSR_RELEASE: f64 = 0.7; // Release time in seconds
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// SINE
 ///
 /// ACTIVATION EFFECT
-pub static SINE_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
-pub static SINE_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
-pub static SINE_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
-pub static SINE_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
-pub static SINE_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
+pub static SINE_ACTIVATION_GAIN: bool = false; // true to activate the gain effect
+pub static SINE_ACTIVATION_LFO: bool = false; // true to activate the LFO effect
+pub static SINE_ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
+pub static SINE_ACTIVATION_NOISE: bool = false; // true to activate the noise effect
+pub static SINE_ACTIVATION_FILTER: bool = false; // true to activate the filter effect
 pub static SINE_ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
@@ -43,11 +43,11 @@ pub static SINE_CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 pub static SINE_CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
 pub static SINE_CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
 // REVERB
-pub static SINE_CURRENT_DRY_WET: f64 = 0.2; // niveau de réverbération à ajouter
-pub static SINE_CURRENT_REVERB_TYPE: ReverbType = ReverbType::Spring; // Type de réverbération par défaut
+pub static SINE_CURRENT_DRY_WET: f64 = 0.7; // niveau de réverbération à ajouter
+pub static SINE_CURRENT_REVERB_TYPE: ReverbType = ReverbType::Plate; // Type de réverbération par défaut
 pub static SINE_CURRENT_REVERB_EARLY_GAIN: f64 = 0.9; // Gain des premières réflexions
 pub static SINE_CURRENT_REVERB_TAIL_GAIN: f64 = 0.9; // Gain de la queue
-pub static SINE_CURRENT_REVERB_PRE_DELAY_MS: f64 = 10.0; // Pré-délai en millisecondes
+pub static SINE_CURRENT_REVERB_PRE_DELAY_MS: f64 = 100.0; // Pré-délai en millisecondes
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// FM
