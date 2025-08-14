@@ -54,10 +54,10 @@ pub static SINE_CURRENT_REVERB_PRE_DELAY_MS: f64 = 100.0; // Pré-délai en mill
 ///
 /// ACTIVATION EFFECT
 pub static FM_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
-pub static FM_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
-pub static FM_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+pub static FM_ACTIVATION_LFO: bool = false; // true to activate the LFO effect
+pub static FM_ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
 pub static FM_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
-pub static FM_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
+pub static FM_ACTIVATION_FILTER: bool = false; // true to activate the filter effect
 pub static FM_ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
@@ -90,10 +90,10 @@ pub static FM_CURRENT_REVERB_PRE_DELAY_MS: f64 = 10.0; // Pré-délai en millise
 ///
 /// ACTIVATION EFFECT
 pub static HAMMOND_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
-pub static HAMMOND_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
-pub static HAMMOND_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+pub static HAMMOND_ACTIVATION_LFO: bool = false; // true to activate the LFO effect
+pub static HAMMOND_ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
 pub static HAMMOND_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
-pub static HAMMOND_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
+pub static HAMMOND_ACTIVATION_FILTER: bool = false; // true to activate the filter effect
 pub static HAMMOND_ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
@@ -126,10 +126,10 @@ pub static HAMMOND_CURRENT_REVERB_PRE_DELAY_MS: f64 = 10.0; // Pré-délai en mi
 ///
 /// ACTIVATION EFFECT
 pub static SAWTOOTH_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
-pub static SAWTOOTH_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
-pub static SAWTOOTH_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+pub static SAWTOOTH_ACTIVATION_LFO: bool = false; // true to activate the LFO effect
+pub static SAWTOOTH_ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
 pub static SAWTOOTH_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
-pub static SAWTOOTH_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
+pub static SAWTOOTH_ACTIVATION_FILTER: bool = false; // true to activate the filter effect
 pub static SAWTOOTH_ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
@@ -161,10 +161,10 @@ pub static SAWTOOTH_CURRENT_REVERB_PRE_DELAY_MS: f64 = 10.0; // Pré-délai en m
 /// Square
 /// ACTIVATION EFFECT
 pub static SQUARE_ACTIVATION_GAIN: bool = true; // true to activate the gain effect
-pub static SQUARE_ACTIVATION_LFO: bool = true; // true to activate the LFO effect
-pub static SQUARE_ACTIVATION_COMPRESSOR: bool = true; // true to activate the compressor effect
+pub static SQUARE_ACTIVATION_LFO: bool = false; // true to activate the LFO effect
+pub static SQUARE_ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
 pub static SQUARE_ACTIVATION_NOISE: bool = true; // true to activate the noise effect
-pub static SQUARE_ACTIVATION_FILTER: bool = true; // true to activate the filter effect
+pub static SQUARE_ACTIVATION_FILTER: bool = false; // true to activate the filter effect
 pub static SQUARE_ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN

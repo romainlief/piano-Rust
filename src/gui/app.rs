@@ -94,7 +94,7 @@ impl eframe::App for SynthesizerApp {
         if self.show_effects {
             egui::SidePanel::left("effects_panel")
                 .resizable(true)
-                .default_width(250.0)
+                .default_width(300.0)
                 .show(ctx, |ui| {
                     ui.heading("🎛️ Contrôles");
 
@@ -167,7 +167,7 @@ impl SynthesizerApp {
         ui.horizontal(|ui| {
             let white_keys = ["C", "D", "E", "F", "G", "A", "B"];
             for key in &white_keys {
-                let button = egui::Button::new(*key).min_size(egui::vec2(40.0, 80.0));
+                let button = egui::Button::new(*key).min_size(egui::vec2(120.0, 180.0));
 
                 let response = ui.add(button);
                 let key_string = key.to_string();
@@ -188,13 +188,13 @@ impl SynthesizerApp {
 
         // Touches noires (dièses)
         ui.horizontal(|ui| {
-            let black_keys = ["C#", "", "D#", "", "", "F#", "", "G#", "", "A#", ""];
+            let black_keys = ["","C#", "", "D#", "", "", "F#", "", "G#", "", "A#", ""];
             for (_i, key) in black_keys.iter().enumerate() {
                 if key.is_empty() {
-                    ui.add_space(40.0); // Espace pour alignement
+                    ui.add_space(67.0); // Espace pour alignement
                 } else {
                     let button = egui::Button::new(*key)
-                        .min_size(egui::vec2(30.0, 50.0))
+                        .min_size(egui::vec2(80.0, 150.0))
                         .fill(egui::Color32::from_rgb(50, 50, 50));
 
                     let response = ui.add(button);
