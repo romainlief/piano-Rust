@@ -4,3 +4,4 @@ pub mod prints;
 pub mod input;
 pub mod audio;
 pub mod launcher;
+pub mod gui;

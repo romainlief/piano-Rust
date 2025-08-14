@@ -62,6 +62,18 @@ impl SynthType {
     }
 }
 
+impl std::fmt::Debug for SynthType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SynthType::Sine(_) => write!(f, "Sine"),
+            SynthType::Square(_) => write!(f, "Square"),
+            SynthType::Sawtooth(_) => write!(f, "Sawtooth"),
+            SynthType::FM(_) => write!(f, "FM"),
+            SynthType::Hammond(_) => write!(f, "Hammond"),
+        }
+    }
+}
+
 impl SynthType {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     pub fn n_sine() -> Self {

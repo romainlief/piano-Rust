@@ -30,14 +30,14 @@ This project is a synthesizer in Rust made with cpal, device_query, once_cell, s
 
 ### Launch the application
 
+To run the code in the terminal:
 ```bash
-cargo run --release
+cargo run --bin synthesizer_emulation
 ```
 
-or
-
+To run the GUI:
 ```bash
-cargo run
+cargo run --bin gui
 ```
 
 ## Dependencies
