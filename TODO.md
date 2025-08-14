@@ -5,7 +5,6 @@
 - GUI
 
 - Modulation synthé a améliorer
-  - delay
-  - finir le shimmer
+  - finir le shimmer (un jour peut etre)
 
 - faire bien toute les consts
