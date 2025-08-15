@@ -19,9 +19,11 @@ pub struct SynthesizerApp {
     pressed_notes: HashSet<String>,
 
     // États de l'interface
-    volume: f32,
-    reverb_wet: f32,
+    gain: f64,
+
     current_octave: usize,
+
+    reverb_dry_wet: f64,
 
     show_keyboard: bool,
     show_effects: bool,
@@ -37,9 +39,11 @@ impl SynthesizerApp {
             notes: None,
             synth_control: None,
             pressed_notes: HashSet::new(),
-            volume: 0.7,
-            reverb_wet: 0.2,
-            current_octave: constants::VECTEUR_NOTES[constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)] as usize,
+            gain: 0.7,
+            reverb_dry_wet: 0.2,
+            current_octave: constants::VECTEUR_NOTES
+                [constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)]
+                as usize,
             show_keyboard: true,
             show_effects: true,
         }
@@ -107,14 +111,17 @@ impl eframe::App for SynthesizerApp {
                     // Volume général
                     ui.horizontal(|ui| {
                         ui.label("Volume:");
-                        ui.add(egui::Slider::new(&mut self.volume, 0.0..=1.0).text("Vol"));
+                        ui.add(egui::Slider::new(&mut self.gain, 0.0..=1.0).text("Vol"));
                     });
 
                     // Octave (correspondant au système JSON 1-9)
                     ui.horizontal(|ui| {
                         ui.label("Octave:");
                         let mut new_octave = self.current_octave;
-                        if ui.add(egui::Slider::new(&mut new_octave, 1..=9).text("Oct")).changed() {
+                        if ui
+                            .add(egui::Slider::new(&mut new_octave, 1..=9).text("Oct"))
+                            .changed()
+                        {
                             self.current_octave = new_octave;
                             self.update_global_octave();
                         }
@@ -126,7 +133,7 @@ impl eframe::App for SynthesizerApp {
                     ui.heading("🌊 Reverb");
                     ui.horizontal(|ui| {
                         ui.label("Wet:");
-                        ui.add(egui::Slider::new(&mut self.reverb_wet, 0.0..=1.0).text("Wet"));
+                        ui.add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("Wet"));
                     });
 
                     ui.separator();
@@ -241,7 +248,7 @@ impl SynthesizerApp {
         }
     }
 
-    /// Met à jour l'octave globale 
+    /// Met à jour l'octave globale
     fn update_global_octave(&self) {
         // Convertir l'octave (1-9) en index (0-8) pour CURRENT_OCTAVE_INDEX
         let octave_index = (self.current_octave - 1).min(8);
@@ -281,18 +288,24 @@ impl SynthesizerApp {
             _ => "A",
         };
 
-        // Utiliser l'octave actuelle et chercher dans le JSON1
+        // Utiliser l'octave actuelle et chercher dans le JSON
         let octave = self.current_octave as u8;
 
         // Chercher la fréquence dans le système JSON
         if let Some(octave_notes) = NOTES.0.get(&octave) {
             if let Some(&frequency) = octave_notes.get(json_note) {
-                println!("Note trouvée: {} octave {} = {:.2} Hz", note_name, octave, frequency);
+                println!(
+                    "Note trouvée: {} octave {} = {:.2} Hz",
+                    note_name, octave, frequency
+                );
                 return frequency;
             }
         }
 
-        println!("Note non trouvée: {} octave {}, retour A4", note_name, octave);
+        println!(
+            "Note non trouvée: {} octave {}, retour A4",
+            note_name, octave
+        );
         440.0 // If not found, return A4
     }
 

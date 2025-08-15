@@ -9,3 +9,7 @@
   - finir le shimmer (un jour peut etre)
 
 - faire bien toute les consts
+
+- des presets
+
+- passer a une variable glob par effet et non par types de synths
