@@ -1,5 +1,6 @@
 use crate::audio::note_manager::ActiveNoteManager;
 use crate::synths::manager::SynthType;
+use crate::input::key_handlers::NOTES;
 use eframe::egui;
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
@@ -30,7 +31,7 @@ impl SynthesizerApp {
 
         Self {
             current_synth_type: SynthType::n_sine(),
-            current_octave: 5,
+            current_octave: 5, // Octave par défaut du système JSON
             notes: None,
             synth_control: None,
             pressed_notes: HashSet::new(),
@@ -56,7 +57,7 @@ impl eframe::App for SynthesizerApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         // Panel du haut - Contrôles principaux
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
-            egui::menu::bar(ui, |ui| {
+            egui::MenuBar::new().ui(ui, |ui| {
                 ui.menu_button("Synthétiseur", |ui| {
                     if ui.button("Sine").clicked() {
                         self.current_synth_type = SynthType::n_sine();
@@ -106,10 +107,10 @@ impl eframe::App for SynthesizerApp {
                         ui.add(egui::Slider::new(&mut self.volume, 0.0..=1.0).text("Vol"));
                     });
 
-                    // Octave
+                    // Octave (correspondant au système JSON 1-9)
                     ui.horizontal(|ui| {
                         ui.label("Octave:");
-                        ui.add(egui::Slider::new(&mut self.current_octave, 1..=8).text("Oct"));
+                        ui.add(egui::Slider::new(&mut self.current_octave, 1..=9).text("Oct"));
                     });
 
                     ui.separator();
@@ -227,7 +228,6 @@ impl SynthesizerApp {
         }
     }
 
-    /// Joue une note
     fn play_note(&mut self, note_name: &str) {
         if let Some(ref notes) = self.notes {
             let frequency = self.note_to_frequency(note_name);
@@ -235,7 +235,6 @@ impl SynthesizerApp {
         }
     }
     
-    /// Arrête une note
     fn stop_note(&mut self, note_name: &str) {
         if let Some(ref notes) = self.notes {
             let frequency = self.note_to_frequency(note_name);
@@ -243,26 +242,37 @@ impl SynthesizerApp {
         }
     }
 
-    /// Convertit un nom de note en fréquence
+    /// Convertit un nom de note en fréquence en utilisant le système JSON
     fn note_to_frequency(&self, note_name: &str) -> f64 {
-        let base_freq = match note_name {
-            "C" => 261.63,
-            "C#" => 277.18,
-            "D" => 293.66,
-            "D#" => 311.13,
-            "E" => 329.63,
-            "F" => 349.23,
-            "F#" => 369.99,
-            "G" => 392.00,
-            "G#" => 415.30,
-            "A" => 440.00,
-            "A#" => 466.16,
-            "B" => 493.88,
-            _ => 440.0, // Défaut
+        // Convertir le nom de note au format JSON
+        let json_note = match note_name {
+            "C" => "C",
+            "C#" => "CSHARP",
+            "D" => "D", 
+            "D#" => "DSHARP",
+            "E" => "E",
+            "F" => "F",
+            "F#" => "FSHARP",
+            "G" => "G",
+            "G#" => "GSHARP",
+            "A" => "A",
+            "A#" => "ASHARP",
+            "B" => "B",
+            _ => "A",
         };
-
-        // Ajuster pour l'octave
-        base_freq * (2.0_f64).powi(self.current_octave - 4)
+        
+        // Utiliser l'octave actuelle et chercher dans le JSON
+        let octave = self.current_octave as u8;
+        
+        // Chercher la fréquence dans le système JSON
+        if let Some(octave_notes) = NOTES.0.get(&octave) {
+            if let Some(&frequency) = octave_notes.get(json_note) {
+                return frequency;
+            }
+        }
+        
+        // Fallback si pas trouvé (peut arriver si octave > 9)
+        440.0
     }
 
     /// Ajoute une note au système audio
