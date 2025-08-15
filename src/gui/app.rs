@@ -1,25 +1,28 @@
 use crate::audio::note_manager::ActiveNoteManager;
-use crate::synths::manager::SynthType;
+use crate::consts::constants;
 use crate::input::key_handlers::NOTES;
+use crate::synths::manager::SynthType;
 use eframe::egui;
 use std::collections::HashSet;
+use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
 
 pub struct SynthesizerApp {
     // État du synthétiseur
     current_synth_type: SynthType,
-    current_octave: i32,
 
     // Interface audio
     notes: Option<ActiveNoteManager>,
     synth_control: Option<Arc<Mutex<SynthType>>>,
-    
+
     // Suivi des notes actuellement pressées
     pressed_notes: HashSet<String>,
 
     // États de l'interface
     volume: f32,
     reverb_wet: f32,
+    current_octave: usize,
+
     show_keyboard: bool,
     show_effects: bool,
 }
@@ -30,13 +33,13 @@ impl SynthesizerApp {
         configure_fonts(&cc.egui_ctx);
 
         Self {
-            current_synth_type: SynthType::n_sine(),
-            current_octave: 5, // Octave par défaut du système JSON
+            current_synth_type: SynthType::n_sine(), // Octave par défaut du système JSON
             notes: None,
             synth_control: None,
             pressed_notes: HashSet::new(),
             volume: 0.7,
             reverb_wet: 0.2,
+            current_octave: constants::VECTEUR_NOTES[constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)] as usize,
             show_keyboard: true,
             show_effects: true,
         }
@@ -110,7 +113,11 @@ impl eframe::App for SynthesizerApp {
                     // Octave (correspondant au système JSON 1-9)
                     ui.horizontal(|ui| {
                         ui.label("Octave:");
-                        ui.add(egui::Slider::new(&mut self.current_octave, 1..=9).text("Oct"));
+                        let mut new_octave = self.current_octave;
+                        if ui.add(egui::Slider::new(&mut new_octave, 1..=9).text("Oct")).changed() {
+                            self.current_octave = new_octave;
+                            self.update_global_octave();
+                        }
                     });
 
                     ui.separator();
@@ -172,15 +179,17 @@ impl SynthesizerApp {
 
                 let response = ui.add(button);
                 let key_string = key.to_string();
-                
+
                 // Si le bouton est pressé et la note n'était pas déjà active
-                if response.is_pointer_button_down_on() && !self.pressed_notes.contains(&key_string) {
+                if response.is_pointer_button_down_on() && !self.pressed_notes.contains(&key_string)
+                {
                     self.pressed_notes.insert(key_string.clone());
                     self.play_note(key);
                 }
-                
+
                 // Si le bouton n'est plus pressé et la note était active
-                if !response.is_pointer_button_down_on() && self.pressed_notes.contains(&key_string) {
+                if !response.is_pointer_button_down_on() && self.pressed_notes.contains(&key_string)
+                {
                     self.pressed_notes.remove(&key_string);
                     self.stop_note(key);
                 }
@@ -189,7 +198,7 @@ impl SynthesizerApp {
 
         // Touches noires (dièses)
         ui.horizontal(|ui| {
-            let black_keys = ["","C#", "", "D#", "", "", "F#", "", "G#", "", "A#", ""];
+            let black_keys = ["", "C#", "", "D#", "", "", "F#", "", "G#", "", "A#", ""];
             for (_i, key) in black_keys.iter().enumerate() {
                 if key.is_empty() {
                     ui.add_space(67.0); // Espace pour alignement
@@ -200,15 +209,19 @@ impl SynthesizerApp {
 
                     let response = ui.add(button);
                     let key_string = key.to_string();
-                    
+
                     // Si le bouton est pressé et la note n'était pas déjà active
-                    if response.is_pointer_button_down_on() && !self.pressed_notes.contains(&key_string) {
+                    if response.is_pointer_button_down_on()
+                        && !self.pressed_notes.contains(&key_string)
+                    {
                         self.pressed_notes.insert(key_string.clone());
                         self.play_note(key);
                     }
-                    
+
                     // Si le bouton n'est plus pressé et la note était active
-                    if !response.is_pointer_button_down_on() && self.pressed_notes.contains(&key_string) {
+                    if !response.is_pointer_button_down_on()
+                        && self.pressed_notes.contains(&key_string)
+                    {
                         self.pressed_notes.remove(&key_string);
                         self.stop_note(key);
                     }
@@ -228,13 +241,20 @@ impl SynthesizerApp {
         }
     }
 
+    /// Met à jour l'octave globale 
+    fn update_global_octave(&self) {
+        // Convertir l'octave (1-9) en index (0-8) pour CURRENT_OCTAVE_INDEX
+        let octave_index = (self.current_octave - 1).min(8);
+        constants::CURRENT_OCTAVE_INDEX.store(octave_index, Ordering::Relaxed);
+    }
+
     fn play_note(&mut self, note_name: &str) {
         if let Some(ref notes) = self.notes {
             let frequency = self.note_to_frequency(note_name);
             self.add_note(notes, frequency);
         }
     }
-    
+
     fn stop_note(&mut self, note_name: &str) {
         if let Some(ref notes) = self.notes {
             let frequency = self.note_to_frequency(note_name);
@@ -248,7 +268,7 @@ impl SynthesizerApp {
         let json_note = match note_name {
             "C" => "C",
             "C#" => "CSHARP",
-            "D" => "D", 
+            "D" => "D",
             "D#" => "DSHARP",
             "E" => "E",
             "F" => "F",
@@ -260,19 +280,20 @@ impl SynthesizerApp {
             "B" => "B",
             _ => "A",
         };
-        
-        // Utiliser l'octave actuelle et chercher dans le JSON
+
+        // Utiliser l'octave actuelle et chercher dans le JSON1
         let octave = self.current_octave as u8;
-        
+
         // Chercher la fréquence dans le système JSON
         if let Some(octave_notes) = NOTES.0.get(&octave) {
             if let Some(&frequency) = octave_notes.get(json_note) {
+                println!("Note trouvée: {} octave {} = {:.2} Hz", note_name, octave, frequency);
                 return frequency;
             }
         }
-        
-        // Fallback si pas trouvé (peut arriver si octave > 9)
-        440.0
+
+        println!("Note non trouvée: {} octave {}, retour A4", note_name, octave);
+        440.0 // If not found, return A4
     }
 
     /// Ajoute une note au système audio
@@ -288,7 +309,7 @@ impl SynthesizerApp {
             println!("Note ajoutée: {:.2} Hz ({})", frequency, frequency_key);
         }
     }
-    
+
     /// Supprime une note du système audio
     fn remove_note(&self, notes: &crate::audio::note_manager::ActiveNoteManager, frequency: f64) {
         let frequency_key = (frequency * 100.0) as u64;

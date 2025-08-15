@@ -2,7 +2,6 @@ use std::sync::{Arc, Mutex};
 use synthesizer_emulation::audio::{note_manager, setup_realtime_audio};
 use synthesizer_emulation::gui::SynthesizerApp;
 use synthesizer_emulation::synths;
-use synthesizer_emulation::synths::manager::SynthType;
 
 fn main() -> Result<(), eframe::Error> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
