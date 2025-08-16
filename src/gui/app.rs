@@ -133,7 +133,9 @@ impl eframe::App for SynthesizerApp {
                     ui.heading("🌊 Reverb");
                     ui.horizontal(|ui| {
                         ui.label("Wet:");
-                        ui.add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("Dry Wet"));
+                        ui.add(
+                            egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("Dry Wet"),
+                        );
                     });
 
                     ui.separator();
@@ -142,7 +144,11 @@ impl eframe::App for SynthesizerApp {
                     ui.heading("ℹ️ Info");
                     if let Some(ref notes) = self.notes {
                         let notes_guard = notes.lock().unwrap();
-                        ui.label(format!("Notes actives: {}", notes_guard.len()));
+                        let released_notes_count = notes_guard
+                            .values()
+                            .filter(|note| note.adsr.is_released())
+                            .count();
+                        ui.label(format!("Notes actives: {}", released_notes_count));
                     } else {
                         ui.label("Audio non connecté");
                     }

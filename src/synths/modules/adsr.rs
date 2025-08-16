@@ -204,6 +204,11 @@ impl ADSR {
         self.advance();
         self.level
     }
+
+    /// Retourne true si l'ADSR est en phase de release
+    pub fn is_released(&self) -> bool {
+        matches!(self.stage, EnvelopeStage::Release)
+    }
 }
 
 impl Module for ADSR {

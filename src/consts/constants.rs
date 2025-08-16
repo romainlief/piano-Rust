@@ -24,7 +24,7 @@ pub static ACTIVATION_LFO: bool = false; // true to activate the LFO effect
 pub static ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
 pub static ACTIVATION_NOISE: bool = false; // true to activate the noise effect
 pub static ACTIVATION_FILTER: bool = false; // true to activate the filter effect
-pub static ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
+pub static ACTIVATION_REVERB: bool = false; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
 pub static CURRENT_GAIN: f64 = 4.1; // Current gain value
@@ -40,7 +40,7 @@ pub static CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain neutre
 // NOISE
 pub static CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
 // LOW PASS
-pub static CURRENT_FILTER_CUTOFF: f64 = 100.0; // fréquence de coupure en Hz
+pub static CURRENT_FILTER_CUTOFF: f64 = 8000.0; // fréquence de coupure en Hz (était 100Hz - trop bas!)
 pub static CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
 // REVERB
 pub static CURRENT_DRY_WET: f64 = 0.7; // niveau de réverbération à ajouter
