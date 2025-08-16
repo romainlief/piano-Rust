@@ -9,3 +9,9 @@
   - finir le shimmer (un jour peut etre)
 
 - des presets
+
+- gerer un clavier midi
+
+- retirer tous les prints
+
+- pitch shiftting

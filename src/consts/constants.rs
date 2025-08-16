@@ -6,8 +6,9 @@ use std::sync::atomic::AtomicUsize;
 pub const VECTEUR_NOTES: [u8; 9] = [1, 2, 3, 4, 5, 6, 7, 8, 9]; // The 9 octaves
 pub const SAMPLE_RATE: f64 = 44100.0;
 pub const PROJECT_NAME: &str = "Synthétiseur Rust";
-pub const BLACK_KEYS: (u8, u8, u8) = (100, 150, 255); // Color of black keys
+pub const USED_KEYS: (u8, u8, u8) = (100, 150, 255); // Color of used keys
 pub const WHITE_KEYS: (u8, u8, u8) = (200, 230, 200); // Color of white keys
+pub const BLACK_KEYS: (u8, u8, u8) = (50, 50, 50); // Color of black keys
 
 /// Variables
 pub static CURRENT_OCTAVE_INDEX: AtomicUsize = AtomicUsize::new(4); // Current index in VECTEUR_NOTES (thread-safe)
@@ -19,8 +20,6 @@ pub static ADSR_SUSTAIN: f64 = 1.0; // Sustain level (0.0 to 1.0)
 pub static ADSR_RELEASE: f64 = 0.7; // Release time in seconds
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// SINE
-///
 /// ACTIVATION EFFECT
 pub static ACTIVATION_GAIN: bool = false; // true to activate the gain effect
 pub static ACTIVATION_LFO: bool = false; // true to activate the LFO effect

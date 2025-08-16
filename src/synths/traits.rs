@@ -13,6 +13,9 @@ pub trait Module: Send + Sync {
     fn name(&self) -> &'static str;
     fn clone_box(&self) -> Box<dyn Module>;
     
-    /// Pour le downcasting
+    /// Pour le downcasting mutable
     fn as_any_mut(&mut self) -> &mut dyn std::any::Any;
+    
+    /// Pour le downcasting en lecture seule
+    fn as_any(&self) -> &dyn std::any::Any;
 }

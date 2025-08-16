@@ -29,6 +29,10 @@ impl<O: Oscillator> ModularSynth<O> {
         self.modules.push(Box::new(module));
     }
 
+    pub fn get_module(&self, index: usize) -> Option<&Box<dyn Module>> {
+        self.modules.get(index)
+    }
+
     pub fn generate_sample(&mut self, phase: f64, time: f64) -> f64 {
         let mut sample = self.oscillator.sample(phase) * self.amplitude;
 

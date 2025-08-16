@@ -1,5 +1,5 @@
 use crate::audio::note_manager::ActiveNoteManager;
-use crate::consts::constants::{self, BLACK_KEYS, WHITE_KEYS};
+use crate::consts::constants::{self, BLACK_KEYS, USED_KEYS, WHITE_KEYS};
 use crate::input::key_handlers::NOTES;
 use crate::synths::manager::SynthType;
 use eframe::egui;
@@ -22,12 +22,26 @@ pub struct SynthesizerApp {
     active_notes: HashSet<String>,          // Notes réellement actives (unifiées)
 
     // États de l'interface
+    // NOISE
     noise: f64,
-
+    // GAIN
     gain: f64,
 
-    reverb_dry_wet: f64,
+    // ADSR
+    //attack: f64,
+    //decay: f64,
+    //sustain: f64,
+    //release: f64,
 
+    // FILTER
+
+    // COMPRESSOR
+
+    // LFO
+
+    // REVERB
+    reverb_dry_wet: f64,
+    // OCTAVE
     current_octave: usize,
 
     show_keyboard: bool,
@@ -38,7 +52,6 @@ impl SynthesizerApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         // Configuration du thème
         configure_fonts(&cc.egui_ctx);
-
         Self {
             current_synth_type: SynthType::n_sine(),
             notes: None,
@@ -47,7 +60,7 @@ impl SynthesizerApp {
             pressed_physical_keys: HashSet::new(),
             active_notes: HashSet::new(),
             noise: 0.2,
-            gain: 0.7,
+            gain: constants::CURRENT_GAIN, // Utiliser la valeur des constantes
             reverb_dry_wet: 0.2,
             current_octave: constants::VECTEUR_NOTES
                 [constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)]
@@ -133,7 +146,12 @@ impl eframe::App for SynthesizerApp {
                     ui.heading("🔊 Gain");
                     ui.horizontal(|ui| {
                         ui.label("Gain:");
-                        ui.add(egui::Slider::new(&mut self.gain, -12.0..=6.0).text("dB"));
+                        if ui
+                            .add(egui::Slider::new(&mut self.gain, -12.0..=6.0).text("dB"))
+                            .changed()
+                        {
+                            self.update_synth_gain();
+                        }
                     });
 
                     ui.separator();
@@ -327,7 +345,7 @@ impl SynthesizerApp {
                 let button = egui::Button::new(*key)
                     .min_size(egui::vec2(120.0, 180.0))
                     .fill(if is_active {
-                        egui::Color32::from_rgb(BLACK_KEYS.0, BLACK_KEYS.1, BLACK_KEYS.2)
+                        egui::Color32::from_rgb(USED_KEYS.0, USED_KEYS.1, USED_KEYS.2)
                     } else {
                         egui::Color32::from_rgb(WHITE_KEYS.0, WHITE_KEYS.1, WHITE_KEYS.2)
                     });
@@ -364,14 +382,14 @@ impl SynthesizerApp {
                     let button = egui::Button::new(*key)
                         .min_size(egui::vec2(80.0, 150.0))
                         .fill(if is_active {
-                            egui::Color32::from_rgb(100, 150, 255)
+                            egui::Color32::from_rgb(USED_KEYS.0, USED_KEYS.1, USED_KEYS.2)
                         } else {
-                            egui::Color32::from_rgb(50, 50, 50)
+                            egui::Color32::from_rgb(BLACK_KEYS.0, BLACK_KEYS.1, BLACK_KEYS.2)
                         });
 
                     let response = ui.add(button);
 
-                    // Approche simple: utiliser clicked pour démarrer/arrêter en toggle
+                    // Utiliser clicked pour démarrer/arrêter en toggle
                     if response.clicked() {
                         if self.pressed_notes.contains(&key_string) {
                             // Si déjà active, l'arrêter
@@ -379,7 +397,7 @@ impl SynthesizerApp {
                             self.stop_note(key);
                             println!("Note virtuelle arrêtée (toggle): {}", key);
                         } else {
-                            // Si pas active, la démarrer
+                            // Si pas active, démarrer la note
                             self.pressed_notes.insert(key_string.clone());
                             self.play_note(key);
                             println!("Note virtuelle démarrée (toggle): {}", key);
@@ -392,11 +410,36 @@ impl SynthesizerApp {
         ui.label(format!("Octave actuelle: {}", self.current_octave));
     }
 
-    /// Met à jour le type de synthétiseur dans le système audio
+    /// Met à jour le type de synthétiseur
     fn update_synth_type(&mut self) {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 *synth = self.current_synth_type.clone();
+            }
+        }
+        // Synchroniser les valeurs après avoir relâché le lock
+        self.sync_values_from_synth();
+    }
+
+    /// Synchronise les valeurs de l'interface avec le synthétiseur actuel
+    fn sync_values_from_synth(&mut self) {
+        self.gain = self.current_synth_type.get_current_gain();
+        // self.attack = self.current_synth_type.get_current_attack();
+        //self.decay = self.current_synth_type.get_current_decay();
+        //self.sustain = self.current_synth_type.get_current_sustain();
+        //self.release = self.current_synth_type.get_current_release();
+    }
+
+    /// Met à jour le gain dans le synthétiseur actuel
+    fn update_synth_gain(&mut self) {
+        // Mettre à jour le gain dans le synthétiseur local
+        self.current_synth_type.set_current_gain(self.gain);
+        
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_current_gain(self.gain);
+                println!("Gain mis à jour dans le contrôleur audio: {}", self.gain);
             }
         }
     }

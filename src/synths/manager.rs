@@ -60,6 +60,73 @@ impl SynthType {
             SynthType::Hammond(synth) => synth.note_off(),
         }
     }
+
+    pub fn get_current_gain(&self) -> f64 {
+        match self {
+            SynthType::Sine(synth) => self.get_gain_from_synth(synth),
+            SynthType::Square(synth) => self.get_gain_from_synth(synth),
+            SynthType::Sawtooth(synth) => self.get_gain_from_synth(synth),
+            SynthType::FM(synth) => self.get_gain_from_synth(synth),
+            SynthType::Hammond(synth) => self.get_gain_from_synth(synth),
+        }
+    }
+
+    pub fn set_current_gain(&mut self, new_gain: f64) {
+        match self {
+            SynthType::Sine(synth) => {
+                Self::set_gain_in_synth_static(synth, new_gain);
+            }
+            SynthType::Square(synth) => {
+                Self::set_gain_in_synth_static(synth, new_gain);
+            }
+            SynthType::Sawtooth(synth) => {
+                Self::set_gain_in_synth_static(synth, new_gain);
+            }
+            SynthType::FM(synth) => {
+                Self::set_gain_in_synth_static(synth, new_gain);
+            }
+            SynthType::Hammond(synth) => {
+                Self::set_gain_in_synth_static(synth, new_gain);
+            }
+        }
+    }
+
+    /// Helper pour récupérer le gain d'un synthétiseur modulaire
+    fn get_gain_from_synth<O: crate::synths::traits::Oscillator>(
+        &self,
+        synth: &ModularSynth<O>,
+    ) -> f64 {
+        // Parcourir les modules pour trouver le module Gain
+        for module in &synth.modules {
+            if module.name() == "Gain" {
+                // Utiliser le downcasting en lecture seule
+                if let Some(gain_module) = module.as_any().downcast_ref::<Gain>() {
+                    println!("Gain module found: {}", gain_module.get_gain());
+                    return gain_module.get_gain();
+                }
+            }
+        }
+        // Si pas de module gain trouvé, retourner la valeur par défaut
+        constants::CURRENT_GAIN
+    }
+
+    /// Helper pour mettre à jour le gain d'un synthétiseur modulaire
+    fn set_gain_in_synth_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        new_gain: f64,
+    ) {
+        // Parcourir les modules pour trouver le module Gain
+        for module in &mut synth.modules {
+            if module.name() == "Gain" {
+                // Utiliser le downcasting mutable pour modifier le gain
+                if let Some(gain_module) = module.as_any_mut().downcast_mut::<Gain>() {
+                    gain_module.set_gain(new_gain);
+                    return;
+                }
+            }
+        }
+        println!("Module Gain non trouvé pour mise à jour");
+    }
 }
 
 impl std::fmt::Debug for SynthType {
