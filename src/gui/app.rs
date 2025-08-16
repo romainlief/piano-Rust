@@ -3,6 +3,7 @@ use crate::consts::constants;
 use crate::input::key_handlers::NOTES;
 use crate::synths::manager::SynthType;
 use eframe::egui;
+use egui::{Color32, FontDefinitions, FontFamily, RichText, Style, TextStyle};
 use std::collections::HashSet;
 use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
@@ -16,9 +17,9 @@ pub struct SynthesizerApp {
     synth_control: Option<Arc<Mutex<SynthType>>>,
 
     // Suivi des notes actuellement pressées
-    pressed_notes: HashSet<String>,        // Pour le clavier virtuel
+    pressed_notes: HashSet<String>,         // Pour le clavier virtuel
     pressed_physical_keys: HashSet<String>, // Pour le clavier physique
-    active_notes: HashSet<String>,         // Notes réellement actives (unifiées)
+    active_notes: HashSet<String>,          // Notes réellement actives (unifiées)
 
     // États de l'interface
     gain: f64,
@@ -37,7 +38,7 @@ impl SynthesizerApp {
         configure_fonts(&cc.egui_ctx);
 
         Self {
-            current_synth_type: SynthType::n_sine(), // Octave par défaut du système JSON
+            current_synth_type: SynthType::n_sine(),
             notes: None,
             synth_control: None,
             pressed_notes: HashSet::new(),
@@ -113,24 +114,25 @@ impl eframe::App for SynthesizerApp {
                 .resizable(true)
                 .default_width(300.0)
                 .show(ctx, |ui| {
-                    ui.heading("🎛️ Contrôles");
+                    ui.heading("Contrôles");
 
                     ui.separator();
 
                     // Gain général
+                    ui.heading("Gain");
                     ui.horizontal(|ui| {
                         ui.label("Gain:");
-                        ui.add(egui::Slider::new(&mut self.gain, 0.0..=1.0).text("Gain"));
+                        ui.add(egui::Slider::new(&mut self.gain, -12.0..=6.0).text("dB"));
                     });
 
+                    ui.separator();
+
                     // Octave (correspondant au système JSON 1-9)
+                    ui.heading("Octave");
                     ui.horizontal(|ui| {
                         ui.label("Octave:");
                         let mut new_octave = self.current_octave;
-                        if ui
-                            .add(egui::Slider::new(&mut new_octave, 1..=9).text("Oct"))
-                            .changed()
-                        {
+                        if ui.add(egui::Slider::new(&mut new_octave, 1..=9)).changed() {
                             self.current_octave = new_octave;
                             self.update_global_octave();
                         }
@@ -141,10 +143,8 @@ impl eframe::App for SynthesizerApp {
                     // Section Reverb
                     ui.heading("🌊 Reverb");
                     ui.horizontal(|ui| {
-                        ui.label("Wet:");
-                        ui.add(
-                            egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("Dry Wet"),
-                        );
+                        ui.label("Dry Wet:");
+                        ui.add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("%"));
                     });
 
                     ui.separator();
@@ -178,15 +178,19 @@ impl eframe::App for SynthesizerApp {
             // Zone d'informations
             ui.group(|ui| {
                 ui.heading("💡 Instructions");
-                ui.label("Clavier physique :");
-                ui.label("• Q,B,C,D,E,F,G - Notes naturelles (A,B,C,D,E,F,G)");
-                ui.label("• 1,2,3,4,5 - Notes dièses (A#,C#,D#,F#,G#)");
-                ui.label("• Flèches ← → - Changer d'octave");
-                ui.label("• W,X,S,K,H - Changer de synthétiseur");
-                ui.label("• ESPACE - Arrêter toutes les notes");
+                ui.label(RichText::new("Clavier physique :"));
+                ui.label(RichText::new(
+                    "• Q,B,C,D,E,F,G - Notes naturelles (A,B,C,D,E,F,G)",
+                ));
+                ui.label(RichText::new("• 1,2,3,4,5 - Notes dièses (A#,C#,D#,F#,G#)"));
+                ui.label(RichText::new("• Flèches ← → - Changer d'octave"));
+                ui.label(RichText::new("• W,X,S,K,H - Changer de synthétiseur"));
+                ui.label(RichText::new("• ESPACE - Arrêter toutes les notes"));
                 ui.separator();
-                ui.label("Clavier virtuel :");
-                ui.label("• Cliquez et maintenez les touches pour jouer");
+                ui.label(RichText::new("Clavier virtuel :"));
+                ui.label(RichText::new(
+                    "• Cliquez et maintenez les touches pour jouer",
+                ));
             });
         });
     }
@@ -383,11 +387,11 @@ impl SynthesizerApp {
     fn play_note(&mut self, note_name: &str) {
         // Créer une clé unique pour la note basée sur la note + octave
         let note_key = format!("{}_{}", note_name, self.current_octave);
-        
+
         // Si la note n'est pas déjà active, l'ajouter
         if !self.active_notes.contains(&note_key) {
             self.active_notes.insert(note_key.clone());
-            
+
             if let Some(ref notes) = self.notes {
                 let frequency = self.note_to_frequency(note_name);
                 self.add_note(notes, frequency);
@@ -401,14 +405,14 @@ impl SynthesizerApp {
     fn stop_note(&mut self, note_name: &str) {
         // Créer la même clé unique pour la note
         let note_key = format!("{}_{}", note_name, self.current_octave);
-        
+
         // Vérifier que ni le clavier physique ni virtuel ne jouent cette note
         let physical_key = format!("physical_{}", note_name);
         let virtual_key = note_name.to_string();
-        
+
         let still_pressed_physical = self.pressed_physical_keys.contains(&physical_key);
         let still_pressed_virtual = self.pressed_notes.contains(&virtual_key);
-        
+
         // Si aucun des deux claviers ne presse la note, l'arrêter
         if !still_pressed_physical && !still_pressed_virtual {
             if self.active_notes.remove(&note_key) {
@@ -419,11 +423,18 @@ impl SynthesizerApp {
                 }
             }
         } else {
-            println!("Note maintenue par {} clavier(s): {} ({})", 
-                     if still_pressed_physical && still_pressed_virtual { "les deux" }
-                     else if still_pressed_physical { "physique" }
-                     else { "virtuel" },
-                     note_name, note_key);
+            println!(
+                "Note maintenue par {} clavier(s): {} ({})",
+                if still_pressed_physical && still_pressed_virtual {
+                    "les deux"
+                } else if still_pressed_physical {
+                    "physique"
+                } else {
+                    "virtuel"
+                },
+                note_name,
+                note_key
+            );
         }
     }
 

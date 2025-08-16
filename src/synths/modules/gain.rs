@@ -4,7 +4,7 @@ use crate::synths::traits::Module;
 /// Gain struct:
 /// This module implements a simple gain control for audio signals.
 pub struct Gain {
-    gain: f64,
+    gain: f64, // Gain factor in dB
 }
 
 impl Gain {
