@@ -1,5 +1,5 @@
 use crate::audio::note_manager::ActiveNoteManager;
-use crate::consts::constants;
+use crate::consts::constants::{self, BLACK_KEYS, WHITE_KEYS};
 use crate::input::key_handlers::NOTES;
 use crate::synths::manager::SynthType;
 use eframe::egui;
@@ -323,10 +323,14 @@ impl SynthesizerApp {
             for key in &white_keys {
                 let key_string = key.to_string();
                 let is_active = self.pressed_notes.contains(&key_string);
-                
+
                 let button = egui::Button::new(*key)
                     .min_size(egui::vec2(120.0, 180.0))
-                    .fill(if is_active { egui::Color32::from_rgb(100, 150, 255) } else { egui::Color32::from_rgb(240, 240, 240) });
+                    .fill(if is_active {
+                        egui::Color32::from_rgb(BLACK_KEYS.0, BLACK_KEYS.1, BLACK_KEYS.2)
+                    } else {
+                        egui::Color32::from_rgb(WHITE_KEYS.0, WHITE_KEYS.1, WHITE_KEYS.2)
+                    });
 
                 let response = ui.add(button);
 
@@ -356,10 +360,14 @@ impl SynthesizerApp {
                 } else {
                     let key_string = key.to_string();
                     let is_active = self.pressed_notes.contains(&key_string);
-                    
+
                     let button = egui::Button::new(*key)
                         .min_size(egui::vec2(80.0, 150.0))
-                        .fill(if is_active { egui::Color32::from_rgb(100, 150, 255) } else { egui::Color32::from_rgb(50, 50, 50) });
+                        .fill(if is_active {
+                            egui::Color32::from_rgb(100, 150, 255)
+                        } else {
+                            egui::Color32::from_rgb(50, 50, 50)
+                        });
 
                     let response = ui.add(button);
 

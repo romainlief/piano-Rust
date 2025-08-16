@@ -6,6 +6,8 @@ use std::sync::atomic::AtomicUsize;
 pub const VECTEUR_NOTES: [u8; 9] = [1, 2, 3, 4, 5, 6, 7, 8, 9]; // The 9 octaves
 pub const SAMPLE_RATE: f64 = 44100.0;
 pub const PROJECT_NAME: &str = "Synthétiseur Rust";
+pub const BLACK_KEYS: (u8, u8, u8) = (100, 150, 255); // Color of black keys
+pub const WHITE_KEYS: (u8, u8, u8) = (200, 230, 200); // Color of white keys
 
 /// Variables
 pub static CURRENT_OCTAVE_INDEX: AtomicUsize = AtomicUsize::new(4); // Current index in VECTEUR_NOTES (thread-safe)
