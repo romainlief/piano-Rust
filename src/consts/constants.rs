@@ -22,7 +22,7 @@ pub static ADSR_RELEASE: f64 = 0.7; // Release time in seconds
 pub static ACTIVATION_GAIN: bool = false; // true to activate the gain effect
 pub static ACTIVATION_LFO: bool = false; // true to activate the LFO effect
 pub static ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
-pub static SINE_ACTIVATION_NOISE: bool = false; // true to activate the noise effect
+pub static ACTIVATION_NOISE: bool = false; // true to activate the noise effect
 pub static ACTIVATION_FILTER: bool = false; // true to activate the filter effect
 pub static ACTIVATION_REVERB: bool = true; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////

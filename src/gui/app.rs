@@ -108,10 +108,10 @@ impl eframe::App for SynthesizerApp {
 
                     ui.separator();
 
-                    // Volume général
+                    // Gain général
                     ui.horizontal(|ui| {
-                        ui.label("Volume:");
-                        ui.add(egui::Slider::new(&mut self.gain, 0.0..=1.0).text("Vol"));
+                        ui.label("Gain:");
+                        ui.add(egui::Slider::new(&mut self.gain, 0.0..=1.0).text("Gain"));
                     });
 
                     // Octave (correspondant au système JSON 1-9)
@@ -133,7 +133,7 @@ impl eframe::App for SynthesizerApp {
                     ui.heading("🌊 Reverb");
                     ui.horizontal(|ui| {
                         ui.label("Wet:");
-                        ui.add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("Wet"));
+                        ui.add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("Dry Wet"));
                     });
 
                     ui.separator();

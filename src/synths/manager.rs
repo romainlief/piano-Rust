@@ -114,7 +114,7 @@ impl SynthType {
         );
 
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
-        if constants::SINE_ACTIVATION_NOISE {
+        if constants::ACTIVATION_NOISE {
             synth.add_module(noise);
         }
         if constants::ACTIVATION_LFO {
@@ -173,7 +173,7 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        if constants::SINE_ACTIVATION_NOISE {
+        if constants::ACTIVATION_NOISE {
             synth.add_module(noise);
         }
         if constants::ACTIVATION_LFO {
@@ -232,7 +232,7 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        if constants::SINE_ACTIVATION_NOISE {
+        if constants::ACTIVATION_NOISE {
             synth.add_module(noise);
         }
         if constants::ACTIVATION_LFO {
@@ -291,7 +291,7 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        if constants::SINE_ACTIVATION_NOISE {
+        if constants::ACTIVATION_NOISE {
             synth.add_module(noise);
         }
         if constants::ACTIVATION_LFO {
@@ -350,7 +350,7 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        if constants::SINE_ACTIVATION_NOISE {
+        if constants::ACTIVATION_NOISE {
             synth.add_module(noise);
         }
         if constants::ACTIVATION_LFO {
