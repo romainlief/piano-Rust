@@ -22,11 +22,13 @@ pub struct SynthesizerApp {
     active_notes: HashSet<String>,          // Notes réellement actives (unifiées)
 
     // États de l'interface
+    noise: f64,
+
     gain: f64,
 
-    current_octave: usize,
-
     reverb_dry_wet: f64,
+
+    current_octave: usize,
 
     show_keyboard: bool,
     show_effects: bool,
@@ -44,6 +46,7 @@ impl SynthesizerApp {
             pressed_notes: HashSet::new(),
             pressed_physical_keys: HashSet::new(),
             active_notes: HashSet::new(),
+            noise: 0.2,
             gain: 0.7,
             reverb_dry_wet: 0.2,
             current_octave: constants::VECTEUR_NOTES
@@ -117,25 +120,20 @@ impl eframe::App for SynthesizerApp {
                     ui.heading("Contrôles");
 
                     ui.separator();
-
-                    // Gain général
-                    ui.heading("Gain");
+                    // Noise
+                    ui.heading("📻 Noise");
                     ui.horizontal(|ui| {
-                        ui.label("Gain:");
-                        ui.add(egui::Slider::new(&mut self.gain, -12.0..=6.0).text("dB"));
+                        ui.label("Niveau de bruit:");
+                        ui.add(egui::Slider::new(&mut self.noise, 0.0..=1.0));
                     });
 
                     ui.separator();
 
-                    // Octave (correspondant au système JSON 1-9)
-                    ui.heading("Octave");
+                    // Gain général
+                    ui.heading("🔊 Gain");
                     ui.horizontal(|ui| {
-                        ui.label("Octave:");
-                        let mut new_octave = self.current_octave;
-                        if ui.add(egui::Slider::new(&mut new_octave, 1..=9)).changed() {
-                            self.current_octave = new_octave;
-                            self.update_global_octave();
-                        }
+                        ui.label("Gain:");
+                        ui.add(egui::Slider::new(&mut self.gain, -12.0..=6.0).text("dB"));
                     });
 
                     ui.separator();
@@ -145,6 +143,19 @@ impl eframe::App for SynthesizerApp {
                     ui.horizontal(|ui| {
                         ui.label("Dry Wet:");
                         ui.add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("%"));
+                    });
+
+                    ui.separator();
+
+                    // Octave (correspondant au système JSON 1-9)
+                    ui.heading("🎵 Octave");
+                    ui.horizontal(|ui| {
+                        ui.label("Octave:");
+                        let mut new_octave = self.current_octave;
+                        if ui.add(egui::Slider::new(&mut new_octave, 1..=9)).changed() {
+                            self.current_octave = new_octave;
+                            self.update_global_octave();
+                        }
                     });
 
                     ui.separator();
@@ -188,9 +199,8 @@ impl eframe::App for SynthesizerApp {
                 ui.label(RichText::new("• ESPACE - Arrêter toutes les notes"));
                 ui.separator();
                 ui.label(RichText::new("Clavier virtuel :"));
-                ui.label(RichText::new(
-                    "• Cliquez et maintenez les touches pour jouer",
-                ));
+                ui.label(RichText::new("• Cliquez une fois pour démarrer une note"));
+                ui.label(RichText::new("• Cliquez à nouveau pour l'arrêter"));
             });
         });
     }
@@ -311,23 +321,28 @@ impl SynthesizerApp {
         ui.horizontal(|ui| {
             let white_keys = ["C", "D", "E", "F", "G", "A", "B"];
             for key in &white_keys {
-                let button = egui::Button::new(*key).min_size(egui::vec2(120.0, 180.0));
+                let key_string = key.to_string();
+                let is_active = self.pressed_notes.contains(&key_string);
+                
+                let button = egui::Button::new(*key)
+                    .min_size(egui::vec2(120.0, 180.0))
+                    .fill(if is_active { egui::Color32::from_rgb(100, 150, 255) } else { egui::Color32::from_rgb(240, 240, 240) });
 
                 let response = ui.add(button);
-                let key_string = key.to_string();
 
-                // Si le bouton est pressé et la note n'était pas déjà active
-                if response.is_pointer_button_down_on() && !self.pressed_notes.contains(&key_string)
-                {
-                    self.pressed_notes.insert(key_string.clone());
-                    self.play_note(key);
-                }
-
-                // Si le bouton n'est plus pressé et la note était active
-                if !response.is_pointer_button_down_on() && self.pressed_notes.contains(&key_string)
-                {
-                    self.pressed_notes.remove(&key_string);
-                    self.stop_note(key);
+                // Approche simple: utiliser clicked pour démarrer/arrêter en toggle
+                if response.clicked() {
+                    if self.pressed_notes.contains(&key_string) {
+                        // Si déjà active, l'arrêter
+                        self.pressed_notes.remove(&key_string);
+                        self.stop_note(key);
+                        println!("Note virtuelle arrêtée (toggle): {}", key);
+                    } else {
+                        // Si pas active, la démarrer
+                        self.pressed_notes.insert(key_string.clone());
+                        self.play_note(key);
+                        println!("Note virtuelle démarrée (toggle): {}", key);
+                    }
                 }
             }
         });
@@ -339,27 +354,28 @@ impl SynthesizerApp {
                 if key.is_empty() {
                     ui.add_space(67.0); // Espace pour alignement
                 } else {
+                    let key_string = key.to_string();
+                    let is_active = self.pressed_notes.contains(&key_string);
+                    
                     let button = egui::Button::new(*key)
                         .min_size(egui::vec2(80.0, 150.0))
-                        .fill(egui::Color32::from_rgb(50, 50, 50));
+                        .fill(if is_active { egui::Color32::from_rgb(100, 150, 255) } else { egui::Color32::from_rgb(50, 50, 50) });
 
                     let response = ui.add(button);
-                    let key_string = key.to_string();
 
-                    // Si le bouton est pressé et la note n'était pas déjà active
-                    if response.is_pointer_button_down_on()
-                        && !self.pressed_notes.contains(&key_string)
-                    {
-                        self.pressed_notes.insert(key_string.clone());
-                        self.play_note(key);
-                    }
-
-                    // Si le bouton n'est plus pressé et la note était active
-                    if !response.is_pointer_button_down_on()
-                        && self.pressed_notes.contains(&key_string)
-                    {
-                        self.pressed_notes.remove(&key_string);
-                        self.stop_note(key);
+                    // Approche simple: utiliser clicked pour démarrer/arrêter en toggle
+                    if response.clicked() {
+                        if self.pressed_notes.contains(&key_string) {
+                            // Si déjà active, l'arrêter
+                            self.pressed_notes.remove(&key_string);
+                            self.stop_note(key);
+                            println!("Note virtuelle arrêtée (toggle): {}", key);
+                        } else {
+                            // Si pas active, la démarrer
+                            self.pressed_notes.insert(key_string.clone());
+                            self.play_note(key);
+                            println!("Note virtuelle démarrée (toggle): {}", key);
+                        }
                     }
                 }
             }
