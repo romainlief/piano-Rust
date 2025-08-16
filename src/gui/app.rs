@@ -16,7 +16,9 @@ pub struct SynthesizerApp {
     synth_control: Option<Arc<Mutex<SynthType>>>,
 
     // Suivi des notes actuellement pressées
-    pressed_notes: HashSet<String>,
+    pressed_notes: HashSet<String>,        // Pour le clavier virtuel
+    pressed_physical_keys: HashSet<String>, // Pour le clavier physique
+    active_notes: HashSet<String>,         // Notes réellement actives (unifiées)
 
     // États de l'interface
     gain: f64,
@@ -39,6 +41,8 @@ impl SynthesizerApp {
             notes: None,
             synth_control: None,
             pressed_notes: HashSet::new(),
+            pressed_physical_keys: HashSet::new(),
+            active_notes: HashSet::new(),
             gain: 0.7,
             reverb_dry_wet: 0.2,
             current_octave: constants::VECTEUR_NOTES
@@ -62,6 +66,11 @@ impl SynthesizerApp {
 
 impl eframe::App for SynthesizerApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Pour que la fenêtre recoive les événements clavier
+        ctx.request_repaint();
+        // Gérer les événements clavier (comme dans le terminal)
+        self.handle_keyboard_input(ctx);
+
         // Panel du haut - Contrôles principaux
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             egui::MenuBar::new().ui(ui, |ui| {
@@ -169,18 +178,128 @@ impl eframe::App for SynthesizerApp {
             // Zone d'informations
             ui.group(|ui| {
                 ui.heading("💡 Instructions");
-                ui.label("Touches du clavier:");
-                ui.label("• Q,W,E,R,T,Y,U - Notes naturelles");
-                ui.label("• 1,2,3,4,5 - Notes dièses");
+                ui.label("Clavier physique :");
+                ui.label("• Q,B,C,D,E,F,G - Notes naturelles (A,B,C,D,E,F,G)");
+                ui.label("• 1,2,3,4,5 - Notes dièses (A#,C#,D#,F#,G#)");
                 ui.label("• Flèches ← → - Changer d'octave");
-                ui.label("• W,X,S,H,K - Changer de synthétiseur");
+                ui.label("• W,X,S,K,H - Changer de synthétiseur");
                 ui.label("• ESPACE - Arrêter toutes les notes");
+                ui.separator();
+                ui.label("Clavier virtuel :");
+                ui.label("• Cliquez et maintenez les touches pour jouer");
             });
         });
     }
 }
 
 impl SynthesizerApp {
+    /// Gère les événements du clavier physique (comme dans le terminal)
+    fn handle_keyboard_input(&mut self, ctx: &egui::Context) {
+        use egui::Key;
+
+        ctx.input(|i| {
+            // Touches pour les notes
+            self.handle_note_key(i, Key::Q, "A"); // Q -> A
+            self.handle_note_key(i, Key::B, "B"); // B -> B  
+            self.handle_note_key(i, Key::C, "C"); // C -> C
+            self.handle_note_key(i, Key::D, "D"); // D -> D
+            self.handle_note_key(i, Key::E, "E"); // E -> E
+            self.handle_note_key(i, Key::F, "F"); // F -> F
+            self.handle_note_key(i, Key::G, "G"); // G -> G
+
+            // Touches pour les dièses
+            self.handle_note_key(i, Key::Num1, "A#"); // 1 -> A#
+            self.handle_note_key(i, Key::Num2, "C#"); // 2 -> C#
+            self.handle_note_key(i, Key::Num3, "D#"); // 3 -> D#
+            self.handle_note_key(i, Key::Num4, "F#"); // 4 -> F#
+            self.handle_note_key(i, Key::Num5, "G#"); // 5 -> G#
+
+            // Changement d'octave
+            if i.key_pressed(Key::ArrowLeft) {
+                if self.current_octave > 1 {
+                    self.current_octave -= 1;
+                    self.update_global_octave();
+                    println!("Octave changée vers: {}", self.current_octave);
+                }
+            }
+            if i.key_pressed(Key::ArrowRight) {
+                if self.current_octave < 9 {
+                    self.current_octave += 1;
+                    self.update_global_octave();
+                    println!("Octave changée vers: {}", self.current_octave);
+                }
+            }
+
+            // Changement de synthétiseur
+            if i.key_pressed(Key::W) {
+                self.current_synth_type = SynthType::n_sine();
+                self.update_synth_type();
+                println!("Synthétiseur changé: Modular Sine");
+            }
+            if i.key_pressed(Key::X) {
+                self.current_synth_type = SynthType::n_square();
+                self.update_synth_type();
+                println!("Synthétiseur changé: Modular Square");
+            }
+            if i.key_pressed(Key::S) {
+                self.current_synth_type = SynthType::n_sawtooth();
+                self.update_synth_type();
+                println!("Synthétiseur changé: Modular Sawtooth");
+            }
+            if i.key_pressed(Key::K) {
+                self.current_synth_type = SynthType::n_fm();
+                self.update_synth_type();
+                println!("Synthétiseur changé: FM");
+            }
+            if i.key_pressed(Key::H) {
+                self.current_synth_type = SynthType::n_hammond();
+                self.update_synth_type();
+                println!("Synthétiseur changé: Hammond Organ");
+            }
+
+            // Arrêter toutes les notes
+            if i.key_pressed(Key::Space) {
+                self.stop_all_notes();
+                println!("Toutes les notes arrêtées");
+            }
+        });
+    }
+
+    /// Gère une touche de note (press/release)
+    fn handle_note_key(&mut self, input: &egui::InputState, key: egui::Key, note: &str) {
+        let key_string = format!("physical_{}", note);
+
+        // Note pressée
+        if input.key_pressed(key) && !self.pressed_physical_keys.contains(&key_string) {
+            self.pressed_physical_keys.insert(key_string.clone());
+            self.play_note(note);
+            println!("Touche physique {} pressée -> {}", key_string, note);
+        }
+
+        // Note relâchée
+        if input.key_released(key) && self.pressed_physical_keys.contains(&key_string) {
+            self.pressed_physical_keys.remove(&key_string);
+            self.stop_note(note);
+            println!("Touche physique {} relâchée -> {}", key_string, note);
+        }
+    }
+
+    /// Arrête toutes les notes en cours
+    fn stop_all_notes(&mut self) {
+        if let Some(ref notes) = self.notes {
+            if let Ok(mut notes_guard) = notes.lock() {
+                for note in notes_guard.values_mut() {
+                    note.adsr.note_off();
+                }
+            }
+        }
+        // Vider tous les sets de notes pressées
+        self.pressed_notes.clear();
+        self.pressed_physical_keys.clear();
+        self.active_notes.clear();
+        println!("Toutes les notes arrêtées et sets vidés");
+    }
+
     fn draw_virtual_keyboard(&mut self, ui: &mut egui::Ui) {
         ui.heading("🎹 Clavier virtuel");
 
@@ -262,16 +381,49 @@ impl SynthesizerApp {
     }
 
     fn play_note(&mut self, note_name: &str) {
-        if let Some(ref notes) = self.notes {
-            let frequency = self.note_to_frequency(note_name);
-            self.add_note(notes, frequency);
+        // Créer une clé unique pour la note basée sur la note + octave
+        let note_key = format!("{}_{}", note_name, self.current_octave);
+        
+        // Si la note n'est pas déjà active, l'ajouter
+        if !self.active_notes.contains(&note_key) {
+            self.active_notes.insert(note_key.clone());
+            
+            if let Some(ref notes) = self.notes {
+                let frequency = self.note_to_frequency(note_name);
+                self.add_note(notes, frequency);
+                println!("Note démarrée: {} ({})", note_name, note_key);
+            }
+        } else {
+            println!("Note déjà active: {} ({})", note_name, note_key);
         }
     }
 
     fn stop_note(&mut self, note_name: &str) {
-        if let Some(ref notes) = self.notes {
-            let frequency = self.note_to_frequency(note_name);
-            self.remove_note(notes, frequency);
+        // Créer la même clé unique pour la note
+        let note_key = format!("{}_{}", note_name, self.current_octave);
+        
+        // Vérifier que ni le clavier physique ni virtuel ne jouent cette note
+        let physical_key = format!("physical_{}", note_name);
+        let virtual_key = note_name.to_string();
+        
+        let still_pressed_physical = self.pressed_physical_keys.contains(&physical_key);
+        let still_pressed_virtual = self.pressed_notes.contains(&virtual_key);
+        
+        // Si aucun des deux claviers ne presse la note, l'arrêter
+        if !still_pressed_physical && !still_pressed_virtual {
+            if self.active_notes.remove(&note_key) {
+                if let Some(ref notes) = self.notes {
+                    let frequency = self.note_to_frequency(note_name);
+                    self.remove_note(notes, frequency);
+                    println!("Note arrêtée: {} ({})", note_name, note_key);
+                }
+            }
+        } else {
+            println!("Note maintenue par {} clavier(s): {} ({})", 
+                     if still_pressed_physical && still_pressed_virtual { "les deux" }
+                     else if still_pressed_physical { "physique" }
+                     else { "virtuel" },
+                     note_name, note_key);
         }
     }
 
