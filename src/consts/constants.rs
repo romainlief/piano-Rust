@@ -21,7 +21,7 @@ pub static ADSR_RELEASE: f64 = 0.7; // Release time in seconds
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// ACTIVATION EFFECT
-pub static ACTIVATION_GAIN: bool = false; // true to activate the gain effect
+pub static ACTIVATION_GAIN: bool = true; // true to activate the gain effect
 pub static ACTIVATION_LFO: bool = false; // true to activate the LFO effect
 pub static ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
 pub static ACTIVATION_NOISE: bool = false; // true to activate the noise effect
@@ -29,7 +29,7 @@ pub static ACTIVATION_FILTER: bool = false; // true to activate the filter effec
 pub static ACTIVATION_REVERB: bool = false; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GAIN
-pub static CURRENT_GAIN: f64 = 4.1; // Current gain value
+pub static CURRENT_GAIN: f64 = 0.0; // Current gain value in dB (0 dB = unity gain)
 // LFO
 pub static CURRENT_LFO_FREQ: f64 = 725.0; // Current LFO freq
 pub static CURRENT_LFO_WAVEFORM: LfoWaveform = LfoWaveform::Sine; // Current LFO waveform
