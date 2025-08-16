@@ -24,7 +24,9 @@ pub struct SynthesizerApp {
     // États de l'interface
     // NOISE
     noise: f64,
+    
     // GAIN
+    gain_activation: bool,
     gain: f64,
 
     // ADSR
@@ -60,6 +62,7 @@ impl SynthesizerApp {
             pressed_physical_keys: HashSet::new(),
             active_notes: HashSet::new(),
             noise: 0.2,
+            gain_activation: constants::ACTIVATION_GAIN,
             gain: constants::CURRENT_GAIN, // Utiliser la valeur des constantes
             reverb_dry_wet: 0.2,
             current_octave: constants::VECTEUR_NOTES
@@ -151,6 +154,11 @@ impl eframe::App for SynthesizerApp {
                             .changed()
                         {
                             self.update_synth_gain();
+                        }
+                        
+                        // Checkbox d'activation à droite du slider
+                        if ui.checkbox(&mut self.gain_activation, "ON").changed() {
+                            self.update_gain_activation();
                         }
                     });
 
@@ -424,6 +432,7 @@ impl SynthesizerApp {
     /// Synchronise les valeurs de l'interface avec le synthétiseur actuel
     fn sync_values_from_synth(&mut self) {
         self.gain = self.current_synth_type.get_current_gain();
+        self.gain_activation = self.current_synth_type.is_gain_active();
         // self.attack = self.current_synth_type.get_current_attack();
         //self.decay = self.current_synth_type.get_current_decay();
         //self.sustain = self.current_synth_type.get_current_sustain();
@@ -440,6 +449,22 @@ impl SynthesizerApp {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_current_gain(self.gain);
                 println!("Gain mis à jour dans le contrôleur audio: {}", self.gain);
+            }
+        }
+    }
+
+    /// Met à jour l'activation du gain
+    fn update_gain_activation(&mut self) {
+        println!("Activation du gain changée: {}", self.gain_activation);
+        
+        // Mettre à jour l'activation dans le synthétiseur local
+        self.current_synth_type.set_gain_activation(self.gain_activation);
+        
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_gain_activation(self.gain_activation);
+                println!("Activation du gain mise à jour dans le contrôleur audio: {}", self.gain_activation);
             }
         }
     }

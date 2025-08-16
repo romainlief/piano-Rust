@@ -127,6 +127,62 @@ impl SynthType {
         }
         println!("Module Gain non trouvé pour mise à jour");
     }
+
+    /// Active ou désactive le module gain
+    pub fn set_gain_activation(&mut self, active: bool) {
+        match self {
+            SynthType::Sine(synth) => {
+                Self::set_gain_activation_static(synth, active);
+            }
+            SynthType::Square(synth) => {
+                Self::set_gain_activation_static(synth, active);
+            }
+            SynthType::Sawtooth(synth) => {
+                Self::set_gain_activation_static(synth, active);
+            }
+            SynthType::FM(synth) => {
+                Self::set_gain_activation_static(synth, active);
+            }
+            SynthType::Hammond(synth) => {
+                Self::set_gain_activation_static(synth, active);
+            }
+        }
+    }
+
+    /// Vérifie si le module gain est actif
+    pub fn is_gain_active(&self) -> bool {
+        match self {
+            SynthType::Sine(synth) => Self::is_gain_active_static(synth),
+            SynthType::Square(synth) => Self::is_gain_active_static(synth),
+            SynthType::Sawtooth(synth) => Self::is_gain_active_static(synth),
+            SynthType::FM(synth) => Self::is_gain_active_static(synth),
+            SynthType::Hammond(synth) => Self::is_gain_active_static(synth),
+        }
+    }
+
+    /// Helper pour activer/désactiver le gain dans un synthétiseur
+    fn set_gain_activation_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        active: bool,
+    ) {
+        let has_gain = synth.modules.iter().any(|m| m.name() == "Gain");
+        
+        if active && !has_gain {
+            let gain = Gain::new(constants::CURRENT_GAIN);
+            synth.add_module(gain);
+            println!("Module Gain ajouté");
+        } else if !active && has_gain {
+            synth.modules.retain(|m| m.name() != "Gain");
+            println!("Module Gain retiré");
+        }
+    }
+
+    /// Helper pour vérifier si le gain est actif
+    fn is_gain_active_static<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> bool {
+        synth.modules.iter().any(|m| m.name() == "Gain")
+    }
 }
 
 impl std::fmt::Debug for SynthType {
@@ -190,9 +246,7 @@ impl SynthType {
         if constants::ACTIVATION_FILTER {
             synth.add_module(filter);
         }
-        if constants::ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
+        synth.add_module(gain);
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
