@@ -218,7 +218,7 @@ impl eframe::App for SynthesizerApp {
                         ui.heading(" LFO");
                         ui.add_space(10.0); // Espace pour séparer le heading de la checkbox
                         if ui.checkbox(&mut self.lfo_activation, "ON").changed() {
-                            // self.update_lfo_activation();
+                            self.update_lfo_activation();
                         }
                     });
                     ui.horizontal(|ui| {
@@ -227,12 +227,13 @@ impl eframe::App for SynthesizerApp {
                             .add(egui::Slider::new(&mut self.freq, 0.01..=1000.0))
                             .changed()
                         {
-                            //self.update_lfo_frequency();
+                            self.update_synth_lfo();
                         };
                     });
                     ui.horizontal(|ui| {
                         ui.label("Forme d'onde:");
-                        let response = egui::ComboBox::from_label("")
+                        let old_waveform = self.waveform;
+                        egui::ComboBox::from_label("")
                             .selected_text(format!("{:?}", self.waveform))
                             .show_ui(ui, |ui| {
                                 ui.selectable_value(&mut self.waveform, LfoWaveform::Sine, "Sine");
@@ -257,7 +258,9 @@ impl eframe::App for SynthesizerApp {
                                     "Sawtooth Down",
                                 );
                             });
-                        if response.response.changed() {
+                        // Vérifier si la waveform a changé
+                        if old_waveform != self.waveform {
+                            println!("Waveform changée de {:?} vers {:?}", old_waveform, self.waveform);
                             self.update_synth_lfo_waveform();
                         }
                     });
@@ -556,6 +559,8 @@ impl SynthesizerApp {
         self.noise = self.current_synth_type.get_current_noise();
         self.noise_activation = self.current_synth_type.is_noise_active();
         self.waveform = self.current_synth_type.get_current_lfo_waveform();
+        self.freq = self.current_synth_type.get_current_lfo_frequency();
+        self.lfo_activation = self.current_synth_type.is_lfo_active();
         // self.attack = self.current_synth_type.get_current_attack();
         //self.decay = self.current_synth_type.get_current_decay();
         //self.sustain = self.current_synth_type.get_current_sustain();
@@ -585,6 +590,22 @@ impl SynthesizerApp {
 
                 // Synchroniser la copie locale avec l'état du contrôleur
                 self.current_synth_type = synth.clone();
+            }
+        }
+    }
+
+    fn update_synth_lfo(&mut self) {
+        // Mettre à jour la fréquence dans le synthétiseur local
+        self.current_synth_type.set_current_lfo_frequency(self.freq);
+
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_current_lfo_frequency(self.freq);
+                println!(
+                    "Fréquence LFO mise à jour dans le contrôleur audio: {}",
+                    self.freq
+                );
             }
         }
     }
@@ -623,6 +644,29 @@ impl SynthesizerApp {
                     self.noise_activation
                 );
             }
+        }
+    }
+
+    fn update_lfo_activation(&mut self) {
+        println!("Activation du LFO changée: {}", self.lfo_activation);
+
+        self.current_synth_type
+            .set_lfo_activation(self.lfo_activation);
+
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_lfo_activation(self.lfo_activation);
+                println!(
+                    "Activation du LFO mise à jour dans le contrôleur audio: {}",
+                    self.lfo_activation
+                );
+            }
+        }
+
+        // Mettre à jour la fréquence du LFO si l'activation change
+        if self.lfo_activation {
+            self.update_synth_lfo();
         }
     }
 

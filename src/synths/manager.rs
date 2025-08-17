@@ -111,6 +111,26 @@ impl SynthType {
         }
     }
 
+    pub fn set_current_lfo_frequency(&mut self, frequency: f64) {
+        match self {
+            SynthType::Sine(synth) => Self::set_lfo_frequency_in_synth_static(synth, frequency),
+            SynthType::Square(synth) => Self::set_lfo_frequency_in_synth_static(synth, frequency),
+            SynthType::Sawtooth(synth) => Self::set_lfo_frequency_in_synth_static(synth, frequency),
+            SynthType::FM(synth) => Self::set_lfo_frequency_in_synth_static(synth, frequency),
+            SynthType::Hammond(synth) => Self::set_lfo_frequency_in_synth_static(synth, frequency),
+        }
+    }
+
+    pub fn set_current_lfo_waveform(&mut self, waveform: LfoWaveform) {
+        match self {
+            SynthType::Sine(synth) => Self::set_lfo_waveform_in_synth_static(synth, waveform),
+            SynthType::Square(synth) => Self::set_lfo_waveform_in_synth_static(synth, waveform),
+            SynthType::Sawtooth(synth) => Self::set_lfo_waveform_in_synth_static(synth, waveform),
+            SynthType::FM(synth) => Self::set_lfo_waveform_in_synth_static(synth, waveform),
+            SynthType::Hammond(synth) => Self::set_lfo_waveform_in_synth_static(synth, waveform),
+        }
+    }
+
     /// Helper pour récupérer le gain d'un synthétiseur modulaire
     fn get_gain_from_synth<O: crate::synths::traits::Oscillator>(
         &self,
@@ -166,6 +186,36 @@ impl SynthType {
         println!("Module Gain non trouvé pour mise à jour");
     }
 
+    fn set_lfo_frequency_in_synth_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        new_frequency: f64,
+    ) {
+        for module in &mut synth.modules {
+            if module.name() == "LFO" {
+                if let Some(lfo_module) = module.as_any_mut().downcast_mut::<LFO>() {
+                    lfo_module.set_freq(new_frequency);
+                    return;
+                }
+            }
+        }
+        println!("Module LFO non trouvé pour mise à jour");
+    }
+
+    fn set_lfo_waveform_in_synth_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        new_waveform: LfoWaveform,
+    ) {
+        for module in &mut synth.modules {
+            if module.name() == "LFO" {
+                if let Some(lfo_module) = module.as_any_mut().downcast_mut::<LFO>() {
+                    lfo_module.set_waveform(new_waveform);
+                    return;
+                }
+            }
+        }
+        println!("Module LFO non trouvé pour mise à jour");
+    }
+
     fn set_noise_in_synth_static<O: crate::synths::traits::Oscillator>(
         synth: &mut ModularSynth<O>,
         new_noise: f64,
@@ -214,6 +264,16 @@ impl SynthType {
         }
     }
 
+    pub fn set_lfo_activation(&mut self, active: bool) {
+        match self {
+            SynthType::Sine(synth) => Self::set_lfo_activation_static(synth, active),
+            SynthType::Square(synth) => Self::set_lfo_activation_static(synth, active),
+            SynthType::Sawtooth(synth) => Self::set_lfo_activation_static(synth, active),
+            SynthType::FM(synth) => Self::set_lfo_activation_static(synth, active),
+            SynthType::Hammond(synth) => Self::set_lfo_activation_static(synth, active),
+        }
+    }
+
     /// Vérifie si le module gain est actif
     pub fn is_gain_active(&self) -> bool {
         match self {
@@ -235,6 +295,16 @@ impl SynthType {
         }
     }
 
+    pub fn is_lfo_active(&self) -> bool {
+        match self {
+            SynthType::Sine(synth) => Self::is_lfo_active_static(synth),
+            SynthType::Square(synth) => Self::is_lfo_active_static(synth),
+            SynthType::Sawtooth(synth) => Self::is_lfo_active_static(synth),
+            SynthType::FM(synth) => Self::is_lfo_active_static(synth),
+            SynthType::Hammond(synth) => Self::is_lfo_active_static(synth),
+        }
+    }
+
     /// Obtient la forme d'onde actuelle du LFO
     pub fn get_current_lfo_waveform(&self) -> LfoWaveform {
         match self {
@@ -246,14 +316,13 @@ impl SynthType {
         }
     }
 
-    /// Définit la forme d'onde du LFO
-    pub fn set_current_lfo_waveform(&mut self, waveform: LfoWaveform) {
+    pub fn get_current_lfo_frequency(&self) -> f64 {
         match self {
-            SynthType::Sine(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
-            SynthType::Square(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
-            SynthType::Sawtooth(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
-            SynthType::FM(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
-            SynthType::Hammond(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
+            SynthType::Sine(synth) => Self::get_lfo_frequency_from_synth(synth),
+            SynthType::Square(synth) => Self::get_lfo_frequency_from_synth(synth),
+            SynthType::Sawtooth(synth) => Self::get_lfo_frequency_from_synth(synth),
+            SynthType::FM(synth) => Self::get_lfo_frequency_from_synth(synth),
+            SynthType::Hammond(synth) => Self::get_lfo_frequency_from_synth(synth),
         }
     }
 
@@ -292,6 +361,28 @@ impl SynthType {
         }
     }
 
+    fn set_lfo_activation_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        active: bool,
+    ) {
+        let has_lfo = synth.modules.iter().any(|m| m.name() == "LFO");
+
+        if active && !has_lfo {
+            let lfo = LFO::new(
+                constants::CURRENT_LFO_WAVEFORM,
+                constants::CURRENT_LFO_FREQ,
+                constants::SAMPLE_RATE,
+            );
+            synth.add_module(lfo);
+            println!("Module LFO ajouté");
+        } else if !active && has_lfo {
+            synth.modules.retain(|m| m.name() != "LFO");
+            println!("Module LFO retiré");
+        } else {
+            println!("Aucune action nécessaire pour le LFO");
+        }
+    }
+
     /// Helper pour vérifier si le gain est actif
     fn is_gain_active_static<O: crate::synths::traits::Oscillator>(
         synth: &ModularSynth<O>,
@@ -303,6 +394,12 @@ impl SynthType {
         synth: &ModularSynth<O>,
     ) -> bool {
         synth.modules.iter().any(|m| m.name() == "NoiseEffect")
+    }
+
+    fn is_lfo_active_static<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> bool {
+        synth.modules.iter().any(|m| m.name() == "LFO")
     }
 
     /// Helper pour récupérer la forme d'onde du LFO
@@ -318,19 +415,16 @@ impl SynthType {
         constants::CURRENT_LFO_WAVEFORM
     }
 
-    /// Helper pour définir la forme d'onde du LFO
-    fn set_lfo_waveform_in_synth<O: crate::synths::traits::Oscillator>(
-        synth: &mut ModularSynth<O>,
-        waveform: LfoWaveform,
-    ) {
-        for module in &mut synth.modules {
-            if let Some(lfo) = module.as_any_mut().downcast_mut::<LFO>() {
-                lfo.set_waveform(waveform);
-                println!("Forme d'onde LFO mise à jour: {:?}", waveform);
-                return;
+    fn get_lfo_frequency_from_synth<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> f64 {
+        for module in &synth.modules {
+            if let Some(lfo) = module.as_any().downcast_ref::<LFO>() {
+                return lfo.get_freq();
             }
         }
-        println!("LFO non trouvé pour mise à jour de la forme d'onde");
+        // Valeur par défaut si LFO pas trouvé
+        constants::CURRENT_LFO_FREQ
     }
 }
 

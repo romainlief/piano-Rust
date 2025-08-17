@@ -17,3 +17,7 @@
 - pitch shiftting
 
 - gros refactoring pcq la ca va pas(fichier a plus de 500 lignes)
+
+- lier les bouttons adsr
+
+- lier les bouttons lfo
