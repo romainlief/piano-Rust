@@ -4,7 +4,8 @@ use crate::input::key_handlers::NOTES;
 use crate::synths::manager::SynthType;
 use crate::synths::modules::lfo::LfoWaveform;
 use eframe::egui;
-use egui::{Color32, FontDefinitions, FontFamily, RichText, Style, TextStyle};
+use egui::RichText;
+//use egui::{Color32, RichText};
 use std::collections::HashSet;
 use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
@@ -260,7 +261,10 @@ impl eframe::App for SynthesizerApp {
                             });
                         // Vérifier si la waveform a changé
                         if old_waveform != self.waveform {
-                            println!("Waveform changée de {:?} vers {:?}", old_waveform, self.waveform);
+                            println!(
+                                "Waveform changée de {:?} vers {:?}",
+                                old_waveform, self.waveform
+                            );
                             self.update_synth_lfo_waveform();
                         }
                     });
@@ -378,19 +382,15 @@ impl SynthesizerApp {
             self.handle_note_key(i, Key::Num5, "G#"); // 5 -> G#
 
             // Changement d'octave
-            if i.key_pressed(Key::ArrowLeft) {
-                if self.current_octave > 1 {
-                    self.current_octave -= 1;
-                    self.update_global_octave();
-                    println!("Octave changée vers: {}", self.current_octave);
-                }
+            if i.key_pressed(Key::ArrowLeft) && self.current_octave > 1 {
+                self.current_octave -= 1;
+                self.update_global_octave();
+                println!("Octave changée vers: {}", self.current_octave);
             }
-            if i.key_pressed(Key::ArrowRight) {
-                if self.current_octave < 9 {
-                    self.current_octave += 1;
-                    self.update_global_octave();
-                    println!("Octave changée vers: {}", self.current_octave);
-                }
+            if i.key_pressed(Key::ArrowRight) && self.current_octave < 9 {
+                self.current_octave += 1;
+                self.update_global_octave();
+                println!("Octave changée vers: {}", self.current_octave);
             }
 
             // Changement de synthétiseur
@@ -503,7 +503,7 @@ impl SynthesizerApp {
         // Touches noires (dièses)
         ui.horizontal(|ui| {
             let black_keys = ["", "C#", "", "D#", "", "", "F#", "", "G#", "", "A#", ""];
-            for (_i, key) in black_keys.iter().enumerate() {
+            for key in black_keys.iter() {
                 if key.is_empty() {
                     ui.add_space(67.0); // Espace pour alignement
                 } else {

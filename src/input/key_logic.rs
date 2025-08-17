@@ -17,12 +17,12 @@ pub fn key_management(
 
     // Check for pressed keys
     for key in keys.difference(previous_keys) {
-        key_handlers::matching_key_pressed(key.clone(), current_synth_type, note_manager);
+        key_handlers::matching_key_pressed(*key, current_synth_type, note_manager);
     }
 
     // Check for released keys
     for key in previous_keys.difference(&keys) {
-        key_handlers::matching_key_released(key.clone(), current_synth_type, note_manager);
+        key_handlers::matching_key_released(*key, current_synth_type, note_manager);
     }
 
     // Clean up finished notes

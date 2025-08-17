@@ -276,7 +276,6 @@ impl Reverb {
     }
 
     /// #### Setters ####
-
     /// Charge/remplace l’IR (mono). Idéalement courte (early reflections).
     pub fn set_ir(&mut self, ir: Vec<f64>) {
         self.ir = ir;
