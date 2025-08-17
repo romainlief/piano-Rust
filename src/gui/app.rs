@@ -82,19 +82,6 @@ impl SynthesizerApp {
 
     pub fn with_synth_control(mut self, synth_control: Arc<Mutex<SynthType>>) -> Self {
         self.synth_control = Some(synth_control);
-        
-        // S'assurer que le synthétiseur audio a les modules requis selon l'état de l'interface
-        if let Some(ref synth_control) = self.synth_control {
-            if let Ok(mut synth) = synth_control.lock() {
-                // Forcer l'activation des modules selon l'état initial de l'interface
-                synth.set_noise_activation(self.noise_activation);
-                synth.set_gain_activation(self.gain_activation);
-                synth.set_current_noise(self.noise);
-                synth.set_current_gain(self.gain);
-                println!("Modules initialisés dans le contrôleur audio");
-            }
-        }
-        
         self
     }
 }
@@ -484,7 +471,7 @@ impl SynthesizerApp {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_current_noise(self.noise);
                 println!("Bruit mis à jour dans le contrôleur audio: {}", self.noise);
-                
+
                 // Synchroniser la copie locale avec l'état du contrôleur
                 self.current_synth_type = synth.clone();
             }
