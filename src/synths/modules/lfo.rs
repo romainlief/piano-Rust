@@ -2,7 +2,7 @@ use crate::synths::traits::Module;
 use std::f64::consts::PI;
 
 /// Type of LFO waveforms
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum LfoWaveform {
     Sine,
     Triangle,

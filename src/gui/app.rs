@@ -2,6 +2,7 @@ use crate::audio::note_manager::ActiveNoteManager;
 use crate::consts::constants::{self, BLACK_KEYS, USED_KEYS, WHITE_KEYS};
 use crate::input::key_handlers::NOTES;
 use crate::synths::manager::SynthType;
+use crate::synths::modules::lfo::LfoWaveform;
 use eframe::egui;
 use egui::{Color32, FontDefinitions, FontFamily, RichText, Style, TextStyle};
 use std::collections::HashSet;
@@ -41,6 +42,9 @@ pub struct SynthesizerApp {
     // COMPRESSOR
 
     // LFO
+    lfo_activation: bool,
+    freq: f64,
+    waveform: LfoWaveform,
 
     // REVERB
     reverb_dry_wet: f64,
@@ -65,11 +69,14 @@ impl SynthesizerApp {
             noise_activation: constants::ACTIVATION_NOISE,
             noise: constants::CURRENT_NOISE,
             gain_activation: constants::ACTIVATION_GAIN,
-            gain: constants::CURRENT_GAIN, // Utiliser la valeur des constantes
+            gain: constants::CURRENT_GAIN,
             attack: constants::ADSR_ATTACK,
             decay: constants::ADSR_DECAY,
             sustain: constants::ADSR_SUSTAIN,
             release: constants::ADSR_RELEASE,
+            lfo_activation: constants::ACTIVATION_LFO,
+            freq: constants::CURRENT_LFO_FREQ,
+            waveform: constants::CURRENT_LFO_WAVEFORM,
             reverb_dry_wet: 0.2,
             current_octave: constants::VECTEUR_NOTES
                 [constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)]
@@ -202,6 +209,57 @@ impl eframe::App for SynthesizerApp {
                         {
                             self.update_synth_noise();
                         };
+                    });
+
+                    ui.separator();
+
+                    // LFO
+                    ui.horizontal(|ui| {
+                        ui.heading(" LFO");
+                        ui.add_space(10.0); // Espace pour séparer le heading de la checkbox
+                        if ui.checkbox(&mut self.lfo_activation, "ON").changed() {
+                            // self.update_lfo_activation();
+                        }
+                    });
+                    ui.horizontal(|ui| {
+                        ui.label("Fréquence:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.freq, 0.01..=1000.0))
+                            .changed()
+                        {
+                            //self.update_lfo_frequency();
+                        };
+                    });
+                    ui.horizontal(|ui| {
+                        ui.label("Forme d'onde:");
+                        let response = egui::ComboBox::from_label("")
+                            .selected_text(format!("{:?}", self.waveform))
+                            .show_ui(ui, |ui| {
+                                ui.selectable_value(&mut self.waveform, LfoWaveform::Sine, "Sine");
+                                ui.selectable_value(
+                                    &mut self.waveform,
+                                    LfoWaveform::Triangle,
+                                    "Triangle",
+                                );
+                                ui.selectable_value(
+                                    &mut self.waveform,
+                                    LfoWaveform::Square,
+                                    "Square",
+                                );
+                                ui.selectable_value(
+                                    &mut self.waveform,
+                                    LfoWaveform::SawUp,
+                                    "Sawtooth Up",
+                                );
+                                ui.selectable_value(
+                                    &mut self.waveform,
+                                    LfoWaveform::SawDown,
+                                    "Sawtooth Down",
+                                );
+                            });
+                        if response.response.changed() {
+                            self.update_synth_lfo_waveform();
+                        }
                     });
 
                     ui.separator();
@@ -497,6 +555,7 @@ impl SynthesizerApp {
         self.gain_activation = self.current_synth_type.is_gain_active();
         self.noise = self.current_synth_type.get_current_noise();
         self.noise_activation = self.current_synth_type.is_noise_active();
+        self.waveform = self.current_synth_type.get_current_lfo_waveform();
         // self.attack = self.current_synth_type.get_current_attack();
         //self.decay = self.current_synth_type.get_current_decay();
         //self.sustain = self.current_synth_type.get_current_sustain();
@@ -562,6 +621,24 @@ impl SynthesizerApp {
                 println!(
                     "Activation du bruit mise à jour dans le contrôleur audio: {}",
                     self.noise_activation
+                );
+            }
+        }
+    }
+
+    /// Met à jour la forme d'onde du LFO
+    fn update_synth_lfo_waveform(&mut self) {
+        // Mettre à jour la forme d'onde dans le synthétiseur local
+        self.current_synth_type
+            .set_current_lfo_waveform(self.waveform);
+
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_current_lfo_waveform(self.waveform);
+                println!(
+                    "Forme d'onde LFO mise à jour dans le contrôleur audio: {:?}",
+                    self.waveform
                 );
             }
         }

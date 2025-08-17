@@ -15,3 +15,5 @@
 - retirer tous les prints
 
 - pitch shiftting
+
+- gros refactoring pcq la ca va pas(fichier a plus de 500 lignes)

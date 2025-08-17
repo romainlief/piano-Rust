@@ -3,7 +3,7 @@ use crate::synths::modular::ModularSynth;
 use crate::synths::modules::compressor::Compressor;
 use crate::synths::modules::filter::LowPassFilter;
 use crate::synths::modules::gain::Gain;
-use crate::synths::modules::lfo::LFO;
+use crate::synths::modules::lfo::{LFO, LfoWaveform};
 use crate::synths::modules::noise::Noise;
 use crate::synths::modules::reverb::Reverb;
 use crate::synths::oscillators::{
@@ -235,6 +235,28 @@ impl SynthType {
         }
     }
 
+    /// Obtient la forme d'onde actuelle du LFO
+    pub fn get_current_lfo_waveform(&self) -> LfoWaveform {
+        match self {
+            SynthType::Sine(synth) => Self::get_lfo_waveform_from_synth(synth),
+            SynthType::Square(synth) => Self::get_lfo_waveform_from_synth(synth),
+            SynthType::Sawtooth(synth) => Self::get_lfo_waveform_from_synth(synth),
+            SynthType::FM(synth) => Self::get_lfo_waveform_from_synth(synth),
+            SynthType::Hammond(synth) => Self::get_lfo_waveform_from_synth(synth),
+        }
+    }
+
+    /// Définit la forme d'onde du LFO
+    pub fn set_current_lfo_waveform(&mut self, waveform: LfoWaveform) {
+        match self {
+            SynthType::Sine(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
+            SynthType::Square(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
+            SynthType::Sawtooth(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
+            SynthType::FM(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
+            SynthType::Hammond(synth) => Self::set_lfo_waveform_in_synth(synth, waveform),
+        }
+    }
+
     /// Helper pour activer/désactiver le gain dans un synthétiseur
     fn set_gain_activation_static<O: crate::synths::traits::Oscillator>(
         synth: &mut ModularSynth<O>,
@@ -257,14 +279,6 @@ impl SynthType {
         active: bool,
     ) {
         let has_noise = synth.modules.iter().any(|m| m.name() == "NoiseEffect");
-        println!(
-            "set_noise_activation_static: active={}, has_noise={}",
-            active, has_noise
-        );
-        println!(
-            "Modules présents: {:?}",
-            synth.modules.iter().map(|m| m.name()).collect::<Vec<_>>()
-        );
 
         if active && !has_noise {
             let noise = Noise::new(constants::CURRENT_NOISE);
@@ -289,6 +303,34 @@ impl SynthType {
         synth: &ModularSynth<O>,
     ) -> bool {
         synth.modules.iter().any(|m| m.name() == "NoiseEffect")
+    }
+
+    /// Helper pour récupérer la forme d'onde du LFO
+    fn get_lfo_waveform_from_synth<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> LfoWaveform {
+        for module in &synth.modules {
+            if let Some(lfo) = module.as_any().downcast_ref::<LFO>() {
+                return lfo.get_waveform();
+            }
+        }
+        // Valeur par défaut si LFO pas trouvé
+        constants::CURRENT_LFO_WAVEFORM
+    }
+
+    /// Helper pour définir la forme d'onde du LFO
+    fn set_lfo_waveform_in_synth<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        waveform: LfoWaveform,
+    ) {
+        for module in &mut synth.modules {
+            if let Some(lfo) = module.as_any_mut().downcast_mut::<LFO>() {
+                lfo.set_waveform(waveform);
+                println!("Forme d'onde LFO mise à jour: {:?}", waveform);
+                return;
+            }
+        }
+        println!("LFO non trouvé pour mise à jour de la forme d'onde");
     }
 }
 
