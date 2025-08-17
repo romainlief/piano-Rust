@@ -23,8 +23,9 @@ pub struct SynthesizerApp {
 
     // États de l'interface
     // NOISE
+    noise_activation: bool,
     noise: f64,
-    
+
     // GAIN
     gain_activation: bool,
     gain: f64,
@@ -61,7 +62,8 @@ impl SynthesizerApp {
             pressed_notes: HashSet::new(),
             pressed_physical_keys: HashSet::new(),
             active_notes: HashSet::new(),
-            noise: 0.2,
+            noise_activation: constants::ACTIVATION_NOISE,
+            noise: constants::CURRENT_NOISE,
             gain_activation: constants::ACTIVATION_GAIN,
             gain: constants::CURRENT_GAIN, // Utiliser la valeur des constantes
             reverb_dry_wet: 0.2,
@@ -80,6 +82,19 @@ impl SynthesizerApp {
 
     pub fn with_synth_control(mut self, synth_control: Arc<Mutex<SynthType>>) -> Self {
         self.synth_control = Some(synth_control);
+        
+        // S'assurer que le synthétiseur audio a les modules requis selon l'état de l'interface
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                // Forcer l'activation des modules selon l'état initial de l'interface
+                synth.set_noise_activation(self.noise_activation);
+                synth.set_gain_activation(self.gain_activation);
+                synth.set_current_noise(self.noise);
+                synth.set_current_gain(self.gain);
+                println!("Modules initialisés dans le contrôleur audio");
+            }
+        }
+        
         self
     }
 }
@@ -140,7 +155,15 @@ impl eframe::App for SynthesizerApp {
                     ui.heading("📻 Noise");
                     ui.horizontal(|ui| {
                         ui.label("Niveau de bruit:");
-                        ui.add(egui::Slider::new(&mut self.noise, 0.0..=1.0));
+                        if ui
+                            .add(egui::Slider::new(&mut self.noise, 0.0..=1.0))
+                            .changed()
+                        {
+                            self.update_synth_noise();
+                        };
+                        if ui.checkbox(&mut self.noise_activation, "ON").changed() {
+                            self.update_noise_activation();
+                        }
                     });
 
                     ui.separator();
@@ -155,7 +178,7 @@ impl eframe::App for SynthesizerApp {
                         {
                             self.update_synth_gain();
                         }
-                        
+
                         // Checkbox d'activation à droite du slider
                         if ui.checkbox(&mut self.gain_activation, "ON").changed() {
                             self.update_gain_activation();
@@ -433,6 +456,8 @@ impl SynthesizerApp {
     fn sync_values_from_synth(&mut self) {
         self.gain = self.current_synth_type.get_current_gain();
         self.gain_activation = self.current_synth_type.is_gain_active();
+        self.noise = self.current_synth_type.get_current_noise();
+        self.noise_activation = self.current_synth_type.is_noise_active();
         // self.attack = self.current_synth_type.get_current_attack();
         //self.decay = self.current_synth_type.get_current_decay();
         //self.sustain = self.current_synth_type.get_current_sustain();
@@ -443,7 +468,7 @@ impl SynthesizerApp {
     fn update_synth_gain(&mut self) {
         // Mettre à jour le gain dans le synthétiseur local
         self.current_synth_type.set_current_gain(self.gain);
-        
+
         // Mettre à jour aussi le synthétiseur dans le contrôleur audio
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
@@ -453,18 +478,52 @@ impl SynthesizerApp {
         }
     }
 
+    fn update_synth_noise(&mut self) {
+        // Mettre à jour UNIQUEMENT le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_current_noise(self.noise);
+                println!("Bruit mis à jour dans le contrôleur audio: {}", self.noise);
+                
+                // Synchroniser la copie locale avec l'état du contrôleur
+                self.current_synth_type = synth.clone();
+            }
+        }
+    }
+
     /// Met à jour l'activation du gain
     fn update_gain_activation(&mut self) {
         println!("Activation du gain changée: {}", self.gain_activation);
-        
-        // Mettre à jour l'activation dans le synthétiseur local
-        self.current_synth_type.set_gain_activation(self.gain_activation);
-        
+
+        self.current_synth_type
+            .set_gain_activation(self.gain_activation);
+
         // Mettre à jour aussi le synthétiseur dans le contrôleur audio
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_gain_activation(self.gain_activation);
-                println!("Activation du gain mise à jour dans le contrôleur audio: {}", self.gain_activation);
+                println!(
+                    "Activation du gain mise à jour dans le contrôleur audio: {}",
+                    self.gain_activation
+                );
+            }
+        }
+    }
+
+    fn update_noise_activation(&mut self) {
+        println!("Activation du bruit changée: {}", self.noise_activation);
+
+        self.current_synth_type
+            .set_noise_activation(self.noise_activation);
+
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_noise_activation(self.noise_activation);
+                println!(
+                    "Activation du bruit mise à jour dans le contrôleur audio: {}",
+                    self.noise_activation
+                );
             }
         }
     }

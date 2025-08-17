@@ -71,6 +71,16 @@ impl SynthType {
         }
     }
 
+    pub fn get_current_noise(&self) -> f64 {
+        match self {
+            SynthType::Sine(synth) => self.get_noise_from_synth(synth),
+            SynthType::Square(synth) => self.get_noise_from_synth(synth),
+            SynthType::Sawtooth(synth) => self.get_noise_from_synth(synth),
+            SynthType::FM(synth) => self.get_noise_from_synth(synth),
+            SynthType::Hammond(synth) => self.get_noise_from_synth(synth),
+        }
+    }
+
     pub fn set_current_gain(&mut self, new_gain: f64) {
         match self {
             SynthType::Sine(synth) => {
@@ -88,6 +98,16 @@ impl SynthType {
             SynthType::Hammond(synth) => {
                 Self::set_gain_in_synth_static(synth, new_gain);
             }
+        }
+    }
+
+    pub fn set_current_noise(&mut self, new_noise: f64) {
+        match self {
+            SynthType::Sine(synth) => Self::set_noise_in_synth_static(synth, new_noise),
+            SynthType::Square(synth) => Self::set_noise_in_synth_static(synth, new_noise),
+            SynthType::Sawtooth(synth) => Self::set_noise_in_synth_static(synth, new_noise),
+            SynthType::FM(synth) => Self::set_noise_in_synth_static(synth, new_noise),
+            SynthType::Hammond(synth) => Self::set_noise_in_synth_static(synth, new_noise),
         }
     }
 
@@ -110,6 +130,24 @@ impl SynthType {
         constants::CURRENT_GAIN
     }
 
+    fn get_noise_from_synth<O: crate::synths::traits::Oscillator>(
+        &self,
+        synth: &ModularSynth<O>,
+    ) -> f64 {
+        // Parcourir les modules pour trouver le module Noise
+        for module in &synth.modules {
+            if module.name() == "NoiseEffect" {
+                // Utiliser le downcasting en lecture seule
+                if let Some(noise_module) = module.as_any().downcast_ref::<Noise>() {
+                    println!("Noise module found: {}", noise_module.get_amount());
+                    return noise_module.get_amount();
+                }
+            }
+        }
+        // Si pas de module noise trouvé, retourner la valeur par défaut
+        constants::CURRENT_NOISE
+    }
+
     /// Helper pour mettre à jour le gain d'un synthétiseur modulaire
     fn set_gain_in_synth_static<O: crate::synths::traits::Oscillator>(
         synth: &mut ModularSynth<O>,
@@ -126,6 +164,23 @@ impl SynthType {
             }
         }
         println!("Module Gain non trouvé pour mise à jour");
+    }
+
+    fn set_noise_in_synth_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        new_noise: f64,
+    ) {
+        // Parcourir les modules pour trouver le module Noise
+        for module in &mut synth.modules {
+            if module.name() == "NoiseEffect" {
+                // Utiliser le downcasting mutable pour modifier le noise
+                if let Some(noise_module) = module.as_any_mut().downcast_mut::<Noise>() {
+                    noise_module.set_amount(new_noise);
+                    return;
+                }
+            }
+        }
+        println!("Module Noise non trouvé pour mise à jour");
     }
 
     /// Active ou désactive le module gain
@@ -149,6 +204,16 @@ impl SynthType {
         }
     }
 
+    pub fn set_noise_activation(&mut self, active: bool) {
+        match self {
+            SynthType::Sine(synth) => Self::set_noise_activation_static(synth, active),
+            SynthType::Square(synth) => Self::set_noise_activation_static(synth, active),
+            SynthType::Sawtooth(synth) => Self::set_noise_activation_static(synth, active),
+            SynthType::FM(synth) => Self::set_noise_activation_static(synth, active),
+            SynthType::Hammond(synth) => Self::set_noise_activation_static(synth, active),
+        }
+    }
+
     /// Vérifie si le module gain est actif
     pub fn is_gain_active(&self) -> bool {
         match self {
@@ -160,13 +225,23 @@ impl SynthType {
         }
     }
 
+    pub fn is_noise_active(&self) -> bool {
+        match self {
+            SynthType::Sine(synth) => Self::is_noise_active_static(synth),
+            SynthType::Square(synth) => Self::is_noise_active_static(synth),
+            SynthType::Sawtooth(synth) => Self::is_noise_active_static(synth),
+            SynthType::FM(synth) => Self::is_noise_active_static(synth),
+            SynthType::Hammond(synth) => Self::is_noise_active_static(synth),
+        }
+    }
+
     /// Helper pour activer/désactiver le gain dans un synthétiseur
     fn set_gain_activation_static<O: crate::synths::traits::Oscillator>(
         synth: &mut ModularSynth<O>,
         active: bool,
     ) {
         let has_gain = synth.modules.iter().any(|m| m.name() == "Gain");
-        
+
         if active && !has_gain {
             let gain = Gain::new(constants::CURRENT_GAIN);
             synth.add_module(gain);
@@ -177,11 +252,43 @@ impl SynthType {
         }
     }
 
+    fn set_noise_activation_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        active: bool,
+    ) {
+        let has_noise = synth.modules.iter().any(|m| m.name() == "NoiseEffect");
+        println!(
+            "set_noise_activation_static: active={}, has_noise={}",
+            active, has_noise
+        );
+        println!(
+            "Modules présents: {:?}",
+            synth.modules.iter().map(|m| m.name()).collect::<Vec<_>>()
+        );
+
+        if active && !has_noise {
+            let noise = Noise::new(constants::CURRENT_NOISE);
+            synth.add_module(noise);
+            println!("Module Noise ajouté");
+        } else if !active && has_noise {
+            synth.modules.retain(|m| m.name() != "NoiseEffect");
+            println!("Module Noise retiré");
+        } else {
+            println!("Aucune action nécessaire pour le noise");
+        }
+    }
+
     /// Helper pour vérifier si le gain est actif
     fn is_gain_active_static<O: crate::synths::traits::Oscillator>(
         synth: &ModularSynth<O>,
     ) -> bool {
         synth.modules.iter().any(|m| m.name() == "Gain")
+    }
+
+    fn is_noise_active_static<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> bool {
+        synth.modules.iter().any(|m| m.name() == "NoiseEffect")
     }
 }
 
@@ -237,9 +344,8 @@ impl SynthType {
         );
 
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
-        if constants::ACTIVATION_NOISE {
-            synth.add_module(noise);
-        }
+        synth.add_module(noise);
+
         if constants::ACTIVATION_LFO {
             synth.add_module(lfo);
         }
@@ -247,6 +353,7 @@ impl SynthType {
             synth.add_module(filter);
         }
         synth.add_module(gain);
+
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }

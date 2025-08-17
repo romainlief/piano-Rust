@@ -24,7 +24,7 @@ pub static ADSR_RELEASE: f64 = 0.7; // Release time in seconds
 pub static ACTIVATION_GAIN: bool = true; // true to activate the gain effect
 pub static ACTIVATION_LFO: bool = false; // true to activate the LFO effect
 pub static ACTIVATION_COMPRESSOR: bool = false; // true to activate the compressor effect
-pub static ACTIVATION_NOISE: bool = false; // true to activate the noise effect
+pub static ACTIVATION_NOISE: bool = true; // true to activate the noise effect
 pub static ACTIVATION_FILTER: bool = false; // true to activate the filter effect
 pub static ACTIVATION_REVERB: bool = false; // true to activate the reverb effect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ pub static CURRENT_ATTACK: f64 = 1.01; // attaque encore plus lente : 200 ms
 pub static CURRENT_RELEASE: f64 = 0.2; // release très lente : 1 seconde
 pub static CURRENT_MAKEUP_GAIN: f64 = 0.0; // gain neutre
 // NOISE
-pub static CURRENT_NOISE: f64 = 0.2; // niveau de bruit à ajouter
+pub static CURRENT_NOISE: f64 = 0.0; // niveau de bruit à ajouter
 // LOW PASS
 pub static CURRENT_FILTER_CUTOFF: f64 = 8000.0; // fréquence de coupure en Hz (était 100Hz - trop bas!)
 pub static CURRENT_FILTER_RESONANCE: f64 = 1.2; // résonance (Q)
