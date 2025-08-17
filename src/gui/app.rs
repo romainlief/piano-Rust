@@ -31,10 +31,10 @@ pub struct SynthesizerApp {
     gain: f64,
 
     // ADSR
-    //attack: f64,
-    //decay: f64,
-    //sustain: f64,
-    //release: f64,
+    attack: f64,
+    decay: f64,
+    sustain: f64,
+    release: f64,
 
     // FILTER
 
@@ -66,6 +66,10 @@ impl SynthesizerApp {
             noise: constants::CURRENT_NOISE,
             gain_activation: constants::ACTIVATION_GAIN,
             gain: constants::CURRENT_GAIN, // Utiliser la valeur des constantes
+            attack: constants::ADSR_ATTACK,
+            decay: constants::ADSR_DECAY,
+            sustain: constants::ADSR_SUSTAIN,
+            release: constants::ADSR_RELEASE,
             reverb_dry_wet: 0.2,
             current_octave: constants::VECTEUR_NOTES
                 [constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)]
@@ -138,8 +142,58 @@ impl eframe::App for SynthesizerApp {
                     ui.heading("Contrôles");
 
                     ui.separator();
+                    ui.horizontal(|ui| {
+                        ui.heading("⏱️ ADSR");
+                    });
+                    ui.horizontal(|ui| {
+                        ui.label("Attack:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.attack, 0.0..=60.0))
+                            .changed()
+                        {
+                            //update attack
+                        };
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.label("Decay:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.decay, 0.0..=30.0))
+                            .changed()
+                        {
+                            //update decay
+                        };
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.label("Sustain:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.sustain, 0.0..=1.0))
+                            .changed()
+                        {
+                            //update decay
+                        };
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.label("Release:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.release, 0.0..=60.0))
+                            .changed()
+                        {
+                            //update release
+                        };
+                    });
+                    ui.separator();
+
                     // Noise
-                    ui.heading("📻 Noise");
+                    ui.horizontal(|ui| {
+                        ui.heading("📻 Noise");
+                        ui.add_space(10.0); // Espace pour séparer le heading de la checkbox
+                        if ui.checkbox(&mut self.noise_activation, "ON").changed() {
+                            self.update_noise_activation();
+                        }
+                    });
                     ui.horizontal(|ui| {
                         ui.label("Niveau de bruit:");
                         if ui
@@ -148,15 +202,18 @@ impl eframe::App for SynthesizerApp {
                         {
                             self.update_synth_noise();
                         };
-                        if ui.checkbox(&mut self.noise_activation, "ON").changed() {
-                            self.update_noise_activation();
-                        }
                     });
 
                     ui.separator();
 
                     // Gain général
-                    ui.heading("🔊 Gain");
+                    ui.horizontal(|ui| {
+                        ui.heading("🔊 Gain");
+                        ui.add_space(10.0); // Espace pour séparer le heading de la checkbox
+                        if ui.checkbox(&mut self.gain_activation, "ON").changed() {
+                            self.update_gain_activation();
+                        }
+                    });
                     ui.horizontal(|ui| {
                         ui.label("Gain:");
                         if ui
@@ -164,11 +221,6 @@ impl eframe::App for SynthesizerApp {
                             .changed()
                         {
                             self.update_synth_gain();
-                        }
-
-                        // Checkbox d'activation à droite du slider
-                        if ui.checkbox(&mut self.gain_activation, "ON").changed() {
-                            self.update_gain_activation();
                         }
                     });
 
