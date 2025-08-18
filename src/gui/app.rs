@@ -48,6 +48,7 @@ pub struct SynthesizerApp {
     waveform: LfoWaveform,
 
     // REVERB
+    reverb_activation: bool,
     reverb_dry_wet: f64,
     // OCTAVE
     current_octave: usize,
@@ -78,6 +79,7 @@ impl SynthesizerApp {
             lfo_activation: constants::ACTIVATION_LFO,
             freq: constants::CURRENT_LFO_FREQ,
             waveform: constants::CURRENT_LFO_WAVEFORM,
+            reverb_activation: constants::ACTIVATION_REVERB,
             reverb_dry_wet: 0.2,
             current_octave: constants::VECTEUR_NOTES
                 [constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)]
@@ -292,7 +294,13 @@ impl eframe::App for SynthesizerApp {
                     ui.separator();
 
                     // Section Reverb
-                    ui.heading("🌊 Reverb");
+                    ui.horizontal(|ui| {
+                        ui.heading("🌊 Reverb");
+                        ui.add_space(10.0);
+                        if ui.checkbox(&mut self.reverb_activation, "ON").changed() {
+                            self.update_reverb_activation();
+                        }
+                    });
                     ui.horizontal(|ui| {
                         ui.label("Dry Wet:");
                         ui.add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("%"));
@@ -624,6 +632,27 @@ impl SynthesizerApp {
                 println!(
                     "Activation du gain mise à jour dans le contrôleur audio: {}",
                     self.gain_activation
+                );
+            }
+        }
+    }
+
+    fn update_reverb_activation(&mut self) {
+        println!(
+            "Activation de la réverbération changée: {}",
+            self.reverb_activation
+        );
+
+        self.current_synth_type
+            .set_reverb_activation(self.reverb_activation);
+
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_reverb_activation(self.reverb_activation);
+                println!(
+                    "Activation de la réverbération mise à jour dans le contrôleur audio: {}",
+                    self.reverb_activation
                 );
             }
         }

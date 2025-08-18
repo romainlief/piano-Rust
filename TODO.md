@@ -20,4 +20,4 @@
 
 - lier les bouttons adsr
 
-- lier les bouttons lfo
+- faire un tui clean

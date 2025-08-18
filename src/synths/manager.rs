@@ -254,6 +254,16 @@ impl SynthType {
         }
     }
 
+    pub fn set_reverb_activation(&mut self, active: bool) {
+        match self {
+            SynthType::Sine(synth) => Self::set_reverb_activation_static(synth, active),
+            SynthType::Square(synth) => Self::set_reverb_activation_static(synth, active),
+            SynthType::Sawtooth(synth) => Self::set_reverb_activation_static(synth, active),
+            SynthType::FM(synth) => Self::set_reverb_activation_static(synth, active),
+            SynthType::Hammond(synth) => Self::set_reverb_activation_static(synth, active),
+        }
+    }
+
     pub fn set_noise_activation(&mut self, active: bool) {
         match self {
             SynthType::Sine(synth) => Self::set_noise_activation_static(synth, active),
@@ -343,6 +353,31 @@ impl SynthType {
         }
     }
 
+    fn set_reverb_activation_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        active: bool,
+    ) {
+        let has_reverb = synth.modules.iter().any(|m| m.name() == "Reverb");
+
+        if active && !has_reverb {
+            let reverb = Reverb::new(
+                constants::SAMPLE_RATE,
+                constants::CURRENT_REVERB_TYPE,
+                constants::CURRENT_DRY_WET,
+                constants::CURRENT_REVERB_EARLY_GAIN,
+                constants::CURRENT_REVERB_TAIL_GAIN,
+                constants::CURRENT_REVERB_PRE_DELAY_MS,
+            );
+            synth.add_module(reverb);
+            println!("Module Reverb ajouté");
+        } else if !active && has_reverb {
+            synth.modules.retain(|m| m.name() != "Reverb");
+            println!("Module Reverb retiré");
+        } else {
+            println!("Aucune action nécessaire pour le reverb");
+        }
+    }
+
     fn set_noise_activation_static<O: crate::synths::traits::Oscillator>(
         synth: &mut ModularSynth<O>,
         active: bool,
@@ -396,9 +431,7 @@ impl SynthType {
         synth.modules.iter().any(|m| m.name() == "NoiseEffect")
     }
 
-    fn is_lfo_active_static<O: crate::synths::traits::Oscillator>(
-        synth: &ModularSynth<O>,
-    ) -> bool {
+    fn is_lfo_active_static<O: crate::synths::traits::Oscillator>(synth: &ModularSynth<O>) -> bool {
         synth.modules.iter().any(|m| m.name() == "LFO")
     }
 
@@ -482,9 +515,8 @@ impl SynthType {
         let mut synth: ModularSynth<SineOscillator> = ModularSynth::new(oscillator);
         synth.add_module(noise);
 
-        if constants::ACTIVATION_LFO {
-            synth.add_module(lfo);
-        }
+        synth.add_module(lfo);
+
         if constants::ACTIVATION_FILTER {
             synth.add_module(filter);
         }
@@ -537,18 +569,15 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        if constants::ACTIVATION_NOISE {
-            synth.add_module(noise);
-        }
-        if constants::ACTIVATION_LFO {
-            synth.add_module(lfo);
-        }
+        synth.add_module(noise);
+
+        synth.add_module(lfo);
+
         if constants::ACTIVATION_FILTER {
             synth.add_module(filter);
         }
-        if constants::ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
+        synth.add_module(gain);
+
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
@@ -596,18 +625,15 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        if constants::ACTIVATION_NOISE {
-            synth.add_module(noise);
-        }
-        if constants::ACTIVATION_LFO {
-            synth.add_module(lfo);
-        }
+        synth.add_module(noise);
+
+        synth.add_module(lfo);
+
         if constants::ACTIVATION_FILTER {
             synth.add_module(filter);
         }
-        if constants::ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
+        synth.add_module(gain);
+
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
@@ -655,18 +681,15 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        if constants::ACTIVATION_NOISE {
-            synth.add_module(noise);
-        }
-        if constants::ACTIVATION_LFO {
-            synth.add_module(lfo);
-        }
+        synth.add_module(noise);
+
+        synth.add_module(lfo);
+
         if constants::ACTIVATION_FILTER {
             synth.add_module(filter);
         }
-        if constants::ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
+        synth.add_module(gain);
+
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
@@ -714,18 +737,15 @@ impl SynthType {
         );
 
         let mut synth = ModularSynth::new(oscillator);
-        if constants::ACTIVATION_NOISE {
-            synth.add_module(noise);
-        }
-        if constants::ACTIVATION_LFO {
-            synth.add_module(lfo);
-        }
+        synth.add_module(noise);
+
+        synth.add_module(lfo);
+
         if constants::ACTIVATION_FILTER {
             synth.add_module(filter);
         }
-        if constants::ACTIVATION_GAIN {
-            synth.add_module(gain);
-        }
+        synth.add_module(gain);
+
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
