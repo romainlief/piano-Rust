@@ -52,6 +52,7 @@ pub struct SynthesizerApp {
     // REVERB
     reverb_activation: bool,
     reverb_dry_wet: f64,
+
     // OCTAVE
     current_octave: usize,
 
@@ -70,24 +71,33 @@ impl SynthesizerApp {
             pressed_notes: HashSet::new(),
             pressed_physical_keys: HashSet::new(),
             active_notes: HashSet::new(),
+
             noise_activation: constants::ACTIVATION_NOISE,
             noise: constants::CURRENT_NOISE,
+
             gain_activation: constants::ACTIVATION_GAIN,
             gain: constants::CURRENT_GAIN,
+
             attack: constants::ADSR_ATTACK,
             decay: constants::ADSR_DECAY,
             sustain: constants::ADSR_SUSTAIN,
             release: constants::ADSR_RELEASE,
+
             lfo_activation: constants::ACTIVATION_LFO,
             freq: constants::CURRENT_LFO_FREQ,
             waveform: constants::CURRENT_LFO_WAVEFORM,
+
             reverb_activation: constants::ACTIVATION_REVERB,
-            reverb_dry_wet: 0.2,
+            reverb_dry_wet: constants::CURRENT_DRY_WET,
+
             filter_activation: constants::ACTIVATION_FILTER,
+
             compressor_activation: constants::ACTIVATION_COMPRESSOR,
+
             current_octave: constants::VECTEUR_NOTES
                 [constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)]
                 as usize,
+                
             show_keyboard: true,
             show_effects: true,
         }
@@ -157,7 +167,7 @@ impl eframe::App for SynthesizerApp {
 
                     ui.separator();
                     ui.horizontal(|ui| {
-                        ui.heading("⏱️ ADSR");
+                        ui.heading("⏱ ADSR");
                     });
                     ui.horizontal(|ui| {
                         ui.label("Attack:");
@@ -345,7 +355,7 @@ impl eframe::App for SynthesizerApp {
                     ui.separator();
 
                     // Informations
-                    ui.heading("ℹ️ Info");
+                    ui.heading("ℹ Info");
                     if let Some(ref notes) = self.notes {
                         let notes_guard = notes.lock().unwrap();
                         let released_notes_count = notes_guard
