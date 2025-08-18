@@ -3,6 +3,12 @@ name = "synthesizer_emulation"
 version = "0.1.0"
 edition = "2024"
 default-run = "synthesizer_emulation"
+authors = ["Romain Lief <votre.email@example.com>"]
+license = "MIT"
+description = "Un synthétiseur modulaire en Rust avec interface graphique"
+repository = "https://github.com/romainlief/piano-Rust"
+keywords = ["audio", "synthesizer", "music", "dsp"]
+categories = ["multimedia::audio"]
 
 [dependencies]
 cpal = "0.16.0"

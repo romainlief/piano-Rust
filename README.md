@@ -48,3 +48,18 @@ cargo run --bin gui
 - **[serde](https://serde.rs/)** `1.0` - For the JSON note file
 - **[serde_json](https://crates.io/crates/serde_json/1.0.1/dependencies)** `1.0` - For the JSON note file
 - **[rand](https://crates.io/crates/rand)** `0.9.2` - To generate random numbers
+
+## 📄 License
+
+Copyright (c) 2025 Romain Lief
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+## 📞 Contact
+
+- Author: Romain Lief
+- Repository: [piano-Rust](https://github.com/romainlief/piano-Rust)
