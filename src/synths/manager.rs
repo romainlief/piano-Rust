@@ -542,7 +542,7 @@ impl SynthType {
     pub fn n_sine() -> Self {
         let oscillator: SineOscillator = SineOscillator;
 
-        let compressor = Compressor::new(
+        let compressor: Compressor = Compressor::new(
             constants::CURRENT_THRESHOLD,
             constants::CURRENT_RATIO,
             constants::CURRENT_ATTACK,

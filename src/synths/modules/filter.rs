@@ -4,7 +4,7 @@ use crate::synths::traits::Module;
 pub struct LowPassFilter {
     sample_rate: f64,
     cutoff_freq: f64,
-    resonance: f64,
+    resonance: f64, 
     // coefficients
     a0: f64,
     a1: f64,

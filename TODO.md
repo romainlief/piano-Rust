@@ -1,6 +1,8 @@
 # TODO
 
-- Docstrings
+- Docstrings / comment en anglais
+
+- faire le copyright
 
 - GUI
   - conversion nom du json dans app.rs -> faire une seule et meme convention pour gui et terminal

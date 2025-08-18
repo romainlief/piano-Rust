@@ -40,9 +40,16 @@ pub struct SynthesizerApp {
 
     // FILTER
     filter_activation: bool,
+    cutoff: f64,
+    resonance: f64,
 
     // COMPRESSOR
     compressor_activation: bool,
+    threshold: f64,
+    ratio: f64,
+    attack_comp: f64,
+    release_comp: f64,
+    make_up_gain: f64,
 
     // LFO
     lfo_activation: bool,
@@ -91,8 +98,15 @@ impl SynthesizerApp {
             reverb_dry_wet: constants::CURRENT_DRY_WET,
 
             filter_activation: constants::ACTIVATION_FILTER,
+            cutoff: constants::CURRENT_FILTER_CUTOFF,
+            resonance: constants::CURRENT_FILTER_RESONANCE,
 
             compressor_activation: constants::ACTIVATION_COMPRESSOR,
+            threshold: constants::CURRENT_THRESHOLD,
+            ratio: constants::CURRENT_RATIO,
+            attack_comp: constants::CURRENT_ATTACK,
+            release_comp: constants::CURRENT_RELEASE,
+            make_up_gain: constants::CURRENT_MAKEUP_GAIN,
 
             current_octave: constants::VECTEUR_NOTES
                 [constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)]
@@ -293,6 +307,26 @@ impl eframe::App for SynthesizerApp {
                             self.update_filter_activation();
                         }
                     });
+                    ui.horizontal(|ui| {
+                        ui.label("Cutoff:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.cutoff, 20.0..=20000.0).text("Hz"))
+                            .changed()
+                        {
+                            //  self.update_synth_cutoff();
+                        }
+                    });
+                    ui.horizontal(|ui| {
+                        ui.label("Resonance:");
+                        if ui
+                            .add(
+                                egui::Slider::new(&mut self.resonance, 0.0..=20.0).text("Q Factor"),
+                            )
+                            .changed()
+                        {
+                            // self.update_synth_resonance();
+                        }
+                    });
 
                     ui.separator();
 
@@ -321,6 +355,53 @@ impl eframe::App for SynthesizerApp {
                         ui.add_space(10.0);
                         if ui.checkbox(&mut self.compressor_activation, "ON").changed() {
                             self.update_compressor_activation();
+                        }
+                    });
+                    ui.horizontal(|ui| {
+                        ui.label("Threshold:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.threshold, -50.0..=0.0).text("dB"))
+                            .changed()
+                        {
+                            // self.update_synth_threshold();
+                        }
+                    });
+                    ui.horizontal(|ui| {
+                        ui.label("Ratio:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.ratio, 1.0..=20.0).text(":1"))
+                            .changed()
+                        {
+                            // self.update_synth_ratio();
+                        }
+                    });
+                    ui.horizontal(|ui| {
+                        ui.label("Attack:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.attack_comp, 0.0..=100.0).text("ms"))
+                            .changed()
+                        {
+                            // self.update_synth_attack();
+                        }
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.label("Release:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.release_comp, 0.0..=600.0).text("ms"))
+                            .changed()
+                        {
+                            // self.update_synth_release();
+                        }
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.label("Makeup Gain:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.make_up_gain, -20.0..=20.0).text("dB"))
+                            .changed()
+                        {
+                            // self.update_synth_makeup_gain();
                         }
                     });
 
@@ -718,7 +799,6 @@ impl SynthesizerApp {
         self.current_synth_type
             .set_reverb_activation(self.reverb_activation);
 
-        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_reverb_activation(self.reverb_activation);
