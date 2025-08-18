@@ -320,7 +320,7 @@ impl eframe::App for SynthesizerApp {
                         ui.heading("🤏 Compressor");
                         ui.add_space(10.0);
                         if ui.checkbox(&mut self.compressor_activation, "ON").changed() {
-                            //self.update_compressor_activation();
+                            self.update_compressor_activation();
                         }
                     });
 
@@ -331,7 +331,7 @@ impl eframe::App for SynthesizerApp {
                         ui.heading("🌊 Reverb");
                         ui.add_space(10.0);
                         if ui.checkbox(&mut self.reverb_activation, "ON").changed() {
-                            //self.update_reverb_activation();
+                            self.update_reverb_activation();
                         }
                     });
                     ui.horizontal(|ui| {
@@ -683,6 +683,27 @@ impl SynthesizerApp {
                 println!(
                     "Activation du gain mise à jour dans le contrôleur audio: {}",
                     self.gain_activation
+                );
+            }
+        }
+    }
+
+    fn update_compressor_activation(&mut self) {
+        println!(
+            "Activation du compresseur changée: {}",
+            self.compressor_activation
+        );
+
+        self.current_synth_type
+            .set_compressor_activation(self.compressor_activation);
+
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_compressor_activation(self.compressor_activation);
+                println!(
+                    "Activation du compresseur mise à jour dans le contrôleur audio: {}",
+                    self.compressor_activation
                 );
             }
         }

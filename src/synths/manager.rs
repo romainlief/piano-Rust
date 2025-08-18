@@ -262,6 +262,16 @@ impl SynthType {
         }
     }
 
+    pub fn set_compressor_activation(&mut self, active: bool) {
+        match self {
+            SynthType::Sine(synth) => Self::set_compressor_activation_static(synth, active),
+            SynthType::Square(synth) => Self::set_compressor_activation_static(synth, active),
+            SynthType::Sawtooth(synth) => Self::set_compressor_activation_static(synth, active),
+            SynthType::FM(synth) => Self::set_compressor_activation_static(synth, active),
+            SynthType::Hammond(synth) => Self::set_compressor_activation_static(synth, active),
+        }
+    }
+
     pub fn set_reverb_activation(&mut self, active: bool) {
         match self {
             SynthType::Sine(synth) => Self::set_reverb_activation_static(synth, active),
@@ -380,6 +390,31 @@ impl SynthType {
         } else if !active && has_gain {
             synth.modules.retain(|m| m.name() != "Gain");
             println!("Module Gain retiré");
+        }
+    }
+
+    fn set_compressor_activation_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        active: bool,
+    ) {
+        let has_compressor = synth.modules.iter().any(|m| m.name() == "SimpleRMSCompressor");
+
+        if active && !has_compressor {
+            let compressor = Compressor::new(
+                constants::CURRENT_THRESHOLD,
+                constants::CURRENT_RATIO,
+                constants::CURRENT_ATTACK,
+                constants::CURRENT_RELEASE,
+                constants::CURRENT_MAKEUP_GAIN,
+                constants::SAMPLE_RATE,
+            );
+            synth.add_module(compressor);
+            println!("Module Compressor ajouté");
+        } else if !active && has_compressor {
+            synth.modules.retain(|m| m.name() != "SimpleRMSCompressor");
+            println!("Module Compressor retiré");
+        } else {
+            println!("Aucune action nécessaire pour le compresseur");
         }
     }
 
