@@ -97,7 +97,7 @@ impl SynthesizerApp {
             current_octave: constants::VECTEUR_NOTES
                 [constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)]
                 as usize,
-                
+
             show_keyboard: true,
             show_effects: true,
         }
@@ -290,7 +290,7 @@ impl eframe::App for SynthesizerApp {
                         ui.heading("⬇ Filter");
                         ui.add_space(10.0);
                         if ui.checkbox(&mut self.filter_activation, "ON").changed() {
-                            //self.update_filter_activation();
+                            self.update_filter_activation();
                         }
                     });
 
@@ -331,7 +331,7 @@ impl eframe::App for SynthesizerApp {
                         ui.heading("🌊 Reverb");
                         ui.add_space(10.0);
                         if ui.checkbox(&mut self.reverb_activation, "ON").changed() {
-                            self.update_reverb_activation();
+                            //self.update_reverb_activation();
                         }
                     });
                     ui.horizontal(|ui| {
@@ -646,6 +646,24 @@ impl SynthesizerApp {
                 println!(
                     "Fréquence LFO mise à jour dans le contrôleur audio: {}",
                     self.freq
+                );
+            }
+        }
+    }
+
+    fn update_filter_activation(&mut self) {
+        println!("Activation du filtre changée: {}", self.filter_activation);
+
+        self.current_synth_type
+            .set_filter_activation(self.filter_activation);
+
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_filter_activation(self.filter_activation);
+                println!(
+                    "Activation du filtre mise à jour dans le contrôleur audio: {}",
+                    self.filter_activation
                 );
             }
         }

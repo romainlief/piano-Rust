@@ -231,6 +231,16 @@ impl SynthType {
         println!("Module Noise non trouvé pour mise à jour");
     }
 
+    pub fn set_filter_activation(&mut self, active: bool) {
+        match self {
+            SynthType::Sine(synth) => Self::set_filter_activation_static(synth, active),
+            SynthType::Square(synth) => Self::set_filter_activation_static(synth, active),
+            SynthType::Sawtooth(synth) => Self::set_filter_activation_static(synth, active),
+            SynthType::FM(synth) => Self::set_filter_activation_static(synth, active),
+            SynthType::Hammond(synth) => Self::set_filter_activation_static(synth, active),
+        }
+    }
+
     /// Active ou désactive le module gain
     pub fn set_gain_activation(&mut self, active: bool) {
         match self {
@@ -331,6 +341,28 @@ impl SynthType {
             SynthType::Sawtooth(synth) => Self::get_lfo_frequency_from_synth(synth),
             SynthType::FM(synth) => Self::get_lfo_frequency_from_synth(synth),
             SynthType::Hammond(synth) => Self::get_lfo_frequency_from_synth(synth),
+        }
+    }
+
+    fn set_filter_activation_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        active: bool,
+    ) {
+        let has_filter = synth.modules.iter().any(|m| m.name() == "LowPassFilter");
+
+        if active && !has_filter {
+            let filter = LowPassFilter::new(
+                constants::CURRENT_FILTER_CUTOFF,
+                constants::CURRENT_FILTER_RESONANCE,
+                constants::SAMPLE_RATE,
+            );
+            synth.add_module(filter);
+            println!("Module Filter ajouté");
+        } else if !active && has_filter {
+            synth.modules.retain(|m| m.name() != "LowPassFilter");
+            println!("Module Filter retiré");
+        } else {
+            println!("Aucune action nécessaire pour le filtre");
         }
     }
 
