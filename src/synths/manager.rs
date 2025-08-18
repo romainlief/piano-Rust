@@ -146,7 +146,6 @@ impl SynthType {
                 }
             }
         }
-        // Si pas de module gain trouvé, retourner la valeur par défaut
         constants::CURRENT_GAIN
     }
 
@@ -164,7 +163,6 @@ impl SynthType {
                 }
             }
         }
-        // Si pas de module noise trouvé, retourner la valeur par défaut
         constants::CURRENT_NOISE
     }
 
@@ -456,7 +454,6 @@ impl SynthType {
                 return lfo.get_freq();
             }
         }
-        // Valeur par défaut si LFO pas trouvé
         constants::CURRENT_LFO_FREQ
     }
 }
@@ -525,9 +522,8 @@ impl SynthType {
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
-        if constants::ACTIVATION_REVERB {
-            synth.add_module(reverb);
-        }
+        synth.add_module(reverb);
+
         SynthType::Sine(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -581,9 +577,8 @@ impl SynthType {
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
-        if constants::ACTIVATION_REVERB {
-            synth.add_module(reverb);
-        }
+        synth.add_module(reverb);
+
         SynthType::Square(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -637,9 +632,8 @@ impl SynthType {
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
-        if constants::ACTIVATION_REVERB {
-            synth.add_module(reverb);
-        }
+        synth.add_module(reverb);
+
         SynthType::Sawtooth(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -693,9 +687,8 @@ impl SynthType {
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
-        if constants::ACTIVATION_REVERB {
-            synth.add_module(reverb);
-        }
+        synth.add_module(reverb);
+
         SynthType::FM(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -749,9 +742,8 @@ impl SynthType {
         if constants::ACTIVATION_COMPRESSOR {
             synth.add_module(compressor);
         }
-        if constants::ACTIVATION_REVERB {
-            synth.add_module(reverb);
-        }
+        synth.add_module(reverb);
+
         SynthType::Hammond(synth)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////

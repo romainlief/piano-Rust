@@ -39,8 +39,10 @@ pub struct SynthesizerApp {
     release: f64,
 
     // FILTER
+    filter_activation: bool,
 
     // COMPRESSOR
+    compressor_activation: bool,
 
     // LFO
     lfo_activation: bool,
@@ -81,6 +83,8 @@ impl SynthesizerApp {
             waveform: constants::CURRENT_LFO_WAVEFORM,
             reverb_activation: constants::ACTIVATION_REVERB,
             reverb_dry_wet: 0.2,
+            filter_activation: constants::ACTIVATION_FILTER,
+            compressor_activation: constants::ACTIVATION_COMPRESSOR,
             current_octave: constants::VECTEUR_NOTES
                 [constants::CURRENT_OCTAVE_INDEX.load(Ordering::Relaxed)]
                 as usize,
@@ -218,8 +222,8 @@ impl eframe::App for SynthesizerApp {
 
                     // LFO
                     ui.horizontal(|ui| {
-                        ui.heading(" LFO");
-                        ui.add_space(10.0); // Espace pour séparer le heading de la checkbox
+                        ui.heading("🔄 LFO");
+                        ui.add_space(10.0);
                         if ui.checkbox(&mut self.lfo_activation, "ON").changed() {
                             self.update_lfo_activation();
                         }
@@ -261,13 +265,22 @@ impl eframe::App for SynthesizerApp {
                                     "Sawtooth Down",
                                 );
                             });
-                        // Vérifier si la waveform a changé
                         if old_waveform != self.waveform {
                             println!(
                                 "Waveform changée de {:?} vers {:?}",
                                 old_waveform, self.waveform
                             );
                             self.update_synth_lfo_waveform();
+                        }
+                    });
+
+                    ui.separator();
+                    // Filter
+                    ui.horizontal(|ui| {
+                        ui.heading("⬇ Filter");
+                        ui.add_space(10.0);
+                        if ui.checkbox(&mut self.filter_activation, "ON").changed() {
+                            //self.update_filter_activation();
                         }
                     });
 
@@ -288,6 +301,16 @@ impl eframe::App for SynthesizerApp {
                             .changed()
                         {
                             self.update_synth_gain();
+                        }
+                    });
+
+                    ui.separator();
+                    // Compressor
+                    ui.horizontal(|ui| {
+                        ui.heading("🤏 Compressor");
+                        ui.add_space(10.0);
+                        if ui.checkbox(&mut self.compressor_activation, "ON").changed() {
+                            //self.update_compressor_activation();
                         }
                     });
 
