@@ -691,6 +691,11 @@ impl SynthesizerApp {
         self.cutoff = self.current_synth_type.get_current_cutoff();
         self.resonance = self.current_synth_type.get_current_resonance();
 
+        self.compressor_activation =
+            self.current_synth_type.is_compressor_active();
+        self.threshold = self.current_synth_type.get_current_threshold();
+        
+
         // self.attack = self.current_synth_type.get_current_attack();
         //self.decay = self.current_synth_type.get_current_decay();
         //self.sustain = self.current_synth_type.get_current_sustain();

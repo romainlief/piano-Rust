@@ -73,6 +73,16 @@ impl Compressor {
             0.0
         }
     }
+
+    // #### Getters ####
+    pub fn get_threshold(&self) -> f64 {
+        self.threshold_db
+    }
+
+    // #### Setters ####
+    pub fn set_threshold(&mut self, new_threshold: f64) {
+        self.threshold_db = new_threshold;
+    }
 }
 
 impl Module for Compressor {

@@ -413,6 +413,16 @@ impl SynthType {
         }
     }
 
+    pub fn is_compressor_active(&self) -> bool {
+        match self {
+            SynthType::Sine(synth) => Self::is_compressor_active_static(synth),
+            SynthType::Square(synth) => Self::is_compressor_active_static(synth),
+            SynthType::Sawtooth(synth) => Self::is_compressor_active_static(synth),
+            SynthType::FM(synth) => Self::is_compressor_active_static(synth),
+            SynthType::Hammond(synth) => Self::is_compressor_active_static(synth),
+        }
+    }
+
     /// Obtient la forme d'onde actuelle du LFO
     pub fn get_current_lfo_waveform(&self) -> LfoWaveform {
         match self {
@@ -451,6 +461,16 @@ impl SynthType {
             SynthType::Sawtooth(synth) => Self::get_filter_resonance_from_synth(synth),
             SynthType::FM(synth) => Self::get_filter_resonance_from_synth(synth),
             SynthType::Hammond(synth) => Self::get_filter_resonance_from_synth(synth),
+        }
+    }
+
+    pub fn get_current_threshold(&self) -> f64 {
+        match self {
+            SynthType::Sine(synth) => Self::get_compressor_threshold_from_synth(synth),
+            SynthType::Square(synth) => Self::get_compressor_threshold_from_synth(synth),
+            SynthType::Sawtooth(synth) => Self::get_compressor_threshold_from_synth(synth),
+            SynthType::FM(synth) => Self::get_compressor_threshold_from_synth(synth),
+            SynthType::Hammond(synth) => Self::get_compressor_threshold_from_synth(synth),
         }
     }
 
@@ -609,6 +629,15 @@ impl SynthType {
         synth.modules.iter().any(|m| m.name() == "LowPassFilter")
     }
 
+    fn is_compressor_active_static<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> bool {
+        synth
+            .modules
+            .iter()
+            .any(|m| m.name() == "SimpleRMSCompressor")
+    }
+
     /// Helper pour récupérer la forme d'onde du LFO
     fn get_lfo_waveform_from_synth<O: crate::synths::traits::Oscillator>(
         synth: &ModularSynth<O>,
@@ -653,6 +682,17 @@ impl SynthType {
             }
         }
         constants::CURRENT_FILTER_RESONANCE
+    }
+
+    fn get_compressor_threshold_from_synth<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> f64 {
+        for module in &synth.modules {
+            if let Some(compressor) = module.as_any().downcast_ref::<Compressor>() {
+                return compressor.get_threshold();
+            }
+        }
+        constants::CURRENT_THRESHOLD
     }
 }
 
