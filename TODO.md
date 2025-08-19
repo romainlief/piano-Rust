@@ -23,3 +23,5 @@
 - faire un tui clean
 
 -faire en sorte que la fenetre ait sa taille en fonction de l'ecran
+
+- dans app et manager .rs, gros refactoring a faire avec les acces au setters et getters

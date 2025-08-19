@@ -313,7 +313,7 @@ impl eframe::App for SynthesizerApp {
                             .add(egui::Slider::new(&mut self.cutoff, 20.0..=20000.0).text("Hz"))
                             .changed()
                         {
-                            //  self.update_synth_cutoff();
+                            self.update_synth_cutoff();
                         }
                     });
                     ui.horizontal(|ui| {
@@ -324,7 +324,7 @@ impl eframe::App for SynthesizerApp {
                             )
                             .changed()
                         {
-                            // self.update_synth_resonance();
+                            self.update_synth_resonance();
                         }
                     });
 
@@ -676,17 +676,58 @@ impl SynthesizerApp {
 
     /// Synchronise les valeurs de l'interface avec le synthétiseur actuel
     fn sync_values_from_synth(&mut self) {
+        // TODO: finir les autres valeurs
         self.gain = self.current_synth_type.get_current_gain();
         self.gain_activation = self.current_synth_type.is_gain_active();
+
         self.noise = self.current_synth_type.get_current_noise();
         self.noise_activation = self.current_synth_type.is_noise_active();
+
+        self.lfo_activation = self.current_synth_type.is_lfo_active();
         self.waveform = self.current_synth_type.get_current_lfo_waveform();
         self.freq = self.current_synth_type.get_current_lfo_frequency();
-        self.lfo_activation = self.current_synth_type.is_lfo_active();
+
+        self.filter_activation = self.current_synth_type.is_filter_active();
+        self.cutoff = self.current_synth_type.get_current_cutoff();
+        self.resonance = self.current_synth_type.get_current_resonance();
+
         // self.attack = self.current_synth_type.get_current_attack();
         //self.decay = self.current_synth_type.get_current_decay();
         //self.sustain = self.current_synth_type.get_current_sustain();
         //self.release = self.current_synth_type.get_current_release();
+    }
+
+    fn update_synth_cutoff(&mut self) {
+        // Mettre à jour la fréquence de coupure dans le synthétiseur local
+        self.current_synth_type.set_current_cutoff(self.cutoff);
+
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_current_cutoff(self.cutoff);
+                println!(
+                    "Fréquence de coupure mise à jour dans le contrôleur audio: {}",
+                    self.cutoff
+                );
+            }
+        }
+    }
+
+    fn update_synth_resonance(&mut self) {
+        // Mettre à jour la résonance dans le synthétiseur local
+        self.current_synth_type
+            .set_current_resonance(self.resonance);
+
+        // Mettre à jour aussi le synthétiseur dans le contrôleur audio
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_current_resonance(self.resonance);
+                println!(
+                    "Résonance mise à jour dans le contrôleur audio: {}",
+                    self.resonance
+                );
+            }
+        }
     }
 
     /// Met à jour le gain dans le synthétiseur actuel

@@ -81,6 +81,46 @@ impl SynthType {
         }
     }
 
+    pub fn set_current_cutoff(&mut self, new_cutoff: f64) {
+        match self {
+            SynthType::Sine(synth) => {
+                Self::set_cutoff_in_synth_static(synth, new_cutoff);
+            }
+            SynthType::Square(synth) => {
+                Self::set_cutoff_in_synth_static(synth, new_cutoff);
+            }
+            SynthType::Sawtooth(synth) => {
+                Self::set_cutoff_in_synth_static(synth, new_cutoff);
+            }
+            SynthType::FM(synth) => {
+                Self::set_cutoff_in_synth_static(synth, new_cutoff);
+            }
+            SynthType::Hammond(synth) => {
+                Self::set_cutoff_in_synth_static(synth, new_cutoff);
+            }
+        }
+    }
+
+    pub fn set_current_resonance(&mut self, new_resonance: f64) {
+        match self {
+            SynthType::Sine(synth) => {
+                Self::set_resonance_in_synth_static(synth, new_resonance);
+            }
+            SynthType::Square(synth) => {
+                Self::set_resonance_in_synth_static(synth, new_resonance);
+            }
+            SynthType::Sawtooth(synth) => {
+                Self::set_resonance_in_synth_static(synth, new_resonance);
+            }
+            SynthType::FM(synth) => {
+                Self::set_resonance_in_synth_static(synth, new_resonance);
+            }
+            SynthType::Hammond(synth) => {
+                Self::set_resonance_in_synth_static(synth, new_resonance);
+            }
+        }
+    }
+
     pub fn set_current_gain(&mut self, new_gain: f64) {
         match self {
             SynthType::Sine(synth) => {
@@ -164,6 +204,36 @@ impl SynthType {
             }
         }
         constants::CURRENT_NOISE
+    }
+
+    fn set_cutoff_in_synth_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        new_cutoff: f64,
+    ) {
+        for module in &mut synth.modules {
+            if module.name() == "LowPassFilter" {
+                if let Some(filter_module) = module.as_any_mut().downcast_mut::<LowPassFilter>() {
+                    filter_module.set_cutoff_freq(new_cutoff);
+                    return;
+                }
+            }
+        }
+        println!("Module Filter non trouvé pour mise à jour");
+    }
+
+    fn set_resonance_in_synth_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        new_resonance: f64,
+    ) {
+        for module in &mut synth.modules {
+            if module.name() == "LowPassFilter" {
+                if let Some(filter_module) = module.as_any_mut().downcast_mut::<LowPassFilter>() {
+                    filter_module.set_resonance(new_resonance);
+                    return;
+                }
+            }
+        }
+        println!("Module Filter non trouvé pour mise à jour");
     }
 
     /// Helper pour mettre à jour le gain d'un synthétiseur modulaire
@@ -333,6 +403,16 @@ impl SynthType {
         }
     }
 
+    pub fn is_filter_active(&self) -> bool {
+        match self {
+            SynthType::Sine(synth) => Self::is_filter_active_static(synth),
+            SynthType::Square(synth) => Self::is_filter_active_static(synth),
+            SynthType::Sawtooth(synth) => Self::is_filter_active_static(synth),
+            SynthType::FM(synth) => Self::is_filter_active_static(synth),
+            SynthType::Hammond(synth) => Self::is_filter_active_static(synth),
+        }
+    }
+
     /// Obtient la forme d'onde actuelle du LFO
     pub fn get_current_lfo_waveform(&self) -> LfoWaveform {
         match self {
@@ -351,6 +431,26 @@ impl SynthType {
             SynthType::Sawtooth(synth) => Self::get_lfo_frequency_from_synth(synth),
             SynthType::FM(synth) => Self::get_lfo_frequency_from_synth(synth),
             SynthType::Hammond(synth) => Self::get_lfo_frequency_from_synth(synth),
+        }
+    }
+
+    pub fn get_current_cutoff(&self) -> f64 {
+        match self {
+            SynthType::Sine(synth) => Self::get_filter_cutoff_from_synth(synth),
+            SynthType::Square(synth) => Self::get_filter_cutoff_from_synth(synth),
+            SynthType::Sawtooth(synth) => Self::get_filter_cutoff_from_synth(synth),
+            SynthType::FM(synth) => Self::get_filter_cutoff_from_synth(synth),
+            SynthType::Hammond(synth) => Self::get_filter_cutoff_from_synth(synth),
+        }
+    }
+
+    pub fn get_current_resonance(&self) -> f64 {
+        match self {
+            SynthType::Sine(synth) => Self::get_filter_resonance_from_synth(synth),
+            SynthType::Square(synth) => Self::get_filter_resonance_from_synth(synth),
+            SynthType::Sawtooth(synth) => Self::get_filter_resonance_from_synth(synth),
+            SynthType::FM(synth) => Self::get_filter_resonance_from_synth(synth),
+            SynthType::Hammond(synth) => Self::get_filter_resonance_from_synth(synth),
         }
     }
 
@@ -397,7 +497,10 @@ impl SynthType {
         synth: &mut ModularSynth<O>,
         active: bool,
     ) {
-        let has_compressor = synth.modules.iter().any(|m| m.name() == "SimpleRMSCompressor");
+        let has_compressor = synth
+            .modules
+            .iter()
+            .any(|m| m.name() == "SimpleRMSCompressor");
 
         if active && !has_compressor {
             let compressor = Compressor::new(
@@ -500,6 +603,12 @@ impl SynthType {
         synth.modules.iter().any(|m| m.name() == "LFO")
     }
 
+    fn is_filter_active_static<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> bool {
+        synth.modules.iter().any(|m| m.name() == "LowPassFilter")
+    }
+
     /// Helper pour récupérer la forme d'onde du LFO
     fn get_lfo_waveform_from_synth<O: crate::synths::traits::Oscillator>(
         synth: &ModularSynth<O>,
@@ -522,6 +631,28 @@ impl SynthType {
             }
         }
         constants::CURRENT_LFO_FREQ
+    }
+
+    fn get_filter_cutoff_from_synth<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> f64 {
+        for module in &synth.modules {
+            if let Some(filter) = module.as_any().downcast_ref::<LowPassFilter>() {
+                return filter.get_cutoff_freq();
+            }
+        }
+        constants::CURRENT_FILTER_CUTOFF
+    }
+
+    fn get_filter_resonance_from_synth<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> f64 {
+        for module in &synth.modules {
+            if let Some(filter) = module.as_any().downcast_ref::<LowPassFilter>() {
+                return filter.get_resonance();
+            }
+        }
+        constants::CURRENT_FILTER_RESONANCE
     }
 }
 
