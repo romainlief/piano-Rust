@@ -20,8 +20,8 @@ fn main() -> eframe::Result<()> {
 
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_inner_size([1350.0, 1150.0]) 
-            .with_min_inner_size([400.0, 300.0])
+            .with_inner_size([1350.0, 1250.0])
+            .with_min_inner_size([1350.0, 1250.0])
             .with_title(PROJECT_NAME),
         ..Default::default()
     };
@@ -30,7 +30,6 @@ fn main() -> eframe::Result<()> {
         PROJECT_NAME,
         options,
         Box::new(move |cc| {
-            // 🎨 Modifier le style global AVANT de créer l'app
             let mut style = (*cc.egui_ctx.style()).clone();
             style.text_styles = [
                 (

@@ -4,6 +4,7 @@ use crate::synths::modules::compressor::Compressor;
 use crate::synths::modules::filter::LowPassFilter;
 use crate::synths::modules::gain::Gain;
 use crate::synths::modules::lfo::{LFO, LfoWaveform};
+use crate::synths::modules::reverb::ReverbType;
 use crate::synths::modules::noise::Noise;
 use crate::synths::modules::reverb::Reverb;
 use crate::synths::oscillators::{
@@ -171,6 +172,26 @@ impl SynthType {
         }
     }
 
+    pub fn set_current_reverb_type(&mut self, new_reverb_type: ReverbType) {
+        match self {
+            SynthType::Sine(synth) => {
+                Self::set_reverb_type_in_synth_static(synth, new_reverb_type);
+            }
+            SynthType::Square(synth) => {
+                Self::set_reverb_type_in_synth_static(synth, new_reverb_type);
+            }
+            SynthType::Sawtooth(synth) => {
+                Self::set_reverb_type_in_synth_static(synth, new_reverb_type);
+            }
+            SynthType::FM(synth) => {
+                Self::set_reverb_type_in_synth_static(synth, new_reverb_type);
+            }
+            SynthType::Hammond(synth) => {
+                Self::set_reverb_type_in_synth_static(synth, new_reverb_type);
+            }
+        }
+    }
+
     /// Helper pour récupérer le gain d'un synthétiseur modulaire
     fn get_gain_from_synth<O: crate::synths::traits::Oscillator>(
         &self,
@@ -282,6 +303,21 @@ impl SynthType {
             }
         }
         println!("Module LFO non trouvé pour mise à jour");
+    }
+
+    fn set_reverb_type_in_synth_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        new_reverb_type: ReverbType,
+    ) {
+        for module in &mut synth.modules {
+            if module.name() == "Reverb" {
+                if let Some(reverb_module) = module.as_any_mut().downcast_mut::<Reverb>() {
+                    reverb_module.set_type(new_reverb_type);
+                    return;
+                }
+            }
+        }
+        println!("Module Reverb non trouvé pour mise à jour");
     }
 
     fn set_noise_in_synth_static<O: crate::synths::traits::Oscillator>(

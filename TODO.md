@@ -1,6 +1,6 @@
 # TODO
 
-- Docstrings / comment en anglais
+- Docstrings / commentaires en anglais
 
 - GUI
   - conversion nom du json dans app.rs -> faire une seule et meme convention pour gui et terminal
@@ -8,7 +8,7 @@
 - Modulation synthé a améliorer
   - finir le shimmer (un jour peut etre)
 
-- des presets
+- faire des presets
 
 - gerer un clavier midi
 
@@ -22,6 +22,8 @@
 
 - faire un tui clean
 
--faire en sorte que la fenetre ait sa taille en fonction de l'ecran
+- faire en sorte que la fenetre ait sa taille en fonction de l'ecran
 
 - dans app et manager .rs, gros refactoring a faire avec les acces au setters et getters
+
+- refactoriser la main de la gui

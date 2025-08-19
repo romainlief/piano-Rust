@@ -3,6 +3,7 @@ use crate::consts::constants::{self, BLACK_KEYS, USED_KEYS, WHITE_KEYS};
 use crate::input::key_handlers::NOTES;
 use crate::synths::manager::SynthType;
 use crate::synths::modules::lfo::LfoWaveform;
+use crate::synths::modules::reverb::ReverbType;
 use eframe::egui;
 use egui::RichText;
 //use egui::{Color32, RichText};
@@ -59,6 +60,10 @@ pub struct SynthesizerApp {
     // REVERB
     reverb_activation: bool,
     reverb_dry_wet: f64,
+    reverb_type: ReverbType,
+    early_gain: f64,
+    tail_gain: f64,
+    predelay: f64,
 
     // OCTAVE
     current_octave: usize,
@@ -96,6 +101,10 @@ impl SynthesizerApp {
 
             reverb_activation: constants::ACTIVATION_REVERB,
             reverb_dry_wet: constants::CURRENT_DRY_WET,
+            reverb_type: constants::CURRENT_REVERB_TYPE,
+            early_gain: constants::CURRENT_REVERB_EARLY_GAIN,
+            tail_gain: constants::CURRENT_REVERB_TAIL_GAIN,
+            predelay: constants::CURRENT_REVERB_PRE_DELAY_MS,
 
             filter_activation: constants::ACTIVATION_FILTER,
             cutoff: constants::CURRENT_FILTER_CUTOFF,
@@ -264,7 +273,7 @@ impl eframe::App for SynthesizerApp {
                     ui.horizontal(|ui| {
                         ui.label("Forme d'onde:");
                         let old_waveform = self.waveform;
-                        egui::ComboBox::from_label("")
+                        egui::ComboBox::from_label("lfo_waveform")
                             .selected_text(format!("{:?}", self.waveform))
                             .show_ui(ui, |ui| {
                                 ui.selectable_value(&mut self.waveform, LfoWaveform::Sine, "Sine");
@@ -417,7 +426,83 @@ impl eframe::App for SynthesizerApp {
                     });
                     ui.horizontal(|ui| {
                         ui.label("Dry Wet:");
-                        ui.add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("%"));
+                        if ui
+                            .add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("%"))
+                            .changed()
+                        {
+                            // self.update_synth_reverb_dry_wet();
+                        }
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.label("Reverb Type:");
+                        let old_reverb_type = self.reverb_type;
+                        egui::ComboBox::from_label("reverb_type")
+                            .selected_text(format!("{:?}", self.reverb_type))
+                            .show_ui(ui, |ui| {
+                                ui.selectable_value(
+                                    &mut self.reverb_type,
+                                    ReverbType::Plate,
+                                    "Plate",
+                                );
+                                ui.selectable_value(
+                                    &mut self.reverb_type,
+                                    ReverbType::Room,
+                                    "Room",
+                                );
+                                ui.selectable_value(
+                                    &mut self.reverb_type,
+                                    ReverbType::Hall,
+                                    "Hall",
+                                );
+                                ui.selectable_value(
+                                    &mut self.reverb_type,
+                                    ReverbType::Shimmer,
+                                    "Shimmer",
+                                );
+                                ui.selectable_value(
+                                    &mut self.reverb_type,
+                                    ReverbType::Spring,
+                                    "Spring",
+                                );
+                            });
+                        if old_reverb_type != self.reverb_type {
+                            println!(
+                                "Reverb type changed from {:?} to {:?}",
+                                old_reverb_type, self.reverb_type
+                            );
+                            self.update_synth_reverb_type();
+                        }
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.label("Early Gain:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.early_gain, -24.0..=24.0).text("dB"))
+                            .changed()
+                        {
+                            // self.update_synth_reverb_early_gain();
+                        }
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.label("Tail Gain:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.tail_gain, -24.0..=24.0).text("dB"))
+                            .changed()
+                        {
+                            // self.update_synth_reverb_tail_gain();
+                        }
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.label("Predelay:");
+                        if ui
+                            .add(egui::Slider::new(&mut self.predelay, 0.0..=100.0).text("ms"))
+                            .changed()
+                        {
+                            // self.update_synth_reverb_predelay();
+                        }
                     });
 
                     ui.separator();
@@ -452,7 +537,7 @@ impl eframe::App for SynthesizerApp {
 
         // Panel principal - Clavier virtuel et visualisations
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("🎹 Synthétiseur Rust");
+            ui.heading("Synthétiseur Rust");
 
             if self.show_keyboard {
                 ui.separator();
@@ -691,10 +776,8 @@ impl SynthesizerApp {
         self.cutoff = self.current_synth_type.get_current_cutoff();
         self.resonance = self.current_synth_type.get_current_resonance();
 
-        self.compressor_activation =
-            self.current_synth_type.is_compressor_active();
+        self.compressor_activation = self.current_synth_type.is_compressor_active();
         self.threshold = self.current_synth_type.get_current_threshold();
-        
 
         // self.attack = self.current_synth_type.get_current_attack();
         //self.decay = self.current_synth_type.get_current_decay();
@@ -910,6 +993,21 @@ impl SynthesizerApp {
                 println!(
                     "Forme d'onde LFO mise à jour dans le contrôleur audio: {:?}",
                     self.waveform
+                );
+            }
+        }
+    }
+
+    fn update_synth_reverb_type(&mut self) {
+        self.current_synth_type
+            .set_current_reverb_type(self.reverb_type);
+
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_current_reverb_type(self.reverb_type);
+                println!(
+                    "Type de réverbération mis à jour dans le contrôleur audio: {:?}",
+                    self.reverb_type
                 );
             }
         }
