@@ -6,7 +6,7 @@ use crate::synths::modules::lfo::LfoWaveform;
 use crate::synths::modules::reverb::ReverbType;
 use eframe::egui;
 use egui::{Color32, RichText};
-use egui_knob::{Knob, KnobStyle, LabelPosition}; // pour faire les knob
+use egui_knob::{Knob, KnobStyle, LabelPosition};
 use std::collections::HashSet;
 use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
@@ -72,7 +72,7 @@ pub struct SynthesizerApp {
     show_keyboard: bool,
     show_effects: bool,
 
-    // États d'expansion des sections d'effets
+    // Affichage des effets
     expanded_noise: bool,
     expanded_gain: bool,
     expanded_adsr: bool,

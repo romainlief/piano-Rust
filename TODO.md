@@ -26,8 +26,6 @@
 
 - dans app et manager .rs, gros refactoring a faire avec les acces au setters et getters
 
-- refactoriser la main de la gui
-
 - faire les knob (lib deja installe)
 
 - la fleche vers le bas qui ne s'affiche pas...
