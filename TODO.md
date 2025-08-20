@@ -30,6 +30,4 @@
 
 - faire les knob (lib deja installe)
 
-- effet depliant dans la GUI
-
 - faire un scroll pour les effets

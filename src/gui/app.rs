@@ -71,6 +71,15 @@ pub struct SynthesizerApp {
 
     show_keyboard: bool,
     show_effects: bool,
+
+    // États d'expansion des sections d'effets
+    expanded_noise: bool,
+    expanded_gain: bool,
+    expanded_adsr: bool,
+    expanded_filter: bool,
+    expanded_compressor: bool,
+    expanded_lfo: bool,
+    expanded_reverb: bool,
 }
 
 impl SynthesizerApp {
@@ -125,6 +134,15 @@ impl SynthesizerApp {
 
             show_keyboard: true,
             show_effects: true,
+
+            // Initialiser toutes les sections comme étendues par défaut
+            expanded_noise: true,
+            expanded_gain: true,
+            expanded_adsr: true,
+            expanded_filter: true,
+            expanded_compressor: true,
+            expanded_lfo: true,
+            expanded_reverb: true,
         }
     }
 
@@ -192,336 +210,409 @@ impl eframe::App for SynthesizerApp {
 
                     ui.separator();
                     ui.horizontal(|ui| {
-                        ui.heading("⏱ ADSR");
-                    });
-                    ui.horizontal(|ui| {
-                        ui.label("Attack:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.attack, 0.0..=60.0))
-                            .changed()
-                        {
-                            //update attack
-                        };
+                        let expand_icon = if self.expanded_adsr { "▼" } else { "▶" };
+                        if ui.button(format!("{} ⏱ ADSR", expand_icon)).clicked() {
+                            self.expanded_adsr = !self.expanded_adsr;
+                        }
                     });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Decay:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.decay, 0.0..=30.0))
-                            .changed()
-                        {
-                            //update decay
-                        };
-                    });
+                    if self.expanded_adsr {
+                        ui.horizontal(|ui| {
+                            ui.label("Attack:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.attack, 0.0..=60.0))
+                                .changed()
+                            {
+                                //update attack
+                            };
+                        });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Sustain:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.sustain, 0.0..=1.0))
-                            .changed()
-                        {
-                            //update decay
-                        };
-                    });
+                        ui.horizontal(|ui| {
+                            ui.label("Decay:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.decay, 0.0..=30.0))
+                                .changed()
+                            {
+                                //update decay
+                            };
+                        });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Release:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.release, 0.0..=60.0))
-                            .changed()
-                        {
-                            //update release
-                        };
-                    });
+                        ui.horizontal(|ui| {
+                            ui.label("Sustain:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.sustain, 0.0..=1.0))
+                                .changed()
+                            {
+                                //update decay
+                            };
+                        });
+
+                        ui.horizontal(|ui| {
+                            ui.label("Release:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.release, 0.0..=60.0))
+                                .changed()
+                            {
+                                //update release
+                            };
+                        });
+                    }
                     ui.separator();
 
                     // Noise
                     ui.horizontal(|ui| {
-                        ui.heading("📻 Noise");
-                        ui.add_space(10.0); // Espace pour séparer le heading de la checkbox
+                        // Bouton d'expansion avec icône
+                        let expand_icon = if self.expanded_noise { "▼" } else { "▶" };
+                        if ui.button(format!("{} 📻 Noise", expand_icon)).clicked() {
+                            self.expanded_noise = !self.expanded_noise;
+                        }
+                        ui.add_space(10.0);
                         if ui.checkbox(&mut self.noise_activation, "ON").changed() {
                             self.update_noise_activation();
                         }
                     });
-                    ui.horizontal(|ui| {
-                        ui.label("Niveau de bruit:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.noise, 0.0..=1.0))
-                            .changed()
-                        {
-                            self.update_synth_noise();
-                        };
-                    });
+
+                    if self.expanded_noise {
+                        ui.horizontal(|ui| {
+                            ui.label("Niveau de bruit:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.noise, 0.0..=1.0))
+                                .changed()
+                            {
+                                self.update_synth_noise();
+                            };
+                        });
+                    }
 
                     ui.separator();
 
                     // LFO
                     ui.horizontal(|ui| {
-                        ui.heading("🔄 LFO");
+                        let expand_icon = if self.expanded_lfo { "▼" } else { "▶" };
+                        if ui.button(format!("{} 🔄 LFO", expand_icon)).clicked() {
+                            self.expanded_lfo = !self.expanded_lfo;
+                        }
                         ui.add_space(10.0);
                         if ui.checkbox(&mut self.lfo_activation, "ON").changed() {
                             self.update_lfo_activation();
                         }
                     });
-                    ui.horizontal(|ui| {
-                        ui.label("Fréquence:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.freq, 0.01..=1000.0))
-                            .changed()
-                        {
-                            self.update_synth_lfo();
-                        };
-                    });
-                    ui.horizontal(|ui| {
-                        ui.label("Forme d'onde:");
-                        let old_waveform = self.waveform;
-                        egui::ComboBox::from_label("lfo_waveform")
-                            .selected_text(format!("{:?}", self.waveform))
-                            .show_ui(ui, |ui| {
-                                ui.selectable_value(&mut self.waveform, LfoWaveform::Sine, "Sine");
-                                ui.selectable_value(
-                                    &mut self.waveform,
-                                    LfoWaveform::Triangle,
-                                    "Triangle",
+
+                    if self.expanded_lfo {
+                        ui.horizontal(|ui| {
+                            ui.label("Fréquence:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.freq, 0.01..=1000.0))
+                                .changed()
+                            {
+                                self.update_synth_lfo();
+                            };
+                        });
+                        ui.horizontal(|ui| {
+                            ui.label("Forme d'onde:");
+                            let old_waveform = self.waveform;
+                            egui::ComboBox::from_label("lfo_waveform")
+                                .selected_text(format!("{:?}", self.waveform))
+                                .show_ui(ui, |ui| {
+                                    ui.selectable_value(
+                                        &mut self.waveform,
+                                        LfoWaveform::Sine,
+                                        "Sine",
+                                    );
+                                    ui.selectable_value(
+                                        &mut self.waveform,
+                                        LfoWaveform::Triangle,
+                                        "Triangle",
+                                    );
+                                    ui.selectable_value(
+                                        &mut self.waveform,
+                                        LfoWaveform::Square,
+                                        "Square",
+                                    );
+                                    ui.selectable_value(
+                                        &mut self.waveform,
+                                        LfoWaveform::SawUp,
+                                        "Sawtooth Up",
+                                    );
+                                    ui.selectable_value(
+                                        &mut self.waveform,
+                                        LfoWaveform::SawDown,
+                                        "Sawtooth Down",
+                                    );
+                                });
+                            if old_waveform != self.waveform {
+                                println!(
+                                    "Waveform changée de {:?} vers {:?}",
+                                    old_waveform, self.waveform
                                 );
-                                ui.selectable_value(
-                                    &mut self.waveform,
-                                    LfoWaveform::Square,
-                                    "Square",
-                                );
-                                ui.selectable_value(
-                                    &mut self.waveform,
-                                    LfoWaveform::SawUp,
-                                    "Sawtooth Up",
-                                );
-                                ui.selectable_value(
-                                    &mut self.waveform,
-                                    LfoWaveform::SawDown,
-                                    "Sawtooth Down",
-                                );
-                            });
-                        if old_waveform != self.waveform {
-                            println!(
-                                "Waveform changée de {:?} vers {:?}",
-                                old_waveform, self.waveform
-                            );
-                            self.update_synth_lfo_waveform();
-                        }
-                    });
+                                self.update_synth_lfo_waveform();
+                            }
+                        });
+                    }
 
                     ui.separator();
                     // Filter
                     ui.horizontal(|ui| {
-                        ui.heading("⬇ Filter");
+                        let expand_icon = if self.expanded_filter { "▼" } else { "▶" };
+                        if ui.button(format!("{} ⬇ Filter", expand_icon)).clicked() {
+                            self.expanded_filter = !self.expanded_filter;
+                        }
                         ui.add_space(10.0);
                         if ui.checkbox(&mut self.filter_activation, "ON").changed() {
                             self.update_filter_activation();
                         }
                     });
-                    ui.horizontal(|ui| {
-                        ui.label("Cutoff:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.cutoff, 20.0..=20000.0).text("Hz"))
-                            .changed()
-                        {
-                            self.update_synth_cutoff();
-                        }
-                    });
-                    ui.horizontal(|ui| {
-                        ui.label("Resonance:");
-                        if ui
-                            .add(
-                                egui::Slider::new(&mut self.resonance, 0.0..=20.0).text("Q Factor"),
-                            )
-                            .changed()
-                        {
-                            self.update_synth_resonance();
-                        }
-                    });
+
+                    if self.expanded_filter {
+                        ui.horizontal(|ui| {
+                            ui.label("Cutoff:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.cutoff, 20.0..=20000.0).text("Hz"))
+                                .changed()
+                            {
+                                self.update_synth_cutoff();
+                            }
+                        });
+                        ui.horizontal(|ui| {
+                            ui.label("Resonance:");
+                            if ui
+                                .add(
+                                    egui::Slider::new(&mut self.resonance, 0.0..=20.0)
+                                        .text("Q Factor"),
+                                )
+                                .changed()
+                            {
+                                self.update_synth_resonance();
+                            }
+                        });
+                    }
 
                     ui.separator();
 
                     // Gain général
                     ui.horizontal(|ui| {
-                        ui.heading("🔊 Gain");
-                        ui.add_space(10.0); // Espace pour séparer le heading de la checkbox
+                        let expand_icon = if self.expanded_gain { "▼" } else { "▶" };
+                        if ui.button(format!("{} 🔊 Gain", expand_icon)).clicked() {
+                            self.expanded_gain = !self.expanded_gain;
+                        }
+                        ui.add_space(10.0);
                         if ui.checkbox(&mut self.gain_activation, "ON").changed() {
                             self.update_gain_activation();
                         }
                     });
-                    ui.horizontal(|ui| {
-                        // Synchroniser la valeur f32 avec la valeur f64
-                        self.gain_knob = self.gain as f32;
-                        
-                        if ui
-                            .add(
-                                Knob::new(
-                                    &mut self.gain_knob,
-                                    -12.0_f32,
-                                    6.0_f32,
-                                    KnobStyle::Wiper,
+                                            ui.add_space(10.0);
+
+                    if self.expanded_gain {
+                        ui.horizontal(|ui| {
+                            // Synchroniser la valeur f32 avec la valeur f64
+                            self.gain_knob = self.gain as f32;
+
+                            if ui
+                                .add(
+                                    Knob::new(
+                                        &mut self.gain_knob,
+                                        -12.0_f32,
+                                        6.0_f32,
+                                        KnobStyle::Wiper,
+                                    )
+                                    .with_size(50.0)
+                                    .with_font_size(14.0)
+                                    .with_stroke_width(3.0)
+                                    .with_colors(Color32::GRAY, Color32::WHITE, Color32::WHITE)
+                                    .with_label("Gain", LabelPosition::Right),
                                 )
-                                .with_size(50.0)
-                                .with_font_size(14.0)
-                                .with_stroke_width(3.0)
-                                .with_colors(Color32::GRAY, Color32::WHITE, Color32::WHITE)
-                                .with_label("Gain", LabelPosition::Right),
-                            )
-                            .changed()
-                        {
-                            // Répercuter le changement sur la valeur f64
-                            self.gain = self.gain_knob as f64;
-                            self.update_synth_gain();
-                        }
-                    });
+                                .changed()
+                            {
+                                // Répercuter le changement sur la valeur f64
+                                self.gain = self.gain_knob as f64;
+                                self.update_synth_gain();
+                            }
+                        });
+                    }
 
                     ui.separator();
                     // Compressor
                     ui.horizontal(|ui| {
-                        ui.heading("🤏 Compressor");
+                        let expand_icon = if self.expanded_compressor {
+                            "▼"
+                        } else {
+                            "▶"
+                        };
+                        if ui
+                            .button(format!("{} 🤏 Compressor", expand_icon))
+                            .clicked()
+                        {
+                            self.expanded_compressor = !self.expanded_compressor;
+                        }
                         ui.add_space(10.0);
                         if ui.checkbox(&mut self.compressor_activation, "ON").changed() {
                             self.update_compressor_activation();
                         }
                     });
-                    ui.horizontal(|ui| {
-                        ui.label("Threshold:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.threshold, -50.0..=0.0).text("dB"))
-                            .changed()
-                        {
-                            // self.update_synth_threshold();
-                        }
-                    });
-                    ui.horizontal(|ui| {
-                        ui.label("Ratio:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.ratio, 1.0..=20.0).text(":1"))
-                            .changed()
-                        {
-                            // self.update_synth_ratio();
-                        }
-                    });
-                    ui.horizontal(|ui| {
-                        ui.label("Attack:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.attack_comp, 0.0..=100.0).text("ms"))
-                            .changed()
-                        {
-                            // self.update_synth_attack();
-                        }
-                    });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Release:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.release_comp, 0.0..=600.0).text("ms"))
-                            .changed()
-                        {
-                            // self.update_synth_release();
-                        }
-                    });
+                    if self.expanded_compressor {
+                        ui.horizontal(|ui| {
+                            ui.label("Threshold:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.threshold, -50.0..=0.0).text("dB"))
+                                .changed()
+                            {
+                                // self.update_synth_threshold();
+                            }
+                        });
+                        ui.horizontal(|ui| {
+                            ui.label("Ratio:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.ratio, 1.0..=20.0).text(":1"))
+                                .changed()
+                            {
+                                // self.update_synth_ratio();
+                            }
+                        });
+                        ui.horizontal(|ui| {
+                            ui.label("Attack:");
+                            if ui
+                                .add(
+                                    egui::Slider::new(&mut self.attack_comp, 0.0..=100.0)
+                                        .text("ms"),
+                                )
+                                .changed()
+                            {
+                                // self.update_synth_attack();
+                            }
+                        });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Makeup Gain:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.make_up_gain, -20.0..=20.0).text("dB"))
-                            .changed()
-                        {
-                            // self.update_synth_makeup_gain();
-                        }
-                    });
+                        ui.horizontal(|ui| {
+                            ui.label("Release:");
+                            if ui
+                                .add(
+                                    egui::Slider::new(&mut self.release_comp, 0.0..=600.0)
+                                        .text("ms"),
+                                )
+                                .changed()
+                            {
+                                // self.update_synth_release();
+                            }
+                        });
+
+                        ui.horizontal(|ui| {
+                            ui.label("Makeup Gain:");
+                            if ui
+                                .add(
+                                    egui::Slider::new(&mut self.make_up_gain, -20.0..=20.0)
+                                        .text("dB"),
+                                )
+                                .changed()
+                            {
+                                // self.update_synth_makeup_gain();
+                            }
+                        });
+                    }
 
                     ui.separator();
 
                     // Section Reverb
                     ui.horizontal(|ui| {
-                        ui.heading("🌊 Reverb");
+                        let expand_icon = if self.expanded_reverb { "▼" } else { "▶" };
+                        if ui.button(format!("{} 🌊 Reverb", expand_icon)).clicked() {
+                            self.expanded_reverb = !self.expanded_reverb;
+                        }
                         ui.add_space(10.0);
                         if ui.checkbox(&mut self.reverb_activation, "ON").changed() {
                             self.update_reverb_activation();
                         }
                     });
-                    ui.horizontal(|ui| {
-                        ui.label("Dry Wet:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0).text("%"))
-                            .changed()
-                        {
-                            // self.update_synth_reverb_dry_wet();
-                        }
-                    });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Reverb Type:");
-                        let old_reverb_type = self.reverb_type;
-                        egui::ComboBox::from_label("reverb_type")
-                            .selected_text(format!("{:?}", self.reverb_type))
-                            .show_ui(ui, |ui| {
-                                ui.selectable_value(
-                                    &mut self.reverb_type,
-                                    ReverbType::Plate,
-                                    "Plate",
-                                );
-                                ui.selectable_value(
-                                    &mut self.reverb_type,
-                                    ReverbType::Room,
-                                    "Room",
-                                );
-                                ui.selectable_value(
-                                    &mut self.reverb_type,
-                                    ReverbType::Hall,
-                                    "Hall",
-                                );
-                                ui.selectable_value(
-                                    &mut self.reverb_type,
-                                    ReverbType::Shimmer,
-                                    "Shimmer",
-                                );
-                                ui.selectable_value(
-                                    &mut self.reverb_type,
-                                    ReverbType::Spring,
-                                    "Spring",
-                                );
-                            });
-                        if old_reverb_type != self.reverb_type {
-                            println!(
-                                "Reverb type changed from {:?} to {:?}",
-                                old_reverb_type, self.reverb_type
-                            );
-                            self.update_synth_reverb_type();
-                        }
-                    });
+                    if self.expanded_reverb {
+                        ui.horizontal(|ui| {
+                            ui.label("Dry Wet:");
+                            if ui
+                                .add(
+                                    egui::Slider::new(&mut self.reverb_dry_wet, 0.0..=1.0)
+                                        .text("%"),
+                                )
+                                .changed()
+                            {
+                                // self.update_synth_reverb_dry_wet();
+                            }
+                        });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Early Gain:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.early_gain, -24.0..=24.0).text("dB"))
-                            .changed()
-                        {
-                            // self.update_synth_reverb_early_gain();
-                        }
-                    });
+                        ui.horizontal(|ui| {
+                            ui.label("Reverb Type:");
+                            let old_reverb_type = self.reverb_type;
+                            egui::ComboBox::from_label("reverb_type")
+                                .selected_text(format!("{:?}", self.reverb_type))
+                                .show_ui(ui, |ui| {
+                                    ui.selectable_value(
+                                        &mut self.reverb_type,
+                                        ReverbType::Plate,
+                                        "Plate",
+                                    );
+                                    ui.selectable_value(
+                                        &mut self.reverb_type,
+                                        ReverbType::Room,
+                                        "Room",
+                                    );
+                                    ui.selectable_value(
+                                        &mut self.reverb_type,
+                                        ReverbType::Hall,
+                                        "Hall",
+                                    );
+                                    ui.selectable_value(
+                                        &mut self.reverb_type,
+                                        ReverbType::Shimmer,
+                                        "Shimmer",
+                                    );
+                                    ui.selectable_value(
+                                        &mut self.reverb_type,
+                                        ReverbType::Spring,
+                                        "Spring",
+                                    );
+                                });
+                            if old_reverb_type != self.reverb_type {
+                                println!(
+                                    "Reverb type changed from {:?} to {:?}",
+                                    old_reverb_type, self.reverb_type
+                                );
+                                self.update_synth_reverb_type();
+                            }
+                        });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Tail Gain:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.tail_gain, -24.0..=24.0).text("dB"))
-                            .changed()
-                        {
-                            // self.update_synth_reverb_tail_gain();
-                        }
-                    });
+                        ui.horizontal(|ui| {
+                            ui.label("Early Gain:");
+                            if ui
+                                .add(
+                                    egui::Slider::new(&mut self.early_gain, -24.0..=24.0)
+                                        .text("dB"),
+                                )
+                                .changed()
+                            {
+                                // self.update_synth_reverb_early_gain();
+                            }
+                        });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Predelay:");
-                        if ui
-                            .add(egui::Slider::new(&mut self.predelay, 0.0..=100.0).text("ms"))
-                            .changed()
-                        {
-                            // self.update_synth_reverb_predelay();
-                        }
-                    });
+                        ui.horizontal(|ui| {
+                            ui.label("Tail Gain:");
+                            if ui
+                                .add(
+                                    egui::Slider::new(&mut self.tail_gain, -24.0..=24.0).text("dB"),
+                                )
+                                .changed()
+                            {
+                                // self.update_synth_reverb_tail_gain();
+                            }
+                        });
+
+                        ui.horizontal(|ui| {
+                            ui.label("Predelay:");
+                            if ui
+                                .add(egui::Slider::new(&mut self.predelay, 0.0..=100.0).text("ms"))
+                                .changed()
+                            {
+                                // self.update_synth_reverb_predelay();
+                            }
+                        });
+                    }
 
                     ui.separator();
 
