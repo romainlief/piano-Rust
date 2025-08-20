@@ -5,8 +5,7 @@ use crate::synths::manager::SynthType;
 use crate::synths::modules::lfo::LfoWaveform;
 use crate::synths::modules::reverb::ReverbType;
 use eframe::egui;
-use egui::RichText;
-//use egui::{Color32, RichText};
+use egui::{Color32, RichText};
 use egui_knob::{Knob, KnobStyle, LabelPosition}; // pour faire les knob
 use std::collections::HashSet;
 use std::sync::atomic::Ordering;
@@ -33,6 +32,7 @@ pub struct SynthesizerApp {
     // GAIN
     gain_activation: bool,
     gain: f64,
+    gain_knob: f32, // Variable temporaire pour le knob
 
     // ADSR
     attack: f64,
@@ -90,6 +90,7 @@ impl SynthesizerApp {
 
             gain_activation: constants::ACTIVATION_GAIN,
             gain: constants::CURRENT_GAIN,
+            gain_knob: constants::CURRENT_GAIN as f32,
 
             attack: constants::ADSR_ATTACK,
             decay: constants::ADSR_DECAY,
@@ -349,11 +350,27 @@ impl eframe::App for SynthesizerApp {
                         }
                     });
                     ui.horizontal(|ui| {
-                        ui.label("Gain:");
+                        // Synchroniser la valeur f32 avec la valeur f64
+                        self.gain_knob = self.gain as f32;
+                        
                         if ui
-                            .add(egui::Slider::new(&mut self.gain, -12.0..=6.0).text("dB"))
+                            .add(
+                                Knob::new(
+                                    &mut self.gain_knob,
+                                    -12.0_f32,
+                                    6.0_f32,
+                                    KnobStyle::Wiper,
+                                )
+                                .with_size(50.0)
+                                .with_font_size(14.0)
+                                .with_stroke_width(3.0)
+                                .with_colors(Color32::GRAY, Color32::WHITE, Color32::WHITE)
+                                .with_label("Gain", LabelPosition::Right),
+                            )
                             .changed()
                         {
+                            // Répercuter le changement sur la valeur f64
+                            self.gain = self.gain_knob as f64;
                             self.update_synth_gain();
                         }
                     });
