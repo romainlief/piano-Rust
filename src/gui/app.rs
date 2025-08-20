@@ -311,7 +311,7 @@ impl eframe::App for SynthesizerApp {
                         ui.horizontal(|ui| {
                             ui.label("Forme d'onde:");
                             let old_waveform = self.waveform;
-                            egui::ComboBox::from_label("lfo_waveform")
+                            egui::ComboBox::from_id_salt("lfo_waveform")
                                 .selected_text(format!("{:?}", self.waveform))
                                 .show_ui(ui, |ui| {
                                     ui.selectable_value(
@@ -400,13 +400,13 @@ impl eframe::App for SynthesizerApp {
                             self.update_gain_activation();
                         }
                     });
-                                            ui.add_space(10.0);
+                    ui.add_space(10.0);
 
                     if self.expanded_gain {
                         ui.horizontal(|ui| {
                             // Synchroniser la valeur f32 avec la valeur f64
                             self.gain_knob = self.gain as f32;
-
+                            ui.label("Gain:");
                             if ui
                                 .add(
                                     Knob::new(
@@ -416,20 +416,20 @@ impl eframe::App for SynthesizerApp {
                                         KnobStyle::Wiper,
                                     )
                                     .with_size(50.0)
-                                    .with_font_size(14.0)
+                                    .with_font_size(23.0)
                                     .with_stroke_width(3.0)
                                     .with_colors(Color32::GRAY, Color32::WHITE, Color32::WHITE)
-                                    .with_label("Gain", LabelPosition::Right),
+                                    .with_label("", LabelPosition::Right),
                                 )
                                 .changed()
                             {
-                                // Répercuter le changement sur la valeur f64
+                                // Changement en f64
                                 self.gain = self.gain_knob as f64;
                                 self.update_synth_gain();
                             }
                         });
                     }
-
+                    ui.add_space(10.0);
                     ui.separator();
                     // Compressor
                     ui.horizontal(|ui| {
@@ -540,7 +540,7 @@ impl eframe::App for SynthesizerApp {
                         ui.horizontal(|ui| {
                             ui.label("Reverb Type:");
                             let old_reverb_type = self.reverb_type;
-                            egui::ComboBox::from_label("reverb_type")
+                            egui::ComboBox::from_id_salt("reverb_type")
                                 .selected_text(format!("{:?}", self.reverb_type))
                                 .show_ui(ui, |ui| {
                                     ui.selectable_value(
