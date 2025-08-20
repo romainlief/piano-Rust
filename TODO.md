@@ -18,7 +18,7 @@
 
 - gros refactoring pcq la ca va pas(fichier a plus de 500 lignes)
 
-- lier les bouttons adsr et du filtre et compresseur
+- lier les bouttons adsr, compresseur et reverb
 
 - faire un tui clean
 
@@ -30,4 +30,4 @@
 
 - faire les knob (lib deja installe)
 
-- faire un scroll pour les effets
+- la fleche vers le bas qui ne s'affiche pas...
