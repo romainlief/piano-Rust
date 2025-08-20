@@ -7,6 +7,7 @@ use crate::synths::modules::reverb::ReverbType;
 use eframe::egui;
 use egui::RichText;
 //use egui::{Color32, RichText};
+use egui_knob::{Knob, KnobStyle, LabelPosition}; // pour faire les knob
 use std::collections::HashSet;
 use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
@@ -762,23 +763,31 @@ impl SynthesizerApp {
     /// Synchronise les valeurs de l'interface avec le synthétiseur actuel
     fn sync_values_from_synth(&mut self) {
         // TODO: finir les autres valeurs
+        // GAIN
         self.gain = self.current_synth_type.get_current_gain();
         self.gain_activation = self.current_synth_type.is_gain_active();
 
+        // NOISE
         self.noise = self.current_synth_type.get_current_noise();
         self.noise_activation = self.current_synth_type.is_noise_active();
 
+        // LFO
         self.lfo_activation = self.current_synth_type.is_lfo_active();
         self.waveform = self.current_synth_type.get_current_lfo_waveform();
         self.freq = self.current_synth_type.get_current_lfo_frequency();
 
+        // Filter
         self.filter_activation = self.current_synth_type.is_filter_active();
         self.cutoff = self.current_synth_type.get_current_cutoff();
         self.resonance = self.current_synth_type.get_current_resonance();
 
+        // Compressor
         self.compressor_activation = self.current_synth_type.is_compressor_active();
         self.threshold = self.current_synth_type.get_current_threshold();
 
+        // Reverb
+
+        // ADSR
         // self.attack = self.current_synth_type.get_current_attack();
         //self.decay = self.current_synth_type.get_current_decay();
         //self.sustain = self.current_synth_type.get_current_sustain();

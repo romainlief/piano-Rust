@@ -1006,6 +1006,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "egui_knob"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0bcfb7b4c4aede778a9a75cf28f3386c48352670e831773f9490ffd8facf93e2"
+dependencies = [
+ "egui",
+]
+
+[[package]]
 name = "emath"
 version = "0.32.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1393,7 +1402,7 @@ dependencies = [
  "log",
  "presser",
  "thiserror 1.0.69",
- "windows 0.54.0",
+ "windows 0.58.0",
 ]
 
 [[package]]
@@ -2946,6 +2955,7 @@ dependencies = [
  "device_query",
  "eframe",
  "egui",
+ "egui_knob",
  "env_logger",
  "once_cell",
  "rand",
