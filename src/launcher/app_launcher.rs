@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 use crate::consts::constants::PROJECT_NAME;
 use crate::gui::SynthesizerApp;
 
-
+/// Launch the terminal application
 pub fn launch_terminal_application() -> Result<(), Box<dyn std::error::Error>> {
     let note_manager = note_manager::create_note_manager();
     let current_synth_type: Arc<Mutex<synths::manager::SynthType>> =
@@ -35,6 +35,7 @@ pub fn launch_terminal_application() -> Result<(), Box<dyn std::error::Error>> {
     }
 }
 
+/// Launch the GUI application
 pub fn launch_gui_application() -> eframe::Result<()> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
 

@@ -441,8 +441,8 @@ impl eframe::App for SynthesizerApp {
                                         self.update_synth_gain();
                                     }
                                 });
+                                ui.add_space(5.0);
                             }
-                            ui.add_space(10.0);
                             ui.separator();
                             // Compressor
                             ui.horizontal(|ui| {

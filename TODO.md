@@ -29,3 +29,5 @@
 - faire les knob (lib deja installe)
 
 - la fleche vers le bas qui ne s'affiche pas...
+
+- mettre a jour le readme
