@@ -33,3 +33,5 @@
 - mettre a jour le readme
 
 - stylyse la gui
+
+- faire tous les styles de bruits

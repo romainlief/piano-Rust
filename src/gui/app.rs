@@ -293,14 +293,14 @@ impl eframe::App for SynthesizerApp {
                                                 KnobStyle::Wiper,
                                             )
                                             .with_size(50.0)
-                                            .with_font_size(23.0)
+                                            .with_font_size(20.0)
                                             .with_stroke_width(3.0)
                                             .with_colors(
-                                                Color32::GRAY,
+                                                Color32::DARK_GRAY,
                                                 Color32::WHITE,
                                                 Color32::WHITE,
                                             )
-                                            .with_label("", LabelPosition::Right),
+                                            .with_label("", LabelPosition::Bottom),
                                         )
                                         .changed()
                                     {
@@ -443,14 +443,14 @@ impl eframe::App for SynthesizerApp {
                                                 KnobStyle::Wiper,
                                             )
                                             .with_size(50.0)
-                                            .with_font_size(23.0)
+                                            .with_font_size(20.0)
                                             .with_stroke_width(3.0)
                                             .with_colors(
-                                                Color32::GRAY,
-                                                Color32::WHITE,
+                                                Color32::DARK_GRAY,
+                                                Color32::RED,
                                                 Color32::WHITE,
                                             )
-                                            .with_label("", LabelPosition::Right),
+                                            .with_label("", LabelPosition::Bottom),
                                         )
                                         .changed()
                                     {
