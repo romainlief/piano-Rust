@@ -28,6 +28,7 @@ pub struct SynthesizerApp {
     // NOISE
     noise_activation: bool,
     noise: f64,
+    noise_knob: f32,
 
     // GAIN
     gain_activation: bool,
@@ -96,6 +97,7 @@ impl SynthesizerApp {
 
             noise_activation: constants::ACTIVATION_NOISE,
             noise: constants::CURRENT_NOISE,
+            noise_knob: constants::CURRENT_NOISE as f32,
 
             gain_activation: constants::ACTIVATION_GAIN,
             gain: constants::CURRENT_GAIN,
@@ -277,22 +279,38 @@ impl eframe::App for SynthesizerApp {
                                     self.update_noise_activation();
                                 }
                             });
-
+                            ui.add_space(10.0);
                             if self.expanded_noise {
                                 ui.horizontal(|ui| {
-                                    ui.label("Niveau de bruit:");
+                                    self.noise_knob = self.noise as f32;
+                                    ui.label("Noise");
                                     if ui
-                                        .add(egui::Slider::new(&mut self.noise, 0.0..=1.0))
+                                        .add(
+                                            Knob::new(
+                                                &mut self.noise_knob,
+                                                0.0_f32,
+                                                1.0_f32,
+                                                KnobStyle::Wiper,
+                                            )
+                                            .with_size(50.0)
+                                            .with_font_size(23.0)
+                                            .with_stroke_width(3.0)
+                                            .with_colors(
+                                                Color32::GRAY,
+                                                Color32::WHITE,
+                                                Color32::WHITE,
+                                            )
+                                            .with_label("", LabelPosition::Right),
+                                        )
                                         .changed()
                                     {
+                                        self.noise = self.noise_knob as f64;
                                         self.update_synth_noise();
-                                    };
+                                    }
                                 });
+                                ui.add_space(5.0);
                             }
-
                             ui.separator();
-
-                            // LFO
                             ui.horizontal(|ui| {
                                 let expand_icon = if self.expanded_lfo { "▼" } else { "▶" };
                                 if ui.button(format!("{} 🔄 LFO", expand_icon)).clicked() {
@@ -919,12 +937,10 @@ impl SynthesizerApp {
 
         // Reverb
         self.reverb_activation = self.current_synth_type.is_reverb_active();
-        
 
         // ADSR
         // self.attack = self.current_synth_type.get_current_attack();
-        //self.decay = self.current_synth_type.get_current_decay();
-        //self.sustain = self.current_synth_type.get_current_sustain();
+        //self.decay = self.current_synth_type.get_current_decay();//self.sustain = self.current_synth_type.get_current_sustain();
         //self.release = self.current_synth_type.get_current_release();
     }
 
