@@ -1,11 +1,13 @@
 use crate::audio::note_manager::ActiveNoteManager;
-use crate::consts::constants::{self, BLACK_KEYS, USED_KEYS, WHITE_KEYS};
+use crate::consts::constants::{
+    self, BLACK_KEYS, KNOB_GAIN_COLOR, KNOB_NOISE_COLOR, USED_KEYS, WHITE_KEYS,
+};
 use crate::input::key_handlers::NOTES;
 use crate::synths::manager::SynthType;
 use crate::synths::modules::lfo::LfoWaveform;
 use crate::synths::modules::reverb::ReverbType;
 use eframe::egui;
-use egui::{Color32, RichText};
+use egui::{RichText};
 use egui_knob::{Knob, KnobStyle, LabelPosition};
 use std::collections::HashSet;
 use std::sync::atomic::Ordering;
@@ -296,9 +298,9 @@ impl eframe::App for SynthesizerApp {
                                             .with_font_size(20.0)
                                             .with_stroke_width(3.0)
                                             .with_colors(
-                                                Color32::DARK_GRAY,
-                                                Color32::WHITE,
-                                                Color32::WHITE,
+                                                KNOB_NOISE_COLOR.0,
+                                                KNOB_NOISE_COLOR.1,
+                                                KNOB_NOISE_COLOR.2,
                                             )
                                             .with_label("", LabelPosition::Bottom),
                                         )
@@ -446,9 +448,9 @@ impl eframe::App for SynthesizerApp {
                                             .with_font_size(20.0)
                                             .with_stroke_width(3.0)
                                             .with_colors(
-                                                Color32::DARK_GRAY,
-                                                Color32::RED,
-                                                Color32::WHITE,
+                                                KNOB_GAIN_COLOR.0,
+                                                KNOB_GAIN_COLOR.1,
+                                                KNOB_GAIN_COLOR.2,
                                             )
                                             .with_label("", LabelPosition::Bottom),
                                         )
