@@ -31,3 +31,5 @@
 - la fleche vers le bas qui ne s'affiche pas...
 
 - mettre a jour le readme
+
+- stylyse la gui

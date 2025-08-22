@@ -918,6 +918,8 @@ impl SynthesizerApp {
         self.threshold = self.current_synth_type.get_current_threshold();
 
         // Reverb
+        self.reverb_activation = self.current_synth_type.is_reverb_active();
+        
 
         // ADSR
         // self.attack = self.current_synth_type.get_current_attack();

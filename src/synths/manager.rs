@@ -4,9 +4,9 @@ use crate::synths::modules::compressor::Compressor;
 use crate::synths::modules::filter::LowPassFilter;
 use crate::synths::modules::gain::Gain;
 use crate::synths::modules::lfo::{LFO, LfoWaveform};
-use crate::synths::modules::reverb::ReverbType;
 use crate::synths::modules::noise::Noise;
 use crate::synths::modules::reverb::Reverb;
+use crate::synths::modules::reverb::ReverbType;
 use crate::synths::oscillators::{
     FmOscillator, HammondOscillator, SawtoothOscillator, SineOscillator, SquareOscillator,
 };
@@ -459,6 +459,16 @@ impl SynthType {
         }
     }
 
+    pub fn is_reverb_active(&self) -> bool {
+        match self {
+            SynthType::Sine(synth) => Self::is_reverb_active_static(synth),
+            SynthType::Square(synth) => Self::is_reverb_active_static(synth),
+            SynthType::Sawtooth(synth) => Self::is_reverb_active_static(synth),
+            SynthType::FM(synth) => Self::is_reverb_active_static(synth),
+            SynthType::Hammond(synth) => Self::is_reverb_active_static(synth),
+        }
+    }
+
     /// Obtient la forme d'onde actuelle du LFO
     pub fn get_current_lfo_waveform(&self) -> LfoWaveform {
         match self {
@@ -672,6 +682,12 @@ impl SynthType {
             .modules
             .iter()
             .any(|m| m.name() == "SimpleRMSCompressor")
+    }
+
+    fn is_reverb_active_static<O: crate::synths::traits::Oscillator>(
+        synth: &ModularSynth<O>,
+    ) -> bool {
+        synth.modules.iter().any(|m| m.name() == "Reverb")
     }
 
     /// Helper pour récupérer la forme d'onde du LFO
