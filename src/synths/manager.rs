@@ -518,9 +518,9 @@ impl SynthType {
 
         if active && !has_filter {
             let filter = LowPassFilter::new(
+                constants::SAMPLE_RATE,
                 constants::CURRENT_FILTER_CUTOFF,
                 constants::CURRENT_FILTER_RESONANCE,
-                constants::SAMPLE_RATE,
             );
             synth.add_module(filter);
             println!("Module Filter ajouté");
@@ -769,9 +769,9 @@ impl SynthType {
         );
 
         let filter = LowPassFilter::new(
+            constants::SAMPLE_RATE,
             constants::CURRENT_FILTER_CUTOFF,
             constants::CURRENT_FILTER_RESONANCE,
-            constants::SAMPLE_RATE,
         );
 
         let reverb = Reverb::new(
@@ -824,9 +824,9 @@ impl SynthType {
         );
 
         let filter = LowPassFilter::new(
+            constants::SAMPLE_RATE,
             constants::CURRENT_FILTER_CUTOFF,
             constants::CURRENT_FILTER_RESONANCE,
-            constants::SAMPLE_RATE,
         );
 
         let reverb = Reverb::new(
@@ -873,9 +873,9 @@ impl SynthType {
         );
 
         let filter = LowPassFilter::new(
+            constants::SAMPLE_RATE,
             constants::CURRENT_FILTER_CUTOFF,
             constants::CURRENT_FILTER_RESONANCE,
-            constants::SAMPLE_RATE,
         );
 
         let lfo = LFO::new(
@@ -928,9 +928,9 @@ impl SynthType {
         );
 
         let filter = LowPassFilter::new(
+            constants::SAMPLE_RATE,
             constants::CURRENT_FILTER_CUTOFF,
             constants::CURRENT_FILTER_RESONANCE,
-            constants::SAMPLE_RATE,
         );
 
         let lfo = LFO::new(
@@ -983,9 +983,9 @@ impl SynthType {
         );
 
         let filter = LowPassFilter::new(
+            constants::SAMPLE_RATE,
             constants::CURRENT_FILTER_CUTOFF,
             constants::CURRENT_FILTER_RESONANCE,
-            constants::SAMPLE_RATE,
         );
 
         let lfo = LFO::new(

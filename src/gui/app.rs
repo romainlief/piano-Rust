@@ -1003,8 +1003,6 @@ impl SynthesizerApp {
     }
 
     fn update_filter_activation(&mut self) {
-        println!("Activation du filtre changée: {}", self.filter_activation);
-
         self.current_synth_type
             .set_filter_activation(self.filter_activation);
 
