@@ -1,4 +1,4 @@
-use crate::audio::note_manager::ActiveNoteManager;
+use crate::audio::note_manager;
 use crate::consts::constants::{
     self, BLACK_KEYS, KNOB_GAIN_COLOR, KNOB_NOISE_COLOR, USED_KEYS, WHITE_KEYS,
 };
@@ -18,7 +18,7 @@ pub struct SynthesizerApp {
     current_synth_type: SynthType,
 
     // Interface audio
-    notes: Option<ActiveNoteManager>,
+    notes: Option<note_manager::ActiveNoteManager>,
     synth_control: Option<Arc<Mutex<SynthType>>>,
 
     // Suivi des notes actuellement pressées
@@ -150,7 +150,7 @@ impl SynthesizerApp {
         }
     }
 
-    pub fn with_audio(mut self, notes: ActiveNoteManager) -> Self {
+    pub fn with_audio(mut self, notes: note_manager::ActiveNoteManager) -> Self {
         self.notes = Some(notes);
         self
     }
@@ -233,7 +233,7 @@ impl eframe::App for SynthesizerApp {
                                         .add(egui::Slider::new(&mut self.attack, 0.0..=60.0))
                                         .changed()
                                     {
-                                        //update attack
+                                        self.update_synth_attack();
                                     };
                                 });
 
@@ -243,7 +243,7 @@ impl eframe::App for SynthesizerApp {
                                         .add(egui::Slider::new(&mut self.decay, 0.0..=30.0))
                                         .changed()
                                     {
-                                        //update decay
+                                        self.update_synth_decay();
                                     };
                                 });
 
@@ -253,7 +253,7 @@ impl eframe::App for SynthesizerApp {
                                         .add(egui::Slider::new(&mut self.sustain, 0.0..=1.0))
                                         .changed()
                                     {
-                                        //update decay
+                                        self.update_synth_sustain();
                                     };
                                 });
 
@@ -263,7 +263,7 @@ impl eframe::App for SynthesizerApp {
                                         .add(egui::Slider::new(&mut self.release, 0.0..=60.0))
                                         .changed()
                                     {
-                                        //update release
+                                        self.update_synth_release();
                                     };
                                 });
                             }
@@ -1022,6 +1022,57 @@ impl SynthesizerApp {
         }
     }
 
+    fn update_synth_attack(&mut self) {
+        // Mettre à jour toutes les notes actives existantes
+        if let Some(ref notes) = self.notes {
+            if let Ok(mut notes_guard) = notes.lock() {
+                let note_count = notes_guard.len();
+                for note in notes_guard.values_mut() {
+                    note.set_current_attack(self.attack);
+                }
+                println!("Attack time mis à jour: {} ({} notes actives)", self.attack, note_count);
+            }
+        } else {
+            println!("Attack time mis à jour: {} (aucune note active)", self.attack);
+        }
+    }
+
+    fn update_synth_decay(&mut self) {
+        // Mettre à jour toutes les notes actives existantes
+        if let Some(ref notes) = self.notes {
+            if let Ok(mut notes_guard) = notes.lock() {
+                for note in notes_guard.values_mut() {
+                    note.set_current_decay(self.decay);
+                }
+            }
+        }
+        println!("Decay time mis à jour: {}", self.decay);
+    }
+
+    fn update_synth_sustain(&mut self) {
+        // Mettre à jour toutes les notes actives existantes
+        if let Some(ref notes) = self.notes {
+            if let Ok(mut notes_guard) = notes.lock() {
+                for note in notes_guard.values_mut() {
+                    note.set_current_sustain(self.sustain);
+                }
+            }
+        }
+        println!("Sustain level mis à jour: {}", self.sustain);
+    }
+
+    fn update_synth_release(&mut self) {
+        // Mettre à jour toutes les notes actives existantes
+        if let Some(ref notes) = self.notes {
+            if let Ok(mut notes_guard) = notes.lock() {
+                for note in notes_guard.values_mut() {
+                    note.set_current_release(self.release);
+                }
+            }
+        }
+        println!("Release time mis à jour: {}", self.release);
+    }
+
     fn update_filter_activation(&mut self) {
         self.current_synth_type
             .set_filter_activation(self.filter_activation);
@@ -1279,11 +1330,17 @@ impl SynthesizerApp {
         use crate::consts::constants::SAMPLE_RATE;
 
         let frequency_key = (frequency * 100.0) as u64;
-        let active_note = ActiveNote::new(frequency, SAMPLE_RATE);
+        let mut active_note = ActiveNote::new(frequency, SAMPLE_RATE);
+        
+        active_note.set_current_attack(self.attack);
+        active_note.set_current_decay(self.decay);
+        active_note.set_current_sustain(self.sustain);
+        active_note.set_current_release(self.release);
 
         if let Ok(mut notes_guard) = notes.lock() {
             notes_guard.insert(frequency_key, active_note);
-            println!("Note ajoutée: {:.2} Hz ({})", frequency, frequency_key);
+            println!("Note ajoutée: {:.2} Hz ({}) avec ADSR: A={}, D={}, S={}, R={}", 
+                frequency, frequency_key, self.attack, self.decay, self.sustain, self.release);
         }
     }
 

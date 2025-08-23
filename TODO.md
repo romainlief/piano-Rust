@@ -18,7 +18,7 @@
 
 - gros refactoring pcq la ca va pas(fichier a plus de 500 lignes)
 
-- lier les bouttons adsr, compresseur et reverb
+- lier les bouttons compresseur et reverb
 
 - faire un tui clean
 
