@@ -42,6 +42,38 @@ impl ActiveNote {
     pub fn get_amplitude(&mut self) -> f64 {
         self.adsr.get_amplitude()
     }
+
+    pub fn get_current_attack(&self) -> f64 {
+        self.adsr.get_attack()
+    }
+
+    pub fn set_current_attack(&mut self, new_attack: f64) {
+        self.adsr.set_attack(new_attack);
+    }
+
+    pub fn get_current_decay(&self) -> f64 {
+        self.adsr.get_decay()
+    }
+
+    pub fn set_current_decay(&mut self, new_decay: f64) {
+        self.adsr.set_decay(new_decay);
+    }
+
+    pub fn get_current_sustain(&self) -> f64 {
+        self.adsr.get_sustain()
+    }
+
+    pub fn set_current_sustain(&mut self, new_sustain: f64) {
+        self.adsr.set_sustain(new_sustain);
+    }
+
+    pub fn get_current_release(&self) -> f64 {
+        self.adsr.get_release()
+    }
+
+    pub fn set_current_release(&mut self, new_release: f64) {
+        self.adsr.set_release(new_release);
+    }
 }
 
 /// Gestionnaire des notes actives avec ADSR individuels
