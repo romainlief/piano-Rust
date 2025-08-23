@@ -29,12 +29,12 @@ pub struct ADSR {
 }
 
 impl ADSR {
-    pub fn new(sample_rate: f64) -> Self {
+    pub fn new(sample_rate: f64, attack: f64, decay: f64, sustain: f64, release: f64) -> Self {
         Self {
-            attack: 0.5,
-            decay: 0.1,
-            sustain: 0.7,
-            release: 0.2,
+            attack,
+            decay,
+            sustain,
+            release,
             sample_rate,
             curve: EnvelopeCurve::Linear,
             stage: EnvelopeStage::Idle,

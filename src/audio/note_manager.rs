@@ -13,11 +13,13 @@ pub struct ActiveNote {
 
 impl ActiveNote {
     pub fn new(frequency: f64, sample_rate: f64) -> Self {
-        let mut adsr = ADSR::new(sample_rate);
-        adsr.set_attack(constants::ADSR_ATTACK);
-        adsr.set_decay(constants::ADSR_DECAY);
-        adsr.set_sustain(constants::ADSR_SUSTAIN);
-        adsr.set_release(constants::ADSR_RELEASE);
+        let mut adsr = ADSR::new(
+            sample_rate,
+            constants::ADSR_ATTACK,
+            constants::ADSR_DECAY,
+            constants::ADSR_SUSTAIN,
+            constants::ADSR_RELEASE,
+        );
         adsr.note_on();
 
         Self {
