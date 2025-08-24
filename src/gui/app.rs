@@ -240,7 +240,7 @@ impl eframe::App for SynthesizerApp {
                                 ui.horizontal(|ui| {
                                     ui.label("Decay:");
                                     if ui
-                                        .add(egui::Slider::new(&mut self.decay, 0.0..=30.0))
+                                        .add(egui::Slider::new(&mut self.decay, 0.001..=30.0))
                                         .changed()
                                     {
                                         self.update_synth_decay();
@@ -260,7 +260,7 @@ impl eframe::App for SynthesizerApp {
                                 ui.horizontal(|ui| {
                                     ui.label("Release:");
                                     if ui
-                                        .add(egui::Slider::new(&mut self.release, 0.0..=60.0))
+                                        .add(egui::Slider::new(&mut self.release, 0.001..=30.0))
                                         .changed()
                                     {
                                         self.update_synth_release();
@@ -367,10 +367,6 @@ impl eframe::App for SynthesizerApp {
                                             );
                                         });
                                     if old_waveform != self.waveform {
-                                        println!(
-                                            "Waveform changée de {:?} vers {:?}",
-                                            old_waveform, self.waveform
-                                        );
                                         self.update_synth_lfo_waveform();
                                     }
                                 });
@@ -1336,6 +1332,9 @@ impl SynthesizerApp {
         active_note.set_current_decay(self.decay);
         active_note.set_current_sustain(self.sustain);
         active_note.set_current_release(self.release);
+        
+        // CRUCIAL: Redémarrer note_on() APRÈS avoir mis à jour les paramètres
+        active_note.adsr.note_on();
 
         if let Ok(mut notes_guard) = notes.lock() {
             notes_guard.insert(frequency_key, active_note);

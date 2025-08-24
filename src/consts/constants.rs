@@ -23,10 +23,10 @@ pub const KNOB_GAIN_COLOR: (Color32, Color32, Color32) =
 pub static CURRENT_OCTAVE_INDEX: AtomicUsize = AtomicUsize::new(4); // Current index in VECTEUR_NOTES (thread-safe)
 
 /// ADSR
-pub static ADSR_ATTACK: f64 = 1.0; // Attack time in seconds
-pub static ADSR_DECAY: f64 = 0.1; // Decay time in seconds
-pub static ADSR_SUSTAIN: f64 = 1.0; // Sustain level (0.0 to 1.0)
-pub static ADSR_RELEASE: f64 = 0.7; // Release time in seconds
+pub static ADSR_ATTACK: f64 = 0.1; // Attack time in seconds
+pub static ADSR_DECAY: f64 = 0.3; // Decay time in seconds
+pub static ADSR_SUSTAIN: f64 = 0.6; // Sustain level (0.0 to 1.0)
+pub static ADSR_RELEASE: f64 = 1.0; // Release time in seconds
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// ACTIVATION EFFECT
