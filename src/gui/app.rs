@@ -7,7 +7,7 @@ use crate::synths::manager::SynthType;
 use crate::synths::modules::lfo::LfoWaveform;
 use crate::synths::modules::reverb::ReverbType;
 use eframe::egui;
-use egui::{RichText};
+use egui::RichText;
 use egui_knob::{Knob, KnobStyle, LabelPosition};
 use std::collections::HashSet;
 use std::sync::atomic::Ordering;
@@ -939,11 +939,6 @@ impl SynthesizerApp {
 
         // Reverb
         self.reverb_activation = self.current_synth_type.is_reverb_active();
-
-        // ADSR
-        // self.attack = self.current_synth_type.get_current_attack();
-        //self.decay = self.current_synth_type.get_current_decay();//self.sustain = self.current_synth_type.get_current_sustain();
-        //self.release = self.current_synth_type.get_current_release();
     }
 
     fn update_synth_cutoff(&mut self) {
@@ -988,7 +983,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_current_gain(self.gain);
-                println!("Gain mis à jour dans le contrôleur audio: {}", self.gain);
             }
         }
     }
@@ -1030,10 +1024,16 @@ impl SynthesizerApp {
                 for note in notes_guard.values_mut() {
                     note.set_current_attack(self.attack);
                 }
-                println!("Attack time mis à jour: {} ({} notes actives)", self.attack, note_count);
+                println!(
+                    "Attack time mis à jour: {} ({} notes actives)",
+                    self.attack, note_count
+                );
             }
         } else {
-            println!("Attack time mis à jour: {} (aucune note active)", self.attack);
+            println!(
+                "Attack time mis à jour: {} (aucune note active)",
+                self.attack
+            );
         }
     }
 
@@ -1331,7 +1331,7 @@ impl SynthesizerApp {
 
         let frequency_key = (frequency * 100.0) as u64;
         let mut active_note = ActiveNote::new(frequency, SAMPLE_RATE);
-        
+
         active_note.set_current_attack(self.attack);
         active_note.set_current_decay(self.decay);
         active_note.set_current_sustain(self.sustain);
@@ -1339,8 +1339,10 @@ impl SynthesizerApp {
 
         if let Ok(mut notes_guard) = notes.lock() {
             notes_guard.insert(frequency_key, active_note);
-            println!("Note ajoutée: {:.2} Hz ({}) avec ADSR: A={}, D={}, S={}, R={}", 
-                frequency, frequency_key, self.attack, self.decay, self.sustain, self.release);
+            println!(
+                "Note ajoutée: {:.2} Hz ({}) avec ADSR: A={}, D={}, S={}, R={}",
+                frequency, frequency_key, self.attack, self.decay, self.sustain, self.release
+            );
         }
     }
 
