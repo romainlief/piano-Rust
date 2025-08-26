@@ -220,7 +220,7 @@ impl eframe::App for SynthesizerApp {
                             ui.heading("Contrôles");
                             ui.separator();
                             ui.horizontal(|ui| {
-                                let expand_icon = if self.expanded_adsr { "▼" } else { "▶" };
+                                let expand_icon = if self.expanded_adsr { "v" } else { ">" };
                                 if ui.button(format!("{} ⏱ ADSR", expand_icon)).clicked() {
                                     self.expanded_adsr = !self.expanded_adsr;
                                 }
@@ -272,7 +272,7 @@ impl eframe::App for SynthesizerApp {
                             // Noise
                             ui.horizontal(|ui| {
                                 // Bouton d'expansion avec icône
-                                let expand_icon = if self.expanded_noise { "▼" } else { "▶" };
+                                let expand_icon = if self.expanded_noise { "v" } else { ">" };
                                 if ui.button(format!("{} 📻 Noise", expand_icon)).clicked() {
                                     self.expanded_noise = !self.expanded_noise;
                                 }
@@ -314,7 +314,7 @@ impl eframe::App for SynthesizerApp {
                             }
                             ui.separator();
                             ui.horizontal(|ui| {
-                                let expand_icon = if self.expanded_lfo { "▼" } else { "▶" };
+                                let expand_icon = if self.expanded_lfo { "v" } else { ">" };
                                 if ui.button(format!("{} 🔄 LFO", expand_icon)).clicked() {
                                     self.expanded_lfo = !self.expanded_lfo;
                                 }
@@ -375,7 +375,7 @@ impl eframe::App for SynthesizerApp {
                             ui.separator();
                             // Filter
                             ui.horizontal(|ui| {
-                                let expand_icon = if self.expanded_filter { "▼" } else { "▶" };
+                                let expand_icon = if self.expanded_filter { "v" } else { ">" };
                                 if ui.button(format!("{} ⬇ Filter", expand_icon)).clicked() {
                                     self.expanded_filter = !self.expanded_filter;
                                 }
@@ -416,7 +416,7 @@ impl eframe::App for SynthesizerApp {
 
                             // Gain général
                             ui.horizontal(|ui| {
-                                let expand_icon = if self.expanded_gain { "▼" } else { "▶" };
+                                let expand_icon = if self.expanded_gain { "v" } else { ">" };
                                 if ui.button(format!("{} 🔊 Gain", expand_icon)).clicked() {
                                     self.expanded_gain = !self.expanded_gain;
                                 }
@@ -463,9 +463,9 @@ impl eframe::App for SynthesizerApp {
                             // Compressor
                             ui.horizontal(|ui| {
                                 let expand_icon = if self.expanded_compressor {
-                                    "▼"
+                                    "v"
                                 } else {
-                                    "▶"
+                                    ">"
                                 };
                                 if ui
                                     .button(format!("{} 🤏 Compressor", expand_icon))
@@ -548,7 +548,7 @@ impl eframe::App for SynthesizerApp {
 
                             // Section Reverb
                             ui.horizontal(|ui| {
-                                let expand_icon = if self.expanded_reverb { "▼" } else { "▶" };
+                                let expand_icon = if self.expanded_reverb { "v" } else { ">" };
                                 if ui.button(format!("{} 🌊 Reverb", expand_icon)).clicked() {
                                     self.expanded_reverb = !self.expanded_reverb;
                                 }
