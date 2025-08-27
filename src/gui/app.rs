@@ -792,14 +792,12 @@ impl SynthesizerApp {
         if input.key_pressed(key) && !self.pressed_physical_keys.contains(&key_string) {
             self.pressed_physical_keys.insert(key_string.clone());
             self.play_note(note);
-            println!("Touche physique {} pressée -> {}", key_string, note);
         }
 
         // Note relâchée
         if input.key_released(key) && self.pressed_physical_keys.contains(&key_string) {
             self.pressed_physical_keys.remove(&key_string);
             self.stop_note(note);
-            println!("Touche physique {} relâchée -> {}", key_string, note);
         }
     }
 
@@ -845,12 +843,10 @@ impl SynthesizerApp {
                         // Si déjà active, l'arrêter
                         self.pressed_notes.remove(&key_string);
                         self.stop_note(key);
-                        println!("Note virtuelle arrêtée (toggle): {}", key);
                     } else {
                         // Si pas active, la démarrer
                         self.pressed_notes.insert(key_string.clone());
                         self.play_note(key);
-                        println!("Note virtuelle démarrée (toggle): {}", key);
                     }
                 }
             }
@@ -882,12 +878,10 @@ impl SynthesizerApp {
                             // Si déjà active, l'arrêter
                             self.pressed_notes.remove(&key_string);
                             self.stop_note(key);
-                            println!("Note virtuelle arrêtée (toggle): {}", key);
                         } else {
                             // Si pas active, démarrer la note
                             self.pressed_notes.insert(key_string.clone());
                             self.play_note(key);
-                            println!("Note virtuelle démarrée (toggle): {}", key);
                         }
                     }
                 }
