@@ -35,7 +35,7 @@ pub struct SynthesizerApp {
     // GAIN
     gain_activation: bool,
     gain: f64,
-    gain_knob: f32, // Variable temporaire pour le knob
+    gain_knob: f32,
 
     // ADSR
     attack: f64,

@@ -26,9 +26,7 @@
 
 - dans app et manager .rs, gros refactoring a faire avec les acces au setters et getters
 
-- faire les knob (lib deja installe)
-
-- la fleche vers le bas qui ne s'affiche pas...
+- faire les knob
 
 - mettre a jour le readme
 

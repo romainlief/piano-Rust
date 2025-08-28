@@ -10,7 +10,7 @@ This project is a synthesizer in Rust made with cpal, device_query, once_cell, s
 - **Advanced Control**: Customize parameters for each synthesizer
 - **High-quality audio**: Uses CPAL for professional audio reproduction
 
-## Synthétiseurs Disponibles
+## Available Synthesizers
 
 | Type                | Touche  | Description                                             |
 |---------------------|---------|---------------------------------------------------------|
@@ -48,6 +48,10 @@ cargo run --bin gui
 - **[serde](https://serde.rs/)** `1.0` - For the JSON note file
 - **[serde_json](https://crates.io/crates/serde_json/1.0.1/dependencies)** `1.0` - For the JSON note file
 - **[rand](https://crates.io/crates/rand)** `0.9.2` - To generate random numbers
+- **[eframe](https://crates.io/crates/eframe)** `0.32.1` - For the GUI
+- **[egui](https://crates.io/crates/egui)** `0.32.1` - For the GUI
+- **[egui_knob](https://crates.io/crates/egui_knob)** `0.3.3` - For the knob widget
+- **[env_logger](https://crates.io/crates/env_logger)** `0.10.0` - For logging
 
 ## 📄 License
 
