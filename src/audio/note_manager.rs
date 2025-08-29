@@ -88,18 +88,10 @@ pub fn add_note(manager: &ActiveNoteManager, frequency: f64, sample_rate: f64) {
     if let Ok(mut notes) = manager.lock() {
         let frequency_key = (frequency * 1000.0) as u64; // Convertir en clé entière
 
-        if let Some(existing_note) = notes.get_mut(&frequency_key) {
-            if existing_note.is_released {
-                // TODO: code ne servant a rien
-                existing_note.is_released = false;
-                println!("Note redémarrée: {:.2} Hz", frequency);
-            }
-        } else {
-            // Créer une nouvelle note
-            let note = ActiveNote::new(frequency, sample_rate);
-            notes.insert(frequency_key, note);
-            println!("Note ajoutée: {:.2} Hz", frequency);
-        }
+        // Créer une nouvelle note
+        let note = ActiveNote::new(frequency, sample_rate);
+        notes.insert(frequency_key, note);
+        println!("Note ajoutée: {:.2} Hz", frequency);
     } else {
         eprintln!("Warning: Failed to lock note manager to add note");
     }

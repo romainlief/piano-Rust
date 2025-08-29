@@ -1354,7 +1354,6 @@ impl SynthesizerApp {
 }
 
 fn configure_fonts(ctx: &egui::Context) {
-    // Configuration de base des polices
     let fonts = egui::FontDefinitions::default();
     ctx.set_fonts(fonts);
 }
