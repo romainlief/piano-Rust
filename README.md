@@ -30,6 +30,8 @@ This project is a synthesizer in Rust made with cpal, device_query, once_cell, s
 
 ### Launch the application
 
+#### Linux and Mac
+
 To run the code in the terminal:
 ```bash
 cargo run --bin synthesizer_emulation
