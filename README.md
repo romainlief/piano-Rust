@@ -53,7 +53,8 @@ cargo run --bin gui
 - **[eframe](https://crates.io/crates/eframe)** `0.32.1` - For the GUI
 - **[egui](https://crates.io/crates/egui)** `0.32.1` - For the GUI
 - **[egui_knob](https://crates.io/crates/egui_knob)** `0.3.3` - For the knob widget
-- **[env_logger](https://crates.io/crates/env_logger)** `0.10.0` - For logging
+- **[env_logger](https://crates.io/crates/env_logger)** `0.11.8` - For logging
+- **[display-info](https://crates.io/crates/display-info)** `0.5.5` - For the screen size
 
 ## 📄 License
 

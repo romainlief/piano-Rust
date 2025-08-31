@@ -1,11 +1,12 @@
 use crate::audio::{note_manager, setup_realtime_audio};
+use crate::consts::constants::PROJECT_NAME;
+use crate::gui::SynthesizerApp;
 use crate::input::key_logic;
 use crate::{prints, synths};
 use device_query::DeviceState;
+use display_info::DisplayInfo;
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
-use crate::consts::constants::PROJECT_NAME;
-use crate::gui::SynthesizerApp;
 
 /// Launch the terminal application
 pub fn launch_terminal_application() -> Result<(), Box<dyn std::error::Error>> {
@@ -50,10 +51,34 @@ pub fn launch_gui_application() -> eframe::Result<()> {
         Arc::clone(&current_synth_type),
     );
 
+    // Détection multiplateforme de la taille d'écran principale
+    let display = DisplayInfo::all()
+        .unwrap()
+        .into_iter()
+        .find(|d| d.is_primary)
+        .unwrap_or(DisplayInfo {
+            id: 0,
+            name: String::new(),
+            friendly_name: String::new(),
+            width: 1200,
+            height: 800,
+            width_mm: 0,
+            height_mm: 0,
+            frequency: 60.0,
+            rotation: 0.0,
+            scale_factor: 1.0,
+            is_primary: true,
+            raw_handle: 0,
+            x: 0,
+            y: 0,
+        });
+    let width = display.width as f32 * 0.8;
+    let height = display.height as f32 * 0.8;
+
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_inner_size([1350.0, 900.0])
-            .with_min_inner_size([1350.0, 810.0])
+            .with_inner_size([width, height])
+            .with_min_inner_size([width, height])
             .with_title(PROJECT_NAME),
         ..Default::default()
     };
