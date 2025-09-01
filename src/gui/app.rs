@@ -39,9 +39,13 @@ pub struct SynthesizerApp {
 
     // ADSR
     attack: f64,
+    attack_knob: f32,
     decay: f64,
+    decay_knob: f32,
     sustain: f64,
+    sustain_knob: f32,
     release: f64,
+    release_knob: f32,
 
     // FILTER
     filter_activation: bool,
@@ -106,9 +110,13 @@ impl SynthesizerApp {
             gain_knob: constants::CURRENT_GAIN as f32,
 
             attack: constants::ADSR_ATTACK,
+            attack_knob: constants::ADSR_ATTACK as f32,
             decay: constants::ADSR_DECAY,
+            decay_knob: constants::ADSR_DECAY as f32,
             sustain: constants::ADSR_SUSTAIN,
+            sustain_knob: constants::ADSR_SUSTAIN as f32,
             release: constants::ADSR_RELEASE,
+            release_knob: constants::ADSR_RELEASE as f32,
 
             lfo_activation: constants::ACTIVATION_LFO,
             freq: constants::CURRENT_LFO_FREQ,
@@ -230,9 +238,26 @@ impl eframe::App for SynthesizerApp {
                                 ui.horizontal(|ui| {
                                     ui.label("Attack:");
                                     if ui
-                                        .add(egui::Slider::new(&mut self.attack, 0.0..=60.0))
+                                        .add(
+                                            Knob::new(
+                                                &mut self.attack_knob,
+                                                0.0_f32,
+                                                60.0_f32,
+                                                KnobStyle::Wiper,
+                                            )
+                                            .with_size(50.0)
+                                            .with_font_size(20.0)
+                                            .with_stroke_width(3.0)
+                                            .with_colors(
+                                                KNOB_GAIN_COLOR.0,
+                                                KNOB_GAIN_COLOR.1,
+                                                KNOB_GAIN_COLOR.2,
+                                            )
+                                            .with_label("", LabelPosition::Bottom),
+                                        )
                                         .changed()
                                     {
+                                        self.attack = self.attack_knob as f64;
                                         self.update_synth_attack();
                                     };
                                 });
@@ -462,11 +487,7 @@ impl eframe::App for SynthesizerApp {
                             ui.separator();
                             // Compressor
                             ui.horizontal(|ui| {
-                                let expand_icon = if self.expanded_compressor {
-                                    "v"
-                                } else {
-                                    ">"
-                                };
+                                let expand_icon = if self.expanded_compressor { "v" } else { ">" };
                                 if ui
                                     .button(format!("{} 🤏 Compressor", expand_icon))
                                     .clicked()
@@ -1326,7 +1347,7 @@ impl SynthesizerApp {
         active_note.set_current_decay(self.decay);
         active_note.set_current_sustain(self.sustain);
         active_note.set_current_release(self.release);
-        
+
         // CRUCIAL: Redémarrer note_on() APRÈS avoir mis à jour les paramètres
         active_note.adsr.note_on();
 

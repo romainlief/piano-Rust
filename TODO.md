@@ -28,6 +28,6 @@
 
 - mettre a jour le readme
 
-- stylyse la gui
+- stylyse la gui (knob pour l'adsr)
 
 - faire tous les styles de bruits
