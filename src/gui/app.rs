@@ -265,9 +265,26 @@ impl eframe::App for SynthesizerApp {
                                 ui.horizontal(|ui| {
                                     ui.label("Decay:");
                                     if ui
-                                        .add(egui::Slider::new(&mut self.decay, 0.001..=30.0))
+                                        .add(
+                                            Knob::new(
+                                                &mut self.decay_knob,
+                                                0.001_f32,
+                                                30.0_f32,
+                                                KnobStyle::Wiper,
+                                            )
+                                            .with_size(50.0)
+                                            .with_font_size(20.0)
+                                            .with_stroke_width(3.0)
+                                            .with_colors(
+                                                KNOB_GAIN_COLOR.0,
+                                                KNOB_GAIN_COLOR.1,
+                                                KNOB_GAIN_COLOR.2,
+                                            )
+                                            .with_label("", LabelPosition::Bottom),
+                                        )
                                         .changed()
                                     {
+                                        self.decay = self.decay_knob as f64;
                                         self.update_synth_decay();
                                     };
                                 });
@@ -278,6 +295,7 @@ impl eframe::App for SynthesizerApp {
                                         .add(egui::Slider::new(&mut self.sustain, 0.0..=1.0))
                                         .changed()
                                     {
+                                        self.sustain = self.sustain_knob as f64;
                                         self.update_synth_sustain();
                                     };
                                 });
@@ -288,6 +306,7 @@ impl eframe::App for SynthesizerApp {
                                         .add(egui::Slider::new(&mut self.release, 0.001..=30.0))
                                         .changed()
                                     {
+                                        self.release = self.release_knob as f64;
                                         self.update_synth_release();
                                     };
                                 });
