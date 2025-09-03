@@ -292,7 +292,23 @@ impl eframe::App for SynthesizerApp {
                                 ui.horizontal(|ui| {
                                     ui.label("Sustain:");
                                     if ui
-                                        .add(egui::Slider::new(&mut self.sustain, 0.0..=1.0))
+                                        .add(
+                                            Knob::new(
+                                                &mut self.sustain_knob,
+                                                0.0_f32,
+                                                1.0_f32,
+                                                KnobStyle::Wiper,
+                                            )
+                                            .with_size(50.0)
+                                            .with_font_size(20.0)
+                                            .with_stroke_width(3.0)
+                                            .with_colors(
+                                                KNOB_GAIN_COLOR.0,
+                                                KNOB_GAIN_COLOR.1,
+                                                KNOB_GAIN_COLOR.2,
+                                            )
+                                            .with_label("", LabelPosition::Bottom),
+                                        )
                                         .changed()
                                     {
                                         self.sustain = self.sustain_knob as f64;
@@ -303,7 +319,23 @@ impl eframe::App for SynthesizerApp {
                                 ui.horizontal(|ui| {
                                     ui.label("Release:");
                                     if ui
-                                        .add(egui::Slider::new(&mut self.release, 0.001..=30.0))
+                                        .add(
+                                            Knob::new(
+                                                &mut self.release_knob,
+                                                0.001_f32,
+                                                30.0_f32,
+                                                KnobStyle::Wiper,
+                                            )
+                                            .with_size(50.0)
+                                            .with_font_size(20.0)
+                                            .with_stroke_width(3.0)
+                                            .with_colors(
+                                                KNOB_GAIN_COLOR.0,
+                                                KNOB_GAIN_COLOR.1,
+                                                KNOB_GAIN_COLOR.2,
+                                            )
+                                            .with_label("", LabelPosition::Bottom),
+                                        )
                                         .changed()
                                     {
                                         self.release = self.release_knob as f64;
