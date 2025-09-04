@@ -236,111 +236,114 @@ impl eframe::App for SynthesizerApp {
 
                             if self.expanded_adsr {
                                 ui.horizontal(|ui| {
-                                    ui.label("Attack:");
-                                    if ui
-                                        .add(
-                                            Knob::new(
-                                                &mut self.attack_knob,
-                                                0.0_f32,
-                                                60.0_f32,
-                                                KnobStyle::Wiper,
+                                    // Attack
+                                    ui.vertical(|ui| {
+                                        if ui
+                                            .add(
+                                                Knob::new(
+                                                    &mut self.attack_knob,
+                                                    0.0_f32,
+                                                    60.0_f32,
+                                                    KnobStyle::Wiper,
+                                                )
+                                                .with_size(50.0)
+                                                .with_font_size(20.0)
+                                                .with_stroke_width(3.0)
+                                                .with_colors(
+                                                    KNOB_GAIN_COLOR.0,
+                                                    KNOB_GAIN_COLOR.1,
+                                                    KNOB_GAIN_COLOR.2,
+                                                )
+                                                .with_label("", LabelPosition::Bottom),
                                             )
-                                            .with_size(50.0)
-                                            .with_font_size(20.0)
-                                            .with_stroke_width(3.0)
-                                            .with_colors(
-                                                KNOB_GAIN_COLOR.0,
-                                                KNOB_GAIN_COLOR.1,
-                                                KNOB_GAIN_COLOR.2,
+                                            .changed()
+                                        {
+                                            self.attack = self.attack_knob as f64;
+                                            self.update_synth_attack();
+                                        }
+                                        ui.label("Attack");
+                                    });
+                                    // Decay
+                                    ui.vertical(|ui| {
+                                        if ui
+                                            .add(
+                                                Knob::new(
+                                                    &mut self.decay_knob,
+                                                    0.001_f32,
+                                                    30.0_f32,
+                                                    KnobStyle::Wiper,
+                                                )
+                                                .with_size(50.0)
+                                                .with_font_size(20.0)
+                                                .with_stroke_width(3.0)
+                                                .with_colors(
+                                                    KNOB_GAIN_COLOR.0,
+                                                    KNOB_GAIN_COLOR.1,
+                                                    KNOB_GAIN_COLOR.2,
+                                                )
+                                                .with_label("", LabelPosition::Bottom),
                                             )
-                                            .with_label("", LabelPosition::Bottom),
-                                        )
-                                        .changed()
-                                    {
-                                        self.attack = self.attack_knob as f64;
-                                        self.update_synth_attack();
-                                    };
-                                });
-
-                                ui.horizontal(|ui| {
-                                    ui.label("Decay:");
-                                    if ui
-                                        .add(
-                                            Knob::new(
-                                                &mut self.decay_knob,
-                                                0.001_f32,
-                                                30.0_f32,
-                                                KnobStyle::Wiper,
+                                            .changed()
+                                        {
+                                            self.decay = self.decay_knob as f64;
+                                            self.update_synth_decay();
+                                        }
+                                        ui.label("Decay");
+                                    });
+                                    // Sustain
+                                    ui.vertical(|ui| {
+                                        if ui
+                                            .add(
+                                                Knob::new(
+                                                    &mut self.sustain_knob,
+                                                    0.0_f32,
+                                                    1.0_f32,
+                                                    KnobStyle::Wiper,
+                                                )
+                                                .with_size(50.0)
+                                                .with_font_size(20.0)
+                                                .with_stroke_width(3.0)
+                                                .with_colors(
+                                                    KNOB_GAIN_COLOR.0,
+                                                    KNOB_GAIN_COLOR.1,
+                                                    KNOB_GAIN_COLOR.2,
+                                                )
+                                                .with_label("", LabelPosition::Bottom),
                                             )
-                                            .with_size(50.0)
-                                            .with_font_size(20.0)
-                                            .with_stroke_width(3.0)
-                                            .with_colors(
-                                                KNOB_GAIN_COLOR.0,
-                                                KNOB_GAIN_COLOR.1,
-                                                KNOB_GAIN_COLOR.2,
+                                            .changed()
+                                        {
+                                            self.sustain = self.sustain_knob as f64;
+                                            self.update_synth_sustain();
+                                        }
+                                        ui.label("Sustain");
+                                    });
+                                    // Release
+                                    ui.vertical(|ui| {
+                                        if ui
+                                            .add(
+                                                Knob::new(
+                                                    &mut self.release_knob,
+                                                    0.001_f32,
+                                                    30.0_f32,
+                                                    KnobStyle::Wiper,
+                                                )
+                                                .with_size(50.0)
+                                                .with_font_size(20.0)
+                                                .with_stroke_width(3.0)
+                                                .with_colors(
+                                                    KNOB_GAIN_COLOR.0,
+                                                    KNOB_GAIN_COLOR.1,
+                                                    KNOB_GAIN_COLOR.2,
+                                                )
+                                                .with_label("", LabelPosition::Bottom),
                                             )
-                                            .with_label("", LabelPosition::Bottom),
-                                        )
-                                        .changed()
-                                    {
-                                        self.decay = self.decay_knob as f64;
-                                        self.update_synth_decay();
-                                    };
-                                });
-
-                                ui.horizontal(|ui| {
-                                    ui.label("Sustain:");
-                                    if ui
-                                        .add(
-                                            Knob::new(
-                                                &mut self.sustain_knob,
-                                                0.0_f32,
-                                                1.0_f32,
-                                                KnobStyle::Wiper,
-                                            )
-                                            .with_size(50.0)
-                                            .with_font_size(20.0)
-                                            .with_stroke_width(3.0)
-                                            .with_colors(
-                                                KNOB_GAIN_COLOR.0,
-                                                KNOB_GAIN_COLOR.1,
-                                                KNOB_GAIN_COLOR.2,
-                                            )
-                                            .with_label("", LabelPosition::Bottom),
-                                        )
-                                        .changed()
-                                    {
-                                        self.sustain = self.sustain_knob as f64;
-                                        self.update_synth_sustain();
-                                    };
-                                });
-
-                                ui.horizontal(|ui| {
-                                    ui.label("Release:");
-                                    if ui
-                                        .add(
-                                            Knob::new(
-                                                &mut self.release_knob,
-                                                0.001_f32,
-                                                30.0_f32,
-                                                KnobStyle::Wiper,
-                                            )
-                                            .with_size(50.0)
-                                            .with_font_size(20.0)
-                                            .with_stroke_width(3.0)
-                                            .with_colors(
-                                                KNOB_GAIN_COLOR.0,
-                                                KNOB_GAIN_COLOR.1,
-                                                KNOB_GAIN_COLOR.2,
-                                            )
-                                            .with_label("", LabelPosition::Bottom),
-                                        )
-                                        .changed()
-                                    {
-                                        self.release = self.release_knob as f64;
-                                        self.update_synth_release();
-                                    };
+                                            .changed()
+                                        {
+                                            self.release = self.release_knob as f64;
+                                            self.update_synth_release();
+                                        }
+                                        ui.label("Release");
+                                    });
                                 });
                             }
                             ui.separator();
