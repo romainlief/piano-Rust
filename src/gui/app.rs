@@ -1,6 +1,7 @@
 use crate::audio::note_manager;
 use crate::consts::constants::{
-    self, BLACK_KEYS, KNOB_GAIN_COLOR, KNOB_NOISE_COLOR, USED_KEYS, WHITE_KEYS,
+    self, BLACK_KEYS, KNOB_GAIN_COLOR, KNOB_NOISE_COLOR, USED_KEYS, WHITE_KEYS, KNOB_ADSR_A_COLOR,
+    KNOB_ADSR_D_COLOR, KNOB_ADSR_S_COLOR, KNOB_ADSR_R_COLOR
 };
 use crate::input::key_handlers::NOTES;
 use crate::synths::manager::SynthType;
@@ -250,9 +251,9 @@ impl eframe::App for SynthesizerApp {
                                                 .with_font_size(20.0)
                                                 .with_stroke_width(3.0)
                                                 .with_colors(
-                                                    KNOB_GAIN_COLOR.0,
-                                                    KNOB_GAIN_COLOR.1,
-                                                    KNOB_GAIN_COLOR.2,
+                                                    KNOB_ADSR_A_COLOR.0,
+                                                    KNOB_ADSR_A_COLOR.1,
+                                                    KNOB_ADSR_A_COLOR.2,
                                                 )
                                                 .with_label("", LabelPosition::Bottom),
                                             )
@@ -277,9 +278,9 @@ impl eframe::App for SynthesizerApp {
                                                 .with_font_size(20.0)
                                                 .with_stroke_width(3.0)
                                                 .with_colors(
-                                                    KNOB_GAIN_COLOR.0,
-                                                    KNOB_GAIN_COLOR.1,
-                                                    KNOB_GAIN_COLOR.2,
+                                                    KNOB_ADSR_D_COLOR.0,
+                                                    KNOB_ADSR_D_COLOR.1,
+                                                    KNOB_ADSR_D_COLOR.2,
                                                 )
                                                 .with_label("", LabelPosition::Bottom),
                                             )
@@ -304,9 +305,9 @@ impl eframe::App for SynthesizerApp {
                                                 .with_font_size(20.0)
                                                 .with_stroke_width(3.0)
                                                 .with_colors(
-                                                    KNOB_GAIN_COLOR.0,
-                                                    KNOB_GAIN_COLOR.1,
-                                                    KNOB_GAIN_COLOR.2,
+                                                    KNOB_ADSR_S_COLOR.0,
+                                                    KNOB_ADSR_S_COLOR.1,
+                                                    KNOB_ADSR_S_COLOR.2,
                                                 )
                                                 .with_label("", LabelPosition::Bottom),
                                             )
@@ -331,9 +332,9 @@ impl eframe::App for SynthesizerApp {
                                                 .with_font_size(20.0)
                                                 .with_stroke_width(3.0)
                                                 .with_colors(
-                                                    KNOB_GAIN_COLOR.0,
-                                                    KNOB_GAIN_COLOR.1,
-                                                    KNOB_GAIN_COLOR.2,
+                                                    KNOB_ADSR_R_COLOR.0,
+                                                    KNOB_ADSR_R_COLOR.1,
+                                                    KNOB_ADSR_R_COLOR.2,
                                                 )
                                                 .with_label("", LabelPosition::Bottom),
                                             )

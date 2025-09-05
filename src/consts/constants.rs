@@ -16,8 +16,18 @@ pub const BLACK_KEYS: (u8, u8, u8) = (50, 50, 50); // Color of black keys
 // Knobs colors
 pub const KNOB_NOISE_COLOR: (Color32, Color32, Color32) =
     (Color32::DARK_GRAY, Color32::WHITE, Color32::WHITE);
+
 pub const KNOB_GAIN_COLOR: (Color32, Color32, Color32) =
     (Color32::DARK_GRAY, Color32::RED, Color32::WHITE);
+
+pub const KNOB_ADSR_A_COLOR: (Color32, Color32, Color32) =
+    (Color32::DARK_GRAY, Color32::LIGHT_RED, Color32::WHITE);
+pub const KNOB_ADSR_D_COLOR: (Color32, Color32, Color32) =
+    (Color32::DARK_GRAY, Color32::YELLOW, Color32::WHITE);
+pub const KNOB_ADSR_S_COLOR: (Color32, Color32, Color32) =
+    (Color32::DARK_GRAY, Color32::GREEN, Color32::WHITE);
+pub const KNOB_ADSR_R_COLOR: (Color32, Color32, Color32) =
+    (Color32::DARK_GRAY, Color32::PURPLE, Color32::WHITE);
 
 /// Variables
 pub static CURRENT_OCTAVE_INDEX: AtomicUsize = AtomicUsize::new(4); // Current index in VECTEUR_NOTES (thread-safe)
