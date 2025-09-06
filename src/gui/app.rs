@@ -235,7 +235,10 @@ impl eframe::App for SynthesizerApp {
                                 }
                             });
 
+                            ui.add_space(10.0);
+
                             if self.expanded_adsr {
+                                ui.add_space(5.0);
                                 ui.horizontal(|ui| {
                                     // Attack
                                     ui.vertical(|ui| {
@@ -265,6 +268,7 @@ impl eframe::App for SynthesizerApp {
                                         ui.label("Attack");
                                     });
                                     // Decay
+                                    ui.add_space(10.0);
                                     ui.vertical(|ui| {
                                         if ui
                                             .add(
@@ -292,6 +296,7 @@ impl eframe::App for SynthesizerApp {
                                         ui.label("Decay");
                                     });
                                     // Sustain
+                                    ui.add_space(20.0);
                                     ui.vertical(|ui| {
                                         if ui
                                             .add(
@@ -319,6 +324,7 @@ impl eframe::App for SynthesizerApp {
                                         ui.label("Sustain");
                                     });
                                     // Release
+                                    ui.add_space(10.0);
                                     ui.vertical(|ui| {
                                         if ui
                                             .add(
