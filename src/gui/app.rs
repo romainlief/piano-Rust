@@ -1021,10 +1021,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_current_cutoff(self.cutoff);
-                println!(
-                    "Fréquence de coupure mise à jour dans le contrôleur audio: {}",
-                    self.cutoff
-                );
             }
         }
     }
@@ -1038,10 +1034,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_current_resonance(self.resonance);
-                println!(
-                    "Résonance mise à jour dans le contrôleur audio: {}",
-                    self.resonance
-                );
             }
         }
     }
@@ -1064,10 +1056,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_current_noise(self.noise);
-                println!("Bruit mis à jour dans le contrôleur audio: {}", self.noise);
-
-                // Synchroniser la copie locale avec l'état du contrôleur
-                self.current_synth_type = synth.clone();
             }
         }
     }
