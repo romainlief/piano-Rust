@@ -1369,18 +1369,9 @@ impl SynthesizerApp {
         // Chercher la fréquence dans le système JSON
         if let Some(octave_notes) = NOTES.0.get(&octave) {
             if let Some(&frequency) = octave_notes.get(json_note) {
-                println!(
-                    "Note trouvée: {} octave {} = {:.2} Hz",
-                    note_name, octave, frequency
-                );
                 return frequency;
             }
         }
-
-        println!(
-            "Note non trouvée: {} octave {}, retour A4",
-            note_name, octave
-        );
         440.0 // If not found, return A4
     }
 
@@ -1402,10 +1393,6 @@ impl SynthesizerApp {
 
         if let Ok(mut notes_guard) = notes.lock() {
             notes_guard.insert(frequency_key, active_note);
-            println!(
-                "Note ajoutée: {:.2} Hz ({}) avec ADSR: A={}, D={}, S={}, R={}",
-                frequency, frequency_key, self.attack, self.decay, self.sustain, self.release
-            );
         }
     }
 
@@ -1417,7 +1404,6 @@ impl SynthesizerApp {
             if let Some(note) = notes_guard.get_mut(&frequency_key) {
                 // Déclencher le release de l'ADSR au lieu de supprimer directement
                 note.adsr.note_off();
-                println!("Note en release: {:.2} Hz ({})", frequency, frequency_key);
             }
         }
     }
