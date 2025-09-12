@@ -1228,8 +1228,6 @@ impl SynthesizerApp {
     }
 
     fn update_lfo_activation(&mut self) {
-        println!("Activation du LFO changée: {}", self.lfo_activation);
-
         self.current_synth_type
             .set_lfo_activation(self.lfo_activation);
 
@@ -1237,10 +1235,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_lfo_activation(self.lfo_activation);
-                println!(
-                    "Activation du LFO mise à jour dans le contrôleur audio: {}",
-                    self.lfo_activation
-                );
             }
         }
 
@@ -1260,10 +1254,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_current_lfo_waveform(self.waveform);
-                println!(
-                    "Forme d'onde LFO mise à jour dans le contrôleur audio: {:?}",
-                    self.waveform
-                );
             }
         }
     }
