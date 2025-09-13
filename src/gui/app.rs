@@ -1210,8 +1210,6 @@ impl SynthesizerApp {
     }
 
     fn update_noise_activation(&mut self) {
-        println!("Activation du bruit changée: {}", self.noise_activation);
-
         self.current_synth_type
             .set_noise_activation(self.noise_activation);
 
@@ -1219,10 +1217,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_noise_activation(self.noise_activation);
-                println!(
-                    "Activation du bruit mise à jour dans le contrôleur audio: {}",
-                    self.noise_activation
-                );
             }
         }
     }
