@@ -1151,8 +1151,6 @@ impl SynthesizerApp {
 
     /// Met à jour l'activation du gain
     fn update_gain_activation(&mut self) {
-        println!("Activation du gain changée: {}", self.gain_activation);
-
         self.current_synth_type
             .set_gain_activation(self.gain_activation);
 
@@ -1160,10 +1158,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_gain_activation(self.gain_activation);
-                println!(
-                    "Activation du gain mise à jour dans le contrôleur audio: {}",
-                    self.gain_activation
-                );
             }
         }
     }
