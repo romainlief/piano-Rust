@@ -861,7 +861,6 @@ impl SynthesizerApp {
             // Arrêter toutes les notes
             if i.key_pressed(Key::Space) {
                 self.stop_all_notes();
-                println!("Toutes les notes arrêtées");
             }
         });
     }
@@ -896,7 +895,6 @@ impl SynthesizerApp {
         self.pressed_notes.clear();
         self.pressed_physical_keys.clear();
         self.active_notes.clear();
-        println!("Toutes les notes arrêtées et sets vidés");
     }
 
     fn draw_virtual_keyboard(&mut self, ui: &mut egui::Ui) {
@@ -1068,10 +1066,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_current_lfo_frequency(self.freq);
-                println!(
-                    "Fréquence LFO mise à jour dans le contrôleur audio: {}",
-                    self.freq
-                );
             }
         }
     }
