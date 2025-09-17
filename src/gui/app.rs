@@ -823,24 +823,20 @@ impl SynthesizerApp {
             if i.key_pressed(Key::ArrowLeft) && self.current_octave > 1 {
                 self.current_octave -= 1;
                 self.update_global_octave();
-                println!("Octave changée vers: {}", self.current_octave);
             }
             if i.key_pressed(Key::ArrowRight) && self.current_octave < 9 {
                 self.current_octave += 1;
                 self.update_global_octave();
-                println!("Octave changée vers: {}", self.current_octave);
             }
 
             // Changement de synthétiseur
             if i.key_pressed(Key::W) {
                 self.current_synth_type = SynthType::n_sine();
                 self.update_synth_type();
-                println!("Synthétiseur changé: Modular Sine");
             }
             if i.key_pressed(Key::X) {
                 self.current_synth_type = SynthType::n_square();
                 self.update_synth_type();
-                println!("Synthétiseur changé: Modular Square");
             }
             if i.key_pressed(Key::S) {
                 self.current_synth_type = SynthType::n_sawtooth();
