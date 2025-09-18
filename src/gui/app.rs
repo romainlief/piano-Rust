@@ -841,17 +841,14 @@ impl SynthesizerApp {
             if i.key_pressed(Key::S) {
                 self.current_synth_type = SynthType::n_sawtooth();
                 self.update_synth_type();
-                println!("Synthétiseur changé: Modular Sawtooth");
             }
             if i.key_pressed(Key::K) {
                 self.current_synth_type = SynthType::n_fm();
                 self.update_synth_type();
-                println!("Synthétiseur changé: FM");
             }
             if i.key_pressed(Key::H) {
                 self.current_synth_type = SynthType::n_hammond();
                 self.update_synth_type();
-                println!("Synthétiseur changé: Hammond Organ");
             }
 
             // Arrêter toutes les notes
