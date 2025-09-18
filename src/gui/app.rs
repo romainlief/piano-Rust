@@ -1117,7 +1117,6 @@ impl SynthesizerApp {
                 }
             }
         }
-        println!("Release time mis à jour: {}", self.release);
     }
 
     fn update_filter_activation(&mut self) {
