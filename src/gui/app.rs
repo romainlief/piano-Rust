@@ -1127,10 +1127,6 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_filter_activation(self.filter_activation);
-                println!(
-                    "Activation du filtre mise à jour dans le contrôleur audio: {}",
-                    self.filter_activation
-                );
             }
         }
     }
