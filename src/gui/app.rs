@@ -1076,11 +1076,6 @@ impl SynthesizerApp {
                     self.attack, note_count
                 );
             }
-        } else {
-            println!(
-                "Attack time mis à jour: {} (aucune note active)",
-                self.attack
-            );
         }
     }
 
@@ -1093,7 +1088,6 @@ impl SynthesizerApp {
                 }
             }
         }
-        println!("Decay time mis à jour: {}", self.decay);
     }
 
     fn update_synth_sustain(&mut self) {
@@ -1105,7 +1099,6 @@ impl SynthesizerApp {
                 }
             }
         }
-        println!("Sustain level mis à jour: {}", self.sustain);
     }
 
     fn update_synth_release(&mut self) {
