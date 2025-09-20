@@ -1071,10 +1071,6 @@ impl SynthesizerApp {
                 for note in notes_guard.values_mut() {
                     note.set_current_attack(self.attack);
                 }
-                println!(
-                    "Attack time mis à jour: {} ({} notes actives)",
-                    self.attack, note_count
-                );
             }
         }
     }
