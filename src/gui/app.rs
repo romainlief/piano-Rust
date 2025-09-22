@@ -1277,19 +1277,6 @@ impl SynthesizerApp {
                     println!("Note arrêtée: {} ({})", note_name, note_key);
                 }
             }
-        } else {
-            println!(
-                "Note maintenue par {} clavier(s): {} ({})",
-                if still_pressed_physical && still_pressed_virtual {
-                    "les deux"
-                } else if still_pressed_physical {
-                    "physique"
-                } else {
-                    "virtuel"
-                },
-                note_name,
-                note_key
-            );
         }
     }
 
