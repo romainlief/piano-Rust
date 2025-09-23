@@ -1250,10 +1250,7 @@ impl SynthesizerApp {
             if let Some(ref notes) = self.notes {
                 let frequency = self.note_to_frequency(note_name);
                 self.add_note(notes, frequency);
-                println!("Note démarrée: {} ({})", note_name, note_key);
             }
-        } else {
-            println!("Note déjà active: {} ({})", note_name, note_key);
         }
     }
 
@@ -1274,7 +1271,6 @@ impl SynthesizerApp {
                 if let Some(ref notes) = self.notes {
                     let frequency = self.note_to_frequency(note_name);
                     self.remove_note(notes, frequency);
-                    println!("Note arrêtée: {} ({})", note_name, note_key);
                 }
             }
         }
