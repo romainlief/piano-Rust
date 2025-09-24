@@ -1,5 +1,7 @@
 # TODO
 
+- faire en sorte que si je change de synth dans la gui, ca ne reinitialise pas les parametres
+
 - Docstrings / commentaires en anglais
 
 - GUI
@@ -12,7 +14,7 @@
 
 - gerer un clavier midi
 
-- retirer tous les prints
+- retirer tous les prints (presque fini)
 
 - pitch shiftting
 
@@ -27,7 +29,5 @@
 - faire les knob
 
 - mettre a jour le readme
-
-- stylyse la gui (knob pour l'adsr)
 
 - faire tous les styles de bruits

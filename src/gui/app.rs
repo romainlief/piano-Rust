@@ -571,7 +571,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        // self.update_synth_threshold();
+                                        //TODO: self.update_synth_threshold();
                                     }
                                 });
                                 ui.horizontal(|ui| {
@@ -583,7 +583,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        // self.update_synth_ratio();
+                                        //TODO: self.update_synth_ratio();
                                     }
                                 });
                                 ui.horizontal(|ui| {
@@ -595,7 +595,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        // self.update_synth_attack();
+                                        //TODO: self.update_synth_attack();
                                     }
                                 });
 
@@ -608,7 +608,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        // self.update_synth_release();
+                                        //TODO: self.update_synth_release();
                                     }
                                 });
 
@@ -621,7 +621,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        // self.update_synth_makeup_gain();
+                                        //TODO: self.update_synth_makeup_gain();
                                     }
                                 });
                             }
@@ -650,7 +650,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        // self.update_synth_reverb_dry_wet();
+                                        //TODO: self.update_synth_reverb_dry_wet();
                                     }
                                 });
 
@@ -704,7 +704,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        // self.update_synth_reverb_early_gain();
+                                        //TODO: self.update_synth_reverb_early_gain();
                                     }
                                 });
 
@@ -717,7 +717,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        // self.update_synth_reverb_tail_gain();
+                                        //TODO: self.update_synth_reverb_tail_gain();
                                     }
                                 });
 
@@ -730,7 +730,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        // self.update_synth_reverb_predelay();
+                                        //TODO: self.update_synth_reverb_predelay();
                                     }
                                 });
                             }
@@ -762,7 +762,7 @@ impl eframe::App for SynthesizerApp {
                             } else {
                                 ui.label("Audio non connecté");
                             }
-                        }); // Fermeture de ScrollArea
+                        });
                 });
         }
 
