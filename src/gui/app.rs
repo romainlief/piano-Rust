@@ -571,7 +571,7 @@ impl eframe::App for SynthesizerApp {
                                         )
                                         .changed()
                                     {
-                                        //TODO: self.update_synth_threshold();
+                                        self.update_synth_threshold();
                                     }
                                 });
                                 ui.horizontal(|ui| {
@@ -1038,6 +1038,17 @@ impl SynthesizerApp {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 synth.set_current_gain(self.gain);
+            }
+        }
+    }
+
+    fn update_synth_threshold(&mut self) {
+        self.current_synth_type
+            .set_current_threshold(self.threshold);
+
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                synth.set_current_threshold(self.threshold);
             }
         }
     }

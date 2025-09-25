@@ -6,6 +6,7 @@ use crate::{prints, synths};
 use device_query::DeviceState;
 use display_info::DisplayInfo;
 use std::collections::HashSet;
+use std::ptr;
 use std::sync::{Arc, Mutex};
 
 /// Launch the terminal application
@@ -68,7 +69,7 @@ pub fn launch_gui_application() -> eframe::Result<()> {
             rotation: 0.0,
             scale_factor: 1.0,
             is_primary: true,
-            raw_handle: 0,
+            raw_handle: unsafe { std::mem::zeroed() },
             x: 0,
             y: 0,
         });

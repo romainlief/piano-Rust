@@ -142,6 +142,26 @@ impl SynthType {
         }
     }
 
+    pub fn set_current_threshold(&mut self, new_threshold: f64) {
+        match self {
+            SynthType::Sine(synth) => {
+                Self::set_threshold_in_synth_static(synth, new_threshold);
+            }
+            SynthType::Square(synth) => {
+                Self::set_threshold_in_synth_static(synth, new_threshold);
+            }
+            SynthType::Sawtooth(synth) => {
+                Self::set_threshold_in_synth_static(synth, new_threshold);
+            }
+            SynthType::FM(synth) => {
+                Self::set_threshold_in_synth_static(synth, new_threshold);
+            }
+            SynthType::Hammond(synth) => {
+                Self::set_threshold_in_synth_static(synth, new_threshold);
+            }
+        }
+    }
+
     pub fn set_current_noise(&mut self, new_noise: f64) {
         match self {
             SynthType::Sine(synth) => Self::set_noise_in_synth_static(synth, new_noise),
@@ -273,6 +293,23 @@ impl SynthType {
             }
         }
         println!("Module Gain non trouvé pour mise à jour");
+    }
+
+    fn set_threshold_in_synth_static<O: crate::synths::traits::Oscillator>(
+        synth: &mut ModularSynth<O>,
+        new_threshold: f64,
+    ) {
+        for module in &mut synth.modules {
+            if module.name() == "SimpleRMSCompressor" {
+                if let Some(compressor_module) =
+                    module.as_any_mut().downcast_mut::<Compressor>()
+                {
+                    compressor_module.set_threshold(new_threshold);
+                    return;
+                }
+            }
+        }
+        println!("Module Compressor non trouvé pour mise à jour");
     }
 
     fn set_lfo_frequency_in_synth_static<O: crate::synths::traits::Oscillator>(
