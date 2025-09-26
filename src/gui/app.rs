@@ -1078,7 +1078,6 @@ impl SynthesizerApp {
         // Mettre à jour toutes les notes actives existantes
         if let Some(ref notes) = self.notes {
             if let Ok(mut notes_guard) = notes.lock() {
-                let note_count = notes_guard.len();
                 for note in notes_guard.values_mut() {
                     note.set_current_attack(self.attack);
                 }

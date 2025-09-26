@@ -6,7 +6,6 @@ use crate::{prints, synths};
 use device_query::DeviceState;
 use display_info::DisplayInfo;
 use std::collections::HashSet;
-use std::ptr;
 use std::sync::{Arc, Mutex};
 
 /// Launch the terminal application
