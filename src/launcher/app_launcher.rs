@@ -10,17 +10,8 @@ use std::sync::{Arc, Mutex};
 
 /// Launch the terminal application
 pub fn launch_terminal_application() -> Result<(), Box<dyn std::error::Error>> {
-    let note_manager = note_manager::create_note_manager();
-    let current_synth_type: Arc<Mutex<synths::manager::SynthType>> =
-        Arc::new(Mutex::new(synths::manager::SynthType::n_sine()));
 
-    // Clone for the audio thread
-    let notes_clone = Arc::clone(&note_manager);
-    let synth_type_clone = Arc::clone(&current_synth_type);
-
-    // Run the audio output in a separate thread
-    setup_realtime_audio::run_output_polyphonic_realtime(notes_clone, synth_type_clone);
-
+    let (note_manager, current_synth_type) = prepare_audio();
     prints::printfn::print_intro();
 
     let device_state = DeviceState::new();
@@ -40,16 +31,7 @@ pub fn launch_terminal_application() -> Result<(), Box<dyn std::error::Error>> {
 pub fn launch_gui_application() -> eframe::Result<()> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
 
-    // Initialiser le système audio comme dans main.rs
-    let note_manager = note_manager::create_note_manager();
-    let current_synth_type: Arc<Mutex<synths::manager::SynthType>> =
-        Arc::new(Mutex::new(synths::manager::SynthType::n_sine()));
-
-    // Lancer l'audio en arrière-plan
-    setup_realtime_audio::run_output_polyphonic_realtime(
-        Arc::clone(&note_manager),
-        Arc::clone(&current_synth_type),
-    );
+    let (note_manager, current_synth_type) = prepare_audio();
 
     // Détection multiplateforme de la taille d'écran principale
     let display = DisplayInfo::all()
@@ -121,4 +103,22 @@ pub fn launch_gui_application() -> eframe::Result<()> {
         }),
     )?;
     Ok(())
+}
+
+fn prepare_audio() -> (
+    note_manager::ActiveNoteManager,
+    Arc<Mutex<synths::manager::SynthType>>,
+) {
+    let note_manager = note_manager::create_note_manager();
+    let current_synth_type: Arc<Mutex<synths::manager::SynthType>> =
+        Arc::new(Mutex::new(synths::manager::SynthType::n_sine()));
+
+    // Clone for the audio thread
+    let notes_clone = Arc::clone(&note_manager);
+    let synth_type_clone = Arc::clone(&current_synth_type);
+
+    // Run the audio output in a separate thread
+    setup_realtime_audio::run_output_polyphonic_realtime(notes_clone, synth_type_clone);
+
+    (note_manager, current_synth_type)
 }
