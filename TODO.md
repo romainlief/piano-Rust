@@ -1,7 +1,5 @@
 # TODO
 
-- faire en sorte que si je change de synth dans la gui, ca ne reinitialise pas les parametres
-
 - Docstrings / commentaires en anglais
 
 - GUI

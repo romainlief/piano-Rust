@@ -182,24 +182,19 @@ impl eframe::App for SynthesizerApp {
             egui::MenuBar::new().ui(ui, |ui| {
                 ui.menu_button("Synthétiseur", |ui| {
                     if ui.button("Sine").clicked() {
-                        self.current_synth_type = SynthType::n_sine();
-                        self.update_synth_type();
+                        self.change_synth_type_preserving_params(SynthType::n_sine());
                     }
                     if ui.button("Square").clicked() {
-                        self.current_synth_type = SynthType::n_square();
-                        self.update_synth_type();
+                        self.change_synth_type_preserving_params(SynthType::n_square());
                     }
                     if ui.button("Sawtooth").clicked() {
-                        self.current_synth_type = SynthType::n_sawtooth();
-                        self.update_synth_type();
+                        self.change_synth_type_preserving_params(SynthType::n_sawtooth());
                     }
                     if ui.button("FM").clicked() {
-                        self.current_synth_type = SynthType::n_fm();
-                        self.update_synth_type();
+                        self.change_synth_type_preserving_params(SynthType::n_fm());
                     }
                     if ui.button("Hammond").clicked() {
-                        self.current_synth_type = SynthType::n_hammond();
-                        self.update_synth_type();
+                        self.change_synth_type_preserving_params(SynthType::n_hammond());
                     }
                 });
 
@@ -964,15 +959,42 @@ impl SynthesizerApp {
         ui.label(format!("Octave actuelle: {}", self.current_octave));
     }
 
-    /// Met à jour le type de synthétiseur
     fn update_synth_type(&mut self) {
         if let Some(ref synth_control) = self.synth_control {
             if let Ok(mut synth) = synth_control.lock() {
                 *synth = self.current_synth_type.clone();
             }
         }
-        // Synchroniser les valeurs après avoir relâché le lock
         self.sync_values_from_synth();
+    }
+
+    fn change_synth_type_preserving_params(&mut self, mut new_synth_type: SynthType) {
+        // Appliquer les valeurs actuelles de l'interface au nouveau synthé
+        new_synth_type.set_current_gain(self.gain);
+        new_synth_type.set_gain_activation(self.gain_activation);
+        
+        new_synth_type.set_current_noise(self.noise);
+        new_synth_type.set_noise_activation(self.noise_activation);
+
+        new_synth_type.set_lfo_activation(self.lfo_activation);
+        new_synth_type.set_current_lfo_waveform(self.waveform);
+        new_synth_type.set_current_lfo_frequency(self.freq);
+
+        new_synth_type.set_filter_activation(self.filter_activation);
+        new_synth_type.set_current_cutoff(self.cutoff);
+        new_synth_type.set_current_resonance(self.resonance);
+
+        new_synth_type.set_compressor_activation(self.compressor_activation);
+        new_synth_type.set_current_threshold(self.threshold);
+
+        new_synth_type.set_reverb_activation(self.reverb_activation);
+        
+        self.current_synth_type = new_synth_type;
+        if let Some(ref synth_control) = self.synth_control {
+            if let Ok(mut synth) = synth_control.lock() {
+                *synth = self.current_synth_type.clone();
+            }
+        }
     }
 
     /// Synchronise les valeurs de l'interface avec le synthétiseur actuel
