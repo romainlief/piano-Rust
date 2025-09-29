@@ -570,12 +570,8 @@ impl SynthType {
                 constants::CURRENT_FILTER_RESONANCE,
             );
             synth.add_module(filter);
-            println!("Module Filter ajouté");
         } else if !active && has_filter {
             synth.modules.retain(|m| m.name() != "LowPassFilter");
-            println!("Module Filter retiré");
-        } else {
-            println!("Aucune action nécessaire pour le filtre");
         }
     }
 
@@ -589,10 +585,8 @@ impl SynthType {
         if active && !has_gain {
             let gain = Gain::new(constants::CURRENT_GAIN);
             synth.add_module(gain);
-            println!("Module Gain ajouté");
         } else if !active && has_gain {
             synth.modules.retain(|m| m.name() != "Gain");
-            println!("Module Gain retiré");
         }
     }
 
@@ -658,12 +652,8 @@ impl SynthType {
         if active && !has_noise {
             let noise = Noise::new(constants::CURRENT_NOISE);
             synth.add_module(noise);
-            println!("Module Noise ajouté");
         } else if !active && has_noise {
             synth.modules.retain(|m| m.name() != "NoiseEffect");
-            println!("Module Noise retiré");
-        } else {
-            println!("Aucune action nécessaire pour le noise");
         }
     }
 
@@ -680,12 +670,8 @@ impl SynthType {
                 constants::SAMPLE_RATE,
             );
             synth.add_module(lfo);
-            println!("Module LFO ajouté");
         } else if !active && has_lfo {
             synth.modules.retain(|m| m.name() != "LFO");
-            println!("Module LFO retiré");
-        } else {
-            println!("Aucune action nécessaire pour le LFO");
         }
     }
 
