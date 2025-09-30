@@ -222,7 +222,6 @@ impl SynthType {
             if module.name() == "Gain" {
                 // Utiliser le downcasting en lecture seule
                 if let Some(gain_module) = module.as_any().downcast_ref::<Gain>() {
-                    println!("Gain module found: {}", gain_module.get_gain());
                     return gain_module.get_gain();
                 }
             }
@@ -309,7 +308,6 @@ impl SynthType {
                 }
             }
         }
-        println!("Module Compressor non trouvé pour mise à jour");
     }
 
     fn set_lfo_frequency_in_synth_static<O: crate::synths::traits::Oscillator>(
@@ -324,7 +322,6 @@ impl SynthType {
                 }
             }
         }
-        println!("Module LFO non trouvé pour mise à jour");
     }
 
     fn set_lfo_waveform_in_synth_static<O: crate::synths::traits::Oscillator>(
@@ -339,7 +336,6 @@ impl SynthType {
                 }
             }
         }
-        println!("Module LFO non trouvé pour mise à jour");
     }
 
     fn set_reverb_type_in_synth_static<O: crate::synths::traits::Oscillator>(
@@ -354,7 +350,6 @@ impl SynthType {
                 }
             }
         }
-        println!("Module Reverb non trouvé pour mise à jour");
     }
 
     fn set_noise_in_synth_static<O: crate::synths::traits::Oscillator>(
@@ -371,7 +366,6 @@ impl SynthType {
                 }
             }
         }
-        println!("Module Noise non trouvé pour mise à jour");
     }
 
     pub fn set_filter_activation(&mut self, active: bool) {
@@ -609,12 +603,8 @@ impl SynthType {
                 constants::SAMPLE_RATE,
             );
             synth.add_module(compressor);
-            println!("Module Compressor ajouté");
         } else if !active && has_compressor {
             synth.modules.retain(|m| m.name() != "SimpleRMSCompressor");
-            println!("Module Compressor retiré");
-        } else {
-            println!("Aucune action nécessaire pour le compresseur");
         }
     }
 
@@ -634,12 +624,8 @@ impl SynthType {
                 constants::CURRENT_REVERB_PRE_DELAY_MS,
             );
             synth.add_module(reverb);
-            println!("Module Reverb ajouté");
         } else if !active && has_reverb {
             synth.modules.retain(|m| m.name() != "Reverb");
-            println!("Module Reverb retiré");
-        } else {
-            println!("Aucune action nécessaire pour le reverb");
         }
     }
 

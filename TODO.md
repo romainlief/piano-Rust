@@ -28,4 +28,6 @@
 
 - mettre a jour le readme
 
-- faire tous les styles de bruits
+- faire tous les styles de bruit
+
+- finir le gain
